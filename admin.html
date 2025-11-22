@@ -1,229 +1,188 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Advanced Product & Orders</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Admin — Prabha Graphics" />
+  <title>Prabha Graphics — Admin</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{--primary:#D10007;--muted:#6b7280;--bg:#f7f7f8}
-    body{font-family:'Poppins',sans-serif;background:var(--bg);margin:0;padding:24px;color:#111827}
-    .wrap{max-width:1200px;margin:0 auto}
-    h1{margin:0 0 12px}
-    .layout{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
-    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-    input,textarea,select,button{font-family:inherit}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:#111827}
+    .container{max-width:1200px;margin:0 auto;padding:20px}
+    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1000;box-shadow:0 0 0 rgba(0,0,0,0);transition:all .25s}
+    .nav-container{max-width:1280px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .logo-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-weight:700}
+    .nav-links{display:flex;gap:20px}
+    .admin-wrap{margin-top:100px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-bottom:16px}
+    .row{display:flex;gap:12px}
+    input,select,textarea,button{font-family:inherit}
     input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin-top:8px}
-    .btn{background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
     .btn.secondary{background:#374151}
     .small{font-size:13px;color:var(--muted)}
-    .section-title{font-size:16px;margin-bottom:8px}
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
     .product-item{border:1px solid #eee;padding:10px;border-radius:8px;background:#fff}
-    .thumb{width:100%;height:140px;object-fit:cover;border-radius:6px}
-    .row{display:flex;gap:8px}
-    .row > *{flex:1}
-    .orders-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
-    .order-card{border:1px solid #eee;padding:12px;border-radius:10px;background:#fff}
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#f3f4f6;font-size:12px}
-    .field-label{font-weight:600;font-size:13px;margin-top:8px}
-    .muted{color:var(--muted)}
-    .link-like{background:none;border:0;color:var(--primary);cursor:pointer;text-decoration:underline;padding:0;font-size:13px}
-    .gallery-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .gallery-preview img{width:70px;height:70px;object-fit:cover;border-radius:6px}
-    .inline-small{display:inline-block;padding:6px 8px;border-radius:6px;background:#f3f4f6;margin-right:6px;font-size:12px}
-    .switch-row{display:flex;gap:8px;align-items:center;margin-top:8px}
-    .error{background:#fee2e2;color:#991b1b;padding:8px;border-radius:8px}
-    .success{background:#dcfce7;color:#065f46;padding:8px;border-radius:8px}
-    @media (max-width:980px){.layout{grid-template-columns:1fr}}
+    .thumb{width:100%;height:120px;object-fit:cover;border-radius:6px}
+    .orders-grid{display:grid;gap:12px}
+    .order-card{background:#fff;border-radius:8px;padding:10px;border:1px solid #eee}
+    .hidden{display:none}
+    @media (max-width:900px){ .row{flex-direction:column} .nav-links{display:none} }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h1>Admin — Advanced Products & Orders</h1>
-      <div style="text-align:right">
-        <div id="adminInfo" class="small muted">Not signed in</div>
+
+  <!-- same header -->
+  <nav class="navbar">
+    <div class="nav-container container">
+      <div style="display:flex;align-items:center;gap:12px;cursor:pointer" onclick="location.href='index.html'">
+        <div class="logo-circle">PG</div><strong>Prabha Graphics</strong>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <a href="products.html" class="small">Products</a>
+        <a href="get-a-quote.html" class="small">Get a Quote</a>
       </div>
     </div>
+  </nav>
 
-    <div class="layout">
-      <!-- LEFT: Auth + Add/Edit product -->
-      <div>
-        <div class="card">
-          <div class="section-title">Sign in / Register</div>
-          <div id="authError" style="display:none"></div>
+  <div class="container admin-wrap">
+    <!-- LOGIN CARD (mandatory - no register) -->
+    <div id="loginCard" class="card">
+      <h3>Admin Login</h3>
+      <div id="loginError" class="small" style="color:#991b1b"></div>
+      <input id="email" placeholder="admin@example.com" type="email"/>
+      <input id="password" placeholder="Password" type="password"/>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button id="btnLogin" class="btn">Sign in</button>
+      </div>
+      <p class="small" style="margin-top:8px;color:#6b7280">Note: Admin sign-in is required to access dashboard.</p>
+    </div>
 
-          <input id="email" placeholder="admin@example.com" type="email" />
-          <input id="password" placeholder="password (min 6 chars)" type="password" />
-          <div class="row" style="margin-top:10px">
-            <button class="btn" id="btnLogin">Sign in</button>
-            <button class="btn secondary" id="btnRegister">Register</button>
+    <!-- ADMIN PANEL (hidden until login) -->
+    <div id="panel" class="hidden">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3>Products — Add / Edit</h3>
+          <div style="display:flex;gap:8px">
+            <button id="btnSignOut" class="btn secondary">Sign out</button>
+            <a href="products.html" class="btn secondary">Open Shop</a>
           </div>
-          <div style="margin-top:10px">
-            <button class="btn secondary" id="btnSignOut" style="display:none">Sign out</button>
-          </div>
-          <p class="small" style="margin-top:8px">Tip: create admin here or add via Firebase Console (Authentication → Users).</p>
         </div>
 
-        <div class="card" id="addCard" style="margin-top:12px;display:none">
-          <div class="section-title">Add / Edit Product</div>
-          <div id="saveMsg" style="display:none"></div>
-
-          <form id="productForm">
-            <input id="productId" type="hidden" />
-            <label class="field-label">Name</label>
-            <input id="productName" placeholder="Product name" required />
-
-            <div class="row">
-              <div>
-                <label class="field-label">SKU</label>
-                <input id="productSKU" placeholder="SKU or item code (e.g., PRB-001)" />
-              </div>
-              <div>
-                <label class="field-label">Type</label>
-                <select id="productType">
-                  <option value="ready-made">Ready-made</option>
-                  <option value="customized">Customized</option>
-                </select>
-              </div>
+        <form id="productForm" style="margin-top:12px">
+          <input id="productId" type="hidden"/>
+          <div class="row">
+            <div style="flex:2">
+              <input id="pName" placeholder="Product name" required/>
             </div>
-
-            <label class="field-label">Category</label>
-            <input id="productCategory" placeholder="Category (Apparel, Mugs...)" />
-
-            <label class="field-label">Vendor</label>
-            <input id="productVendor" placeholder="Vendor / Brand" />
-
-            <label class="field-label">Base Price (INR)</label>
-            <input id="productPrice" type="number" min="0" placeholder="499" />
-
-            <label class="field-label">Stock (if no variants)</label>
-            <input id="productStock" type="number" min="0" placeholder="120" />
-
-            <label class="field-label">Variants (JSON array — helper below)</label>
-            <textarea id="productVariants" placeholder='Example: [{"id":"v1","label":"S","price":499,"stock":30},{"id":"v2","label":"M","price":499,"stock":40}]' rows="4"></textarea>
-            <div class="small muted">Variants override base price/stock when provided. Use JSON array.</div>
-
-            <label class="field-label">Sizes (comma separated)</label>
-            <input id="productSizes" placeholder="S,M,L,XL" />
-
-            <label class="field-label">Colors (comma separated)</label>
-            <input id="productColors" placeholder="black,white,red" />
-
-            <label class="field-label">Tags (comma separated)</label>
-            <input id="productTags" placeholder="cotton,summer,unisex" />
-
-            <label class="field-label">Description (long)</label>
-            <textarea id="productDesc" rows="4"></textarea>
-
-            <div style="margin-top:10px">
-              <div class="small">Image source — multiple URLs OR upload</div>
-              <div style="display:flex;gap:12px;margin-top:6px;align-items:center">
-                <label><input type="radio" name="imgSource" value="urls" checked /> Paste URLs</label>
-                <label><input type="radio" name="imgSource" value="upload" /> Upload Files</label>
-              </div>
+            <div style="flex:1">
+              <input id="pSKU" placeholder="SKU"/>
             </div>
+          </div>
 
-            <label class="field-label">Image URLs (comma separated)</label>
-            <textarea id="productImageUrls" placeholder="https://.../1.jpg, https://.../2.jpg" rows="3"></textarea>
-            <div class="small muted">Or choose Upload Files option below.</div>
-
-            <div id="imageUploadBox" style="display:none;margin-top:8px">
-              <input id="productImageFiles" type="file" accept="image/*" multiple />
-              <div id="galleryPreview" class="gallery-preview"></div>
+          <div class="row" style="margin-top:8px">
+            <div>
+              <select id="pType"><option value="ready-made">Ready-made</option><option value="customized">Customized</option></select>
             </div>
-
-            <label class="field-label">Shipping weight (grams)</label>
-            <input id="productWeight" type="number" min="0" placeholder="300" />
-
-            <div class="row">
-              <div>
-                <label class="field-label">Length (cm)</label>
-                <input id="productLength" type="number" min="0" placeholder="30" />
-              </div>
-              <div>
-                <label class="field-label">Width (cm)</label>
-                <input id="productWidth" type="number" min="0" placeholder="25" />
-              </div>
+            <div>
+              <input id="pCategory" placeholder="Category (Corporate, Personalized, Business, Apparel)"/>
             </div>
-            <div class="row">
-              <div>
-                <label class="field-label">Height (cm)</label>
-                <input id="productHeight" type="number" min="0" placeholder="2" />
-              </div>
-              <div>
-                <label class="field-label">Featured?</label>
-                <select id="productFeatured"><option value="false">No</option><option value="true">Yes</option></select>
-              </div>
+            <div>
+              <input id="pVendor" placeholder="Vendor/Brand"/>
             </div>
+          </div>
 
-            <label class="field-label">SEO Title (optional)</label>
-            <input id="productSeoTitle" placeholder="SEO title" />
-            <label class="field-label">SEO Description (optional)</label>
-            <textarea id="productSeoDesc" rows="2"></textarea>
+          <div class="row" style="margin-top:8px">
+            <div><input id="pPrice" type="number" placeholder="Base Price"/></div>
+            <div><input id="pStock" type="number" placeholder="Stock"/></div>
+            <div><input id="pTags" placeholder="Tags (comma separated)"/></div>
+          </div>
 
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn" type="submit" id="btnSaveProduct">Save Product</button>
-              <button class="btn secondary" type="button" id="btnReset">Reset</button>
-            </div>
-          </form>
-        </div>
+          <div style="margin-top:8px">
+            <textarea id="pDesc" rows="3" placeholder="Full description"></textarea>
+          </div>
 
+          <div style="margin-top:8px">
+            <label><input type="radio" name="imgSrc" value="urls" checked/> Image URLs</label>
+            <label style="margin-left:12px"><input type="radio" name="imgSrc" value="upload"/> Upload</label>
+          </div>
+
+          <div id="imgUrlsBox" style="margin-top:8px">
+            <textarea id="pImageUrls" rows="2" placeholder="Comma separated image URLs"></textarea>
+          </div>
+
+          <div id="imgUploadBox" style="display:none;margin-top:8px">
+            <input id="pFiles" type="file" accept="image/*" multiple/>
+            <div id="pPreview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+          </div>
+
+          <div style="margin-top:8px">
+            <input id="pSizes" placeholder="Sizes (comma separated)"/>
+            <input id="pColors" placeholder="Colors (comma separated)" style="margin-top:8px"/>
+            <textarea id="pVariants" placeholder='Variants JSON (eg: [{"id":"v1","label":"S","price":499,"stock":10}])' rows="3" style="margin-top:8px"></textarea>
+          </div>
+
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button type="submit" class="btn">Save Product</button>
+            <button type="button" id="btnClear" class="btn secondary">Clear</button>
+          </div>
+          <div id="productMsg" style="margin-top:8px"></div>
+        </form>
       </div>
 
-      <!-- RIGHT: Product lists and Orders -->
-      <div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="section-title">Manage Products (grouped)</div>
-            <div>
-              <button class="btn secondary" id="btnRefreshProducts">Refresh</button>
-            </div>
-          </div>
+      <div class="card" style="margin-top:12px">
+        <h3>Products List (grouped)</h3>
+        <div style="margin-top:8px">
+          <h4>Ready-made</h4>
+          <div id="readyGrid" class="products-grid"></div>
 
-          <div style="margin-top:12px">
-            <h4 style="margin:6px 0">Ready-made</h4>
-            <div id="readyGrid" class="products-grid"></div>
-
-            <h4 style="margin:16px 0 6px">Customized</h4>
-            <div id="customGrid" class="products-grid"></div>
-          </div>
+          <h4 style="margin-top:12px">Customized</h4>
+          <div id="customGrid" class="products-grid"></div>
         </div>
+      </div>
 
-        <div class="card" style="margin-top:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="section-title">Orders</div>
-            <div><button class="btn secondary" id="btnRefreshOrders">Refresh</button></div>
-          </div>
-
-          <div style="margin-top:10px">
-            <h4 style="margin:6px 0">Ready-made Orders</h4>
-            <div id="ordersReady" class="orders-grid"></div>
-
-            <h4 style="margin:16px 0 6px">Customized Orders</h4>
-            <div id="ordersCustom" class="orders-grid"></div>
-          </div>
+      <div class="card" style="margin-top:12px">
+        <h3>Orders</h3>
+        <div style="margin-top:8px">
+          <div id="ordersList" class="orders-grid"></div>
         </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3>Get-a-Quote Submissions</h3>
+        <div id="quotesList" style="margin-top:8px"></div>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDK (modular) -->
-  <script type="module">
-    // ---------- IMPORTS ----------
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import {
-      getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-    import {
-      getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, serverTimestamp, getDoc
-    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
-    import {
-      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
-    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
+  <!-- Footer (same) -->
+  <footer style="background:#111827;color:#fff;padding:28px;margin-top:20px">
+    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px"><div class="logo-circle">PG</div><strong>Prabha Graphics</strong></div>
+        <p style="color:#d1d5db;margin-top:8px">Admin dashboard — manage products, orders, and quotes.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff">Contact</h4>
+        <p style="color:#d1d5db">074579 94888</p>
+      </div>
+    </div>
+  </footer>
 
-    // ---------- CONFIG ----------
+  <!-- Firebase + Admin logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, getDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
       authDomain: "prabha-graphics-7d269.firebaseapp.com",
@@ -239,369 +198,292 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    // ---------- UI refs ----------
-    const emailEl = document.getElementById('email');
-    const passEl = document.getElementById('password');
+    // UI refs
+    const loginCard = document.getElementById('loginCard');
+    const panel = document.getElementById('panel');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
     const btnLogin = document.getElementById('btnLogin');
-    const btnRegister = document.getElementById('btnRegister');
     const btnSignOut = document.getElementById('btnSignOut');
-    const adminInfo = document.getElementById('adminInfo');
-    const authError = document.getElementById('authError');
+    const loginError = document.getElementById('loginError');
 
-    const addCard = document.getElementById('addCard');
     const productForm = document.getElementById('productForm');
-    const productIdEl = document.getElementById('productId');
-    const productName = document.getElementById('productName');
-    const productSKU = document.getElementById('productSKU');
-    const productType = document.getElementById('productType');
-    const productCategory = document.getElementById('productCategory');
-    const productVendor = document.getElementById('productVendor');
-    const productPrice = document.getElementById('productPrice');
-    const productStock = document.getElementById('productStock');
-    const productVariants = document.getElementById('productVariants');
-    const productSizes = document.getElementById('productSizes');
-    const productColors = document.getElementById('productColors');
-    const productTags = document.getElementById('productTags');
-    const productDesc = document.getElementById('productDesc');
-    const productImageUrls = document.getElementById('productImageUrls');
-    const productImageFiles = document.getElementById('productImageFiles');
-    const imageUploadBox = document.getElementById('imageUploadBox');
-    const galleryPreview = document.getElementById('galleryPreview');
-    const productWeight = document.getElementById('productWeight');
-    const productLength = document.getElementById('productLength');
-    const productWidth = document.getElementById('productWidth');
-    const productHeight = document.getElementById('productHeight');
-    const productFeatured = document.getElementById('productFeatured');
-    const productSeoTitle = document.getElementById('productSeoTitle');
-    const productSeoDesc = document.getElementById('productSeoDesc');
-    const saveMsg = document.getElementById('saveMsg');
-    const btnReset = document.getElementById('btnReset');
-    const btnRefreshProducts = document.getElementById('btnRefreshProducts');
+    const productId = document.getElementById('productId');
+    const pName = document.getElementById('pName');
+    const pSKU = document.getElementById('pSKU');
+    const pType = document.getElementById('pType');
+    const pCategory = document.getElementById('pCategory');
+    const pVendor = document.getElementById('pVendor');
+    const pPrice = document.getElementById('pPrice');
+    const pStock = document.getElementById('pStock');
+    const pTags = document.getElementById('pTags');
+    const pDesc = document.getElementById('pDesc');
+    const pImageUrls = document.getElementById('pImageUrls');
+    const pFiles = document.getElementById('pFiles');
+    const pPreview = document.getElementById('pPreview');
+    const imgUrlsBox = document.getElementById('imgUrlsBox');
+    const imgUploadBox = document.getElementById('imgUploadBox');
+    const pSizes = document.getElementById('pSizes');
+    const pColors = document.getElementById('pColors');
+    const pVariants = document.getElementById('pVariants');
+    const productMsg = document.getElementById('productMsg');
+    const btnClear = document.getElementById('btnClear');
 
     const readyGrid = document.getElementById('readyGrid');
     const customGrid = document.getElementById('customGrid');
+    const ordersList = document.getElementById('ordersList');
+    const quotesList = document.getElementById('quotesList');
 
-    const ordersReady = document.getElementById('ordersReady');
-    const ordersCustom = document.getElementById('ordersCustom');
-    const btnRefreshOrders = document.getElementById('btnRefreshOrders');
-
-    // ---------- helpers ----------
-    function showError(el, msg){ el.style.display='block'; el.className='error'; el.textContent = msg; }
-    function showSuccess(el, msg){ el.style.display='block'; el.className='success'; el.textContent = msg; setTimeout(()=>{ el.style.display='none'; }, 3500) }
-    function clearBox(el){ el.style.display='none'; el.textContent=''; el.className=''; }
-
-    // ---------- Auth ----------
+    // Login (no register)
     btnLogin.addEventListener('click', async ()=> {
-      clearBox(authError);
-      const email = emailEl.value.trim();
-      const pass = passEl.value;
-      if(!email || !pass) return showError(authError,'Enter email & password.');
-      try{ await signInWithEmailAndPassword(auth,email,pass); }
-      catch(err){ showError(authError,'Sign-in failed: '+err.message); }
+      loginError.textContent = '';
+      const e = email.value.trim(); const p = password.value;
+      if(!e||!p) return loginError.textContent = 'Email & password required';
+      try{
+        await signInWithEmailAndPassword(auth, e, p);
+      } catch(err){
+        loginError.textContent = 'Sign-in failed: '+ err.message;
+      }
     });
 
-    btnRegister.addEventListener('click', async ()=> {
-      clearBox(authError);
-      const email = emailEl.value.trim();
-      const pass = passEl.value;
-      if(!email || !pass) return showError(authError,'Enter email & password.');
-      if(pass.length<6) return showError(authError,'Password must be at least 6 chars.');
-      try{ await createUserWithEmailAndPassword(auth,email,pass); showSuccess(saveMsg,'Admin created & signed in.'); }
-      catch(err){ showError(authError,'Register failed: '+err.message); }
-    });
-
-    btnSignOut.addEventListener('click', async ()=> { await signOut(auth); });
+    btnSignOut.addEventListener('click', async ()=>{ await signOut(auth); });
 
     onAuthStateChanged(auth, user => {
-      clearBox(authError);
       if(user){
-        adminInfo.textContent = `Signed in: ${user.email} (uid: ${user.uid})`;
-        btnSignOut.style.display='inline-block';
-        btnLogin.style.display='none'; btnRegister.style.display='none';
-        addCard.style.display='block';
-        startProductsListener(); startOrdersListener();
+        loginCard.style.display='none'; panel.classList.remove('hidden');
+        startProductsListener(); startOrdersListener(); startQuotesListener();
       } else {
-        adminInfo.textContent = 'Not signed in';
-        btnSignOut.style.display='none';
-        btnLogin.style.display='inline-block'; btnRegister.style.display='inline-block';
-        addCard.style.display='none';
+        loginCard.style.display='block'; panel.classList.add('hidden');
         stopListeners();
-        readyGrid.innerHTML = customGrid.innerHTML = ordersReady.innerHTML = ordersCustom.innerHTML = '';
       }
     });
 
-    // ---------- Image source toggle ----------
-    document.querySelectorAll('input[name="imgSource"]').forEach(r=>{
+    // toggle image source
+    document.querySelectorAll('input[name="imgSrc"]').forEach(r=>{
       r.addEventListener('change', ()=> {
-        if (r.checked && r.value === 'upload'){ imageUploadBox.style.display='block'; productImageUrls.parentElement.style.display='none'; }
-        else { imageUploadBox.style.display='none'; productImageUrls.parentElement.style.display='block'; }
+        if (r.checked && r.value === 'upload'){ imgUploadBox.style.display='block'; imgUrlsBox.style.display='none'; }
+        else { imgUploadBox.style.display='none'; imgUrlsBox.style.display='block'; }
       });
     });
 
-    // preview uploaded images
-    productImageFiles.addEventListener('change', ()=> {
-      galleryPreview.innerHTML = '';
-      const files = Array.from(productImageFiles.files || []);
-      files.forEach(f=>{
+    // preview files
+    pFiles.addEventListener('change', ()=> {
+      pPreview.innerHTML = '';
+      const files = Array.from(pFiles.files || []);
+      files.forEach(f => {
         const url = URL.createObjectURL(f);
-        const img = document.createElement('img');
-        img.src = url;
-        galleryPreview.appendChild(img);
+        const img = document.createElement('img'); img.src = url; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
+        pPreview.appendChild(img);
       });
     });
 
-    // ---------- Save product (create / update) ----------
+    // Save product (create or update)
     productForm.addEventListener('submit', async (e)=> {
-      e.preventDefault();
-      clearBox(saveMsg);
-      const id = productIdEl.value || '';
-      const name = productName.value.trim();
-      const sku = productSKU.value.trim();
-      const type = productType.value;
-      const category = productCategory.value.trim();
-      const vendor = productVendor.value.trim();
-      const price = parseFloat(productPrice.value) || 0;
-      const stock = parseInt(productStock.value) || 0;
-      const sizes = productSizes.value.split(',').map(s=>s.trim()).filter(Boolean);
-      const colors = productColors.value.split(',').map(c=>c.trim()).filter(Boolean);
-      const tags = productTags.value.split(',').map(t=>t.trim()).filter(Boolean);
-      const desc = productDesc.value.trim();
-      const variantsText = productVariants.value.trim();
-      let variants = [];
-      if (variantsText) {
-        try { variants = JSON.parse(variantsText); }
-        catch(e){ return showError(saveMsg,'Variants JSON invalid: '+ e.message); }
+      e.preventDefault(); productMsg.textContent=''; productMsg.className='';
+      const id = productId.value || null;
+      const docData = {
+        name: pName.value.trim(),
+        sku: pSKU.value.trim(),
+        type: pType.value,
+        category: pCategory.value.trim(),
+        vendor: pVendor.value.trim(),
+        price: parseFloat(pPrice.value) || 0,
+        stock: parseInt(pStock.value) || 0,
+        tags: pTags.value.split(',').map(s=>s.trim()).filter(Boolean),
+        description: pDesc.value.trim(),
+        sizes: pSizes.value.split(',').map(s=>s.trim()).filter(Boolean),
+        colors: pColors.value.split(',').map(s=>s.trim()).filter(Boolean),
+        variants: []
+      };
+      const variantsText = pVariants.value.trim();
+      if (variantsText){
+        try { docData.variants = JSON.parse(variantsText); } catch(err){ productMsg.textContent='Variants JSON invalid: '+err.message; productMsg.className='error'; return; }
       }
-      const imageUrls = productImageUrls.value.split(',').map(u=>u.trim()).filter(Boolean);
-      const files = Array.from(productImageFiles.files || []);
-      const weight = parseFloat(productWeight.value) || 0;
-      const length_cm = parseFloat(productLength.value) || 0;
-      const width_cm = parseFloat(productWidth.value) || 0;
-      const height_cm = parseFloat(productHeight.value) || 0;
-      const featured = productFeatured.value === 'true';
-      const seoTitle = productSeoTitle.value.trim();
-      const seoDesc = productSeoDesc.value.trim();
-
-      if (!name) return showError(saveMsg,'Product name required.');
 
       try {
-        // upload files if provided
-        let uploadedUrls = [];
-        let uploadedPaths = [];
-        if (files.length) {
-          for (const f of files) {
-            const path = `products/${Date.now()}_${f.name}`;
-            const sRef = storageRef(storage, path);
-            const task = uploadBytesResumable(sRef, f);
-            await new Promise((res, rej) => {
-              task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{
-                const url = await getDownloadURL(task.snapshot.ref);
-                uploadedUrls.push(url);
-                uploadedPaths.push(path);
-                res();
-              });
+        // handle uploaded files
+        const files = Array.from(pFiles.files || []);
+        const uploadedUrls = []; const uploadedPaths = [];
+        for (const f of files){
+          const path = `products/${Date.now()}_${f.name}`;
+          const sRef = storageRef(storage, path);
+          const task = uploadBytesResumable(sRef, f);
+          await new Promise((res, rej)=> {
+            task.on('state_changed', ()=>{}, err=> rej(err), async ()=> {
+              const url = await getDownloadURL(task.snapshot.ref);
+              uploadedUrls.push(url); uploadedPaths.push(path); res();
             });
-          }
+          });
         }
+        const urlList = (pImageUrls.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+        docData.images = [...urlList, ...uploadedUrls];
+        if (uploadedPaths.length) docData.imageStoragePaths = uploadedPaths;
 
-        const images = [...imageUrls, ...uploadedUrls];
-
-        const docData = {
-          name, sku, type, category, vendor, price, stock,
-          sizes, colors, tags, description: desc,
-          variants, images,
-          imageStoragePaths: uploadedPaths,
-          shipping: { weight_g: weight, length_cm, width_cm, height_cm },
-          dimensions: { length_cm, width_cm, height_cm },
-          seo: { title: seoTitle, description: seoDesc },
-          featured,
-          createdAt: serverTimestamp()
-        };
-
-        if (!id) {
-          await addDoc(collection(db, 'products'), docData);
-          productForm.reset(); galleryPreview.innerHTML=''; showSuccess(saveMsg,'Product created.');
+        if (!id){
+          docData.createdAt = serverTimestamp();
+          await addDoc(collection(db,'products'), docData);
+          productForm.reset(); pPreview.innerHTML=''; productMsg.textContent='Product created.'; productMsg.className='success';
         } else {
-          // update existing doc
           await updateDoc(doc(db,'products', id), docData);
-          productForm.reset(); productIdEl.value=''; galleryPreview.innerHTML=''; showSuccess(saveMsg,'Product updated.');
+          productForm.reset(); pPreview.innerHTML=''; productId.value=''; productMsg.textContent='Product updated.'; productMsg.className='success';
         }
-
-      } catch (err) {
-        console.error('save product err', err);
-        showError(saveMsg,'Could not save product: '+ err.message);
+      } catch(err){
+        console.error(err); productMsg.textContent='Save failed: '+err.message; productMsg.className='error';
       }
     });
 
-    btnReset.addEventListener('click', ()=> productForm.reset());
-    btnRefreshProducts.addEventListener('click', ()=> startProductsListener(true));
+    btnClear.addEventListener('click', ()=> { productForm.reset(); productId.value=''; pPreview.innerHTML=''; productMsg.textContent=''; });
 
-    // ---------- Products list listener ----------
+    // Products listener + edit/delete
     let productsUnsub = null;
-    function startProductsListener(force=false){
-      if (productsUnsub && !force) return;
-      if (productsUnsub) productsUnsub();
+    function startProductsListener(){
+      if (productsUnsub) return;
       const q = query(collection(db,'products'), orderBy('createdAt','desc'));
       productsUnsub = onSnapshot(q, snapshot => {
         readyGrid.innerHTML = customGrid.innerHTML = '';
         snapshot.forEach(docSnap => {
-          const d = docSnap.data(); const id = docSnap.id;
-          const el = document.createElement('div');
-          el.className = 'product-item';
+          const d = docSnap.data(); d.id = docSnap.id;
+          const el = document.createElement('div'); el.className='product-item';
           el.innerHTML = `
-            <img class="thumb" src="${(d.images && d.images[0]) || ''}" alt="${escapeHtml(d.name)}" />
-            <h4 style="margin:8px 0 6px">${escapeHtml(d.name)}</h4>
-            <div class="small muted">SKU: ${escapeHtml(d.sku || '')} • ${escapeHtml(d.category || '')}</div>
-            <div style="margin-top:6px">${d.variants && d.variants.length ? '<span class="inline-small">Variants: '+ d.variants.length +'</span>' : '<span class="inline-small">Stock: '+ (d.stock||0) +'</span>'}<span class="badge" style="margin-left:6px">${escapeHtml(d.type||'')}</span></div>
+            <img src="${escapeHtml((d.images && d.images[0])||'')}" class="thumb" />
+            <div style="margin-top:8px"><strong>${escapeHtml(d.name)}</strong></div>
+            <div class="small" style="color:#6b7280">${escapeHtml(d.category||'')} • SKU: ${escapeHtml(d.sku||'')}</div>
             <div style="display:flex;gap:8px;margin-top:8px">
-              <button class="btn btn-edit" data-id="${id}">Edit</button>
-              <button class="btn secondary btn-delete" data-id="${id}" data-path='${JSON.stringify(d.imageStoragePaths||[])}'>Delete</button>
+              <button class="btn btn-edit" data-id="${d.id}">Edit</button>
+              <button class="btn secondary btn-delete" data-id="${d.id}" data-path='${JSON.stringify(d.imageStoragePaths||[])}'>Delete</button>
             </div>
           `;
           if (d.type === 'customized') customGrid.appendChild(el); else readyGrid.appendChild(el);
         });
-
-        // edit handlers
+        // attach handlers
         document.querySelectorAll('.btn-edit').forEach(b=>{
           b.onclick = async ()=> {
-            const id = b.dataset.id;
-            const snap = await getDoc(doc(db,'products',id));
-            if (!snap.exists()) return alert('Product not found');
+            const id = b.dataset.id; const snap = await getDoc(doc(db,'products',id));
+            if (!snap.exists()) return alert('Not found');
             const d = snap.data();
-            productIdEl.value = snap.id;
-            productName.value = d.name || '';
-            productSKU.value = d.sku || '';
-            productType.value = d.type || 'ready-made';
-            productCategory.value = d.category || '';
-            productVendor.value = d.vendor || '';
-            productPrice.value = d.price || '';
-            productStock.value = d.stock || '';
-            productVariants.value = d.variants && d.variants.length ? JSON.stringify(d.variants,null,2) : '';
-            productSizes.value = (d.sizes||[]).join(',');
-            productColors.value = (d.colors||[]).join(',');
-            productTags.value = (d.tags||[]).join(',');
-            productDesc.value = d.description || '';
-            productImageUrls.value = (d.images||[]).join(',');
-            productSeoTitle.value = (d.seo && d.seo.title) || '';
-            productSeoDesc.value = (d.seo && d.seo.description) || '';
-            productWeight.value = (d.shipping && d.shipping.weight_g) || '';
-            productLength.value = (d.dimensions && d.dimensions.length_cm) || '';
-            productWidth.value = (d.dimensions && d.dimensions.width_cm) || '';
-            productHeight.value = (d.dimensions && d.dimensions.height_cm) || '';
-            productFeatured.value = d.featured ? 'true':'false';
-            // preview gallery
-            galleryPreview.innerHTML = '';
-            (d.images||[]).forEach(url=>{
-              const img = document.createElement('img'); img.src = url; galleryPreview.appendChild(img);
-            });
-            window.scrollTo({top:0, behavior:'smooth'});
+            productId.value = snap.id; pName.value=d.name||''; pSKU.value=d.sku||''; pType.value=d.type||'ready-made';
+            pCategory.value=d.category||''; pVendor.value=d.vendor||''; pPrice.value=d.price||''; pStock.value=d.stock||'';
+            pTags.value=(d.tags||[]).join(','); pDesc.value=d.description||'';
+            pSizes.value=(d.sizes||[]).join(','); pColors.value=(d.colors||[]).join(','); pVariants.value=d.variants && d.variants.length ? JSON.stringify(d.variants,null,2):'';
+            pImageUrls.value=(d.images||[]).join(',');
+            pPreview.innerHTML='';
+            (d.images||[]).forEach(u=>{ const img=document.createElement('img'); img.src=u; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px'; pPreview.appendChild(img); });
+            window.scrollTo({top:0,behavior:'smooth'});
           };
         });
-
-        // delete handlers
         document.querySelectorAll('.btn-delete').forEach(b=>{
           b.onclick = async ()=> {
             if (!confirm('Delete product?')) return;
-            const id = b.dataset.id;
-            const paths = JSON.parse(b.getAttribute('data-path')||'[]');
-            try {
-              await deleteDoc(doc(db, 'products', id));
-              // delete storage objects if any
-              for (const p of paths){
-                try{ await deleteObject(storageRef(storage, p)); } catch(e){ console.warn('delete storage err', e.message); }
-              }
-              showSuccess(saveMsg,'Product deleted.');
-            } catch (err){ showError(saveMsg,'Delete failed: '+ err.message); }
+            const id = b.dataset.id; const paths = JSON.parse(b.getAttribute('data-path')||'[]');
+            try{ await deleteDoc(doc(db,'products',id)); for (const p of paths) await deleteObject(storageRef(storage,p)).catch(()=>{}); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
           };
         });
-
-      }, err => { showError(saveMsg,'Could not load products: '+ err.message); });
+      }, err=> console.error(err));
     }
 
-    // ---------- Orders listener ----------
+    // Orders listener
     let ordersUnsub = null;
-    function startOrdersListener(force=false){
-      if (ordersUnsub && !force) return;
-      if (ordersUnsub) ordersUnsub();
+    function startOrdersListener(){
+      if (ordersUnsub) return;
       const q = query(collection(db,'orders'), orderBy('createdAt','desc'));
-      ordersUnsub = onSnapshot(q, snapshot=>{
-        ordersReady.innerHTML = ordersCustom.innerHTML = '';
-        snapshot.forEach(docSnap=>{
+      ordersUnsub = onSnapshot(q, snapshot => {
+        ordersList.innerHTML = '';
+        snapshot.forEach(docSnap => {
           const o = docSnap.data(); const id = docSnap.id;
-          const target = (o.productType === 'customized') ? ordersCustom : ordersReady;
-          const el = document.createElement('div');
-          el.className = 'order-card';
+          const el = document.createElement('div'); el.className='order-card';
           el.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <div style="font-weight:700">${escapeHtml(o.productName || '')} ${o.variantLabel ? '('+escapeHtml(o.variantLabel)+')':''}</div>
-                <div class="small muted">${escapeHtml(o.customerName || '')} • ${escapeHtml(o.customerPhone || '')}</div>
-              </div>
-              <div style="text-align:right">
-                <div class="small">Qty: ${escapeHtml(String(o.quantity||1))}</div>
-                <div style="margin-top:6px"><span class="badge">${escapeHtml(o.status || 'pending')}</span></div>
-              </div>
+              <div><strong>${escapeHtml(o.productName || '')}</strong><div class="small" style="color:#6b7280">${escapeHtml(o.customerName||'')} • ${escapeHtml(o.customerPhone||'')}</div></div>
+              <div><span style="background:#f3f4f6;padding:6px;border-radius:6px">${escapeHtml(o.status||'pending')}</span></div>
             </div>
-            <div style="margin-top:8px;color:#374151">${escapeHtml(o.address.line1 || '')} ${escapeHtml(o.address.line2 || '')}, ${escapeHtml(o.address.city || '')} - ${escapeHtml(o.address.pincode || '')}</div>
-            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-              <button class="btn btn-mark" data-id="${id}" data-status="processing">Processing</button>
-              <button class="btn secondary btn-mark" data-id="${id}" data-status="shipped">Shipped</button>
-              <button class="btn secondary btn-mark" data-id="${id}" data-status="delivered">Delivered</button>
+            <div style="margin-top:8px;color:#374151">${escapeHtml((o.address && o.address.line1) || '')} ${escapeHtml((o.address && o.address.city) || '')} - ${escapeHtml((o.address && o.address.pincode) || '')}</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn btn-update" data-id="${id}" data-status="processing">Processing</button>
+              <button class="btn secondary btn-update" data-id="${id}" data-status="shipped">Shipped</button>
+              <button class="btn secondary btn-update" data-id="${id}" data-status="delivered">Delivered</button>
               <button class="btn secondary btn-view" data-id="${id}">View</button>
-              <button class="btn secondary btn-delete-order" data-id="${id}">Delete Order</button>
+              <button class="btn secondary btn-delete-order" data-id="${id}">Delete</button>
             </div>
           `;
-          target.appendChild(el);
+          ordersList.appendChild(el);
         });
 
-        // handlers
-        document.querySelectorAll('.btn-mark').forEach(b=>{
+        document.querySelectorAll('.btn-update').forEach(b=>{
           b.onclick = async ()=> {
             const id = b.dataset.id; const status = b.dataset.status;
-            try { await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); }
-            catch(err){ console.error('status update err', err); }
+            try { await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); } catch(err){ console.error(err); }
           };
         });
 
         document.querySelectorAll('.btn-view').forEach(b=>{
           b.onclick = async ()=> {
-            const id = b.dataset.id;
-            const snap = await getDoc(doc(db,'orders',id));
-            if(!snap.exists()) return alert('Order not found');
+            const id = b.dataset.id; const snap = await getDoc(doc(db,'orders',id));
+            if (!snap.exists()) return alert('Not found');
             const o = snap.data();
-            const details = [
-              `Product: ${o.productName} ${o.variantLabel? '('+o.variantLabel+')':''}`,
-              `Type: ${o.productType}`,
+            alert([
+              `Product: ${o.productName}`,
               `Qty: ${o.quantity}`,
-              `Size: ${o.size || 'N/A'}`,
               `Name: ${o.customerName}`,
               `Phone: ${o.customerPhone}`,
-              `Email: ${o.customerEmail || 'N/A'}`,
-              `Address: ${o.address.line1 || ''} ${o.address.line2 || ''}, ${o.address.city || ''} - ${o.address.pincode || ''}`,
-              `Note: ${o.note || 'N/A'}`,
-              `Status: ${o.status || 'pending'}`
-            ].join('\n\n');
-            alert(details);
+              `Email: ${o.customerEmail || '-'}`,
+              `Address: ${ (o.address && (o.address.line1 + ' ' + o.address.line2 + ', ' + o.address.city + ' - ' + o.address.pincode)) || '-' }`,
+              `Status: ${o.status || '-'}`,
+              `Note: ${o.note || '-'}`
+            ].join('\n\n'));
           };
         });
 
         document.querySelectorAll('.btn-delete-order').forEach(b=>{
           b.onclick = async ()=> {
-            if(!confirm('Delete this order?')) return;
-            const id = b.dataset.id;
-            try{ await deleteDoc(doc(db,'orders',id)); alert('Deleted'); }
-            catch(err){ alert('Delete failed: '+ err.message); }
+            if(!confirm('Delete order?')) return;
+            const id = b.dataset.id; try{ await deleteDoc(doc(db,'orders',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
           };
         });
 
-      }, err => { console.error('orders snapshot', err); });
+      }, err=> console.error(err));
     }
 
-    function stopListeners(){ if(productsUnsub) productsUnsub(); if(ordersUnsub) ordersUnsub(); productsUnsub = ordersUnsub = null; }
-    btnRefreshOrders.addEventListener('click', ()=> startOrdersListener(true));
+    // Quotes listener
+    let quotesUnsub = null;
+    function startQuotesListener(){
+      if (quotesUnsub) return;
+      const q = query(collection(db,'quotes'), orderBy('createdAt','desc'));
+      quotesUnsub = onSnapshot(q, snapshot => {
+        quotesList.innerHTML = '';
+        snapshot.forEach(docSnap => {
+          const qd = docSnap.data(); const id = docSnap.id;
+          const el = document.createElement('div'); el.className='product-item';
+          el.innerHTML = `
+            <strong>${escapeHtml(qd.name||'')}</strong>
+            <div class="small" style="color:#6b7280">${escapeHtml(qd.phone||'')}</div>
+            <div style="margin-top:6px">${escapeHtml(qd.message||'')}</div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn secondary btn-delete-quote" data-id="${id}">Delete</button>
+            </div>
+          `;
+          quotesList.appendChild(el);
+        });
 
-    // ---------- small util ----------
-    function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g,m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+        document.querySelectorAll('.btn-delete-quote').forEach(b=>{
+          b.onclick = async ()=> {
+            if(!confirm('Delete quote?')) return;
+            const id = b.dataset.id; try{ await deleteDoc(doc(db,'quotes',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
+          };
+        });
+
+      }, err=> console.error(err));
+    }
+
+    // stop listeners on sign out
+    function stopListeners(){
+      if (productsUnsub) { productsUnsub(); productsUnsub = null; }
+      if (ordersUnsub) { ordersUnsub(); ordersUnsub = null; }
+      if (quotesUnsub) { quotesUnsub(); quotesUnsub = null; }
+      readyGrid.innerHTML = customGrid.innerHTML = ordersList.innerHTML = quotesList.innerHTML = '';
+    }
+
+    // small helper
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g,m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
 
   </script>
 </body>
