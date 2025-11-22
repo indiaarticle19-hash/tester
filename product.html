@@ -1,50 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Products - T-Shirt Store</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Products — T-Shirt Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'Poppins',sans-serif;background:#fff;margin:0;padding:24px;color:#111827}
+    :root{--primary:#D10007;--muted:#6b7280}
+    body{font-family:'Poppins',sans-serif;margin:0;padding:24px;background:#fff;color:#111827}
     .wrap{max-width:1200px;margin:0 auto}
-    h1{font-size:26px;margin-bottom:12px}
+    h1{font-size:28px;margin-bottom:12px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-    .card{border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
-    .card img{width:100%;height:220px;object-fit:cover}
+    .card{border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.04);background:#fff}
+    .card img{width:100%;height:200px;object-fit:cover}
     .card-content{padding:12px}
-    .price{font-weight:700;color:#D10007}
+    .price{font-weight:700;color:var(--primary)}
     .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;margin-top:8px}
-    .empty{padding:60px;text-align:center;color:#6b7280}
+    .btn{background:var(--primary);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .btn.secondary{background:#374151}
+    .muted{color:var(--muted);font-size:13px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999}
+    .modal{width:96%;max-width:720px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+    .modal img{width:100%;height:360px;object-fit:cover;border-radius:8px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6}
+    .small{font-size:13px;color:var(--muted)}
+    .success{background:#dcfce7;color:#065f46;padding:8px;border-radius:8px}
+    .error{background:#fee2e2;color:#991b1b;padding:8px;border-radius:8px}
+    @media (max-width:600px){ .modal img{height:220px} }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Our Products</h1>
     <div id="productsGrid" class="grid"></div>
-    <p id="emptyMsg" class="empty" style="display:none">No products yet. Check back soon!</p>
+    <p id="emptyMsg" class="muted" style="display:none">No products yet. Check back soon!</p>
+  </div>
+
+  <!-- Detail Modal (hidden by default) -->
+  <div id="detailModal" style="display:none" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px">
+        <div>
+          <h2 id="modalName" style="margin:0"></h2>
+          <div id="modalCategory" class="small" style="margin-top:6px"></div>
+        </div>
+        <button id="closeDetail" class="link-like" style="background:none;border:0;cursor:pointer">Close ✕</button>
+      </div>
+
+      <img id="modalImage" src="" alt="Product image"/>
+      <p id="modalDesc" class="muted" style="margin-top:8px"></p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button id="waButton" class="btn">WhatsApp</button>
+        <button id="orderNowBtn" class="btn secondary">Order Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Modal -->
+  <div id="orderModal" style="display:none" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Place Order</h3>
+        <button id="closeOrder" class="link-like" style="background:none;border:0;cursor:pointer">Close ✕</button>
+      </div>
+
+      <form id="orderForm" style="margin-top:12px">
+        <div style="display:flex;gap:8px">
+          <input id="custName" placeholder="Your name" required />
+          <input id="custPhone" placeholder="Phone (required)" required />
+        </div>
+        <input id="custEmail" placeholder="Email (optional)" style="margin-top:8px"/>
+        <textarea id="custAddress" placeholder="Shipping address" rows="3" style="margin-top:8px"></textarea>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <select id="custSize">
+            <option value="">Select size (optional)</option>
+            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
+          </select>
+          <input id="custQty" type="number" min="1" value="1" />
+        </div>
+
+        <textarea id="custNote" placeholder="Additional note (optional)" rows="2" style="margin-top:8px"></textarea>
+
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px">
+          <input type="checkbox" id="sendWhatsapp" />
+          <span class="small">Also send this order via WhatsApp to the shop</span>
+        </label>
+
+        <div id="orderMsg" style="margin-top:10px"></div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" type="submit">Submit Order</button>
+          <button type="button" id="orderCancel" class="btn secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script type="module">
+    // ---------- CONFIG & IMPORTS ----------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
       authDomain: "prabha-graphics-7d269.firebaseapp.com",
       projectId: "prabha-graphics-7d269",
-      storageBucket: "prabha-graphics-7d269.appspot.com", // check in console
+      storageBucket: "prabha-graphics-7d269.appspot.com",
       messagingSenderId: "968671773486",
       appId: "1:968671773486:web:234c477f4ba267f31770bf",
       measurementId: "G-52C61FGY39"
     };
 
+    const shopPhone = "917457994888"; // for wa.me use (country code +91 then number, no + or spaces)
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // ---------- UI refs ----------
     const productsGrid = document.getElementById('productsGrid');
     const emptyMsg = document.getElementById('emptyMsg');
 
+    const detailModal = document.getElementById('detailModal');
+    const modalName = document.getElementById('modalName');
+    const modalImage = document.getElementById('modalImage');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalCategory = document.getElementById('modalCategory');
+    const waButton = document.getElementById('waButton');
+    const orderNowBtn = document.getElementById('orderNowBtn');
+    const closeDetail = document.getElementById('closeDetail');
+
+    const orderModal = document.getElementById('orderModal');
+    const orderForm = document.getElementById('orderForm');
+    const closeOrder = document.getElementById('closeOrder');
+    const orderMsg = document.getElementById('orderMsg');
+    const orderCancel = document.getElementById('orderCancel');
+    const sendWhatsapp = document.getElementById('sendWhatsapp');
+
+    // state
+    let currentProduct = null;
+
+    // ---------- Load products in real-time ----------
     const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
     onSnapshot(q, snapshot => {
       productsGrid.innerHTML = '';
@@ -57,41 +154,171 @@
 
       snapshot.forEach(docSnap => {
         const p = docSnap.data();
+        const id = docSnap.id;
+
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" />
+          <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}"/>
           <div class="card-content">
             <h3 style="margin:0">${escapeHtml(p.name)}</h3>
-            <p class="price">₹${p.price}</p>
-            <p style="color:#374151;margin:6px 0">${escapeHtml(truncate(p.description, 120))}</p>
-            <div style="display:flex;gap:8px;align-items:center">
+            <p class="price">₹${escapeHtml(String(p.price || '0'))}</p>
+            <p style="color:#374151;margin:6px 0">${escapeHtml(truncate(p.description || '', 80))}</p>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
               <span class="badge">${escapeHtml(p.category || 'General')}</span>
-              <button onclick="buyNow('${escapeHtml(p.name)}','${p.price}')" style="margin-left:auto;background:#D10007;color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer">Order</button>
+              <div style="margin-left:auto;display:flex;gap:8px">
+                <button class="btn viewBtn" data-id="${id}">View Details</button>
+              </div>
             </div>
           </div>
         `;
         productsGrid.appendChild(card);
       });
+
+      // attach handlers to view buttons
+      document.querySelectorAll('.viewBtn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          // find product data from snapshot (inefficient but simple)
+          const docSnap = snapshot.docs.find(d => d.id === id);
+          if (!docSnap) return alert('Product not found.');
+          currentProduct = { id: docSnap.id, ...docSnap.data() };
+          openDetailModal(currentProduct);
+        };
+      });
+
     }, err => {
       console.error('Error fetching products:', err);
-      productsGrid.innerHTML = '<p class="empty">Could not load products. Try again later.</p>';
+      productsGrid.innerHTML = '<p class="muted">Could not load products. Try again later.</p>';
     });
 
-    // utils
-    function truncate(s, n) {
-      if (!s) return '';
-      return s.length > n ? s.slice(0,n) + '...' : s;
+    // ---------- Modal logic ----------
+    function openDetailModal(prod) {
+      modalName.textContent = prod.name;
+      modalImage.src = prod.image || '';
+      modalDesc.textContent = prod.description || '';
+      modalCategory.textContent = prod.category ? prod.category + ' • ₹' + prod.price : '₹' + prod.price;
+      detailModal.style.display = 'flex';
+      detailModal.setAttribute('aria-hidden', 'false');
+
+      // whatsapp button
+      waButton.onclick = () => {
+        const msg = `Hello, I want to order: ${prod.name} (₹${prod.price}).\nCan you share details?`;
+        const url = `https://wa.me/${shopPhone}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      };
+
+      // order now
+      orderNowBtn.onclick = () => {
+        openOrderModal(prod);
+      };
     }
+
+    closeDetail.onclick = () => {
+      currentProduct = null;
+      detailModal.style.display = 'none';
+      detailModal.setAttribute('aria-hidden', 'true');
+    };
+
+    // ---------- Order modal ----------
+    function openOrderModal(prod) {
+      // prefill hidden product info in form using placeholder or global state
+      orderModal.style.display = 'flex';
+      orderModal.setAttribute('aria-hidden', 'false');
+      orderMsg.innerHTML = `<div class="muted">Ordering: <strong>${escapeHtml(prod.name)}</strong> • ₹${escapeHtml(String(prod.price))}</div>`;
+      // reset checkbox default to checked (optional)
+      sendWhatsapp.checked = true;
+    }
+
+    closeOrder.onclick = () => {
+      orderModal.style.display = 'none';
+      orderModal.setAttribute('aria-hidden', 'true');
+    };
+    orderCancel.onclick = closeOrder;
+
+    // ---------- Order submission ----------
+    orderForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearOrderMsg();
+
+      if (!currentProduct) return showOrderError('No product selected.');
+
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const email = document.getElementById('custEmail').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const size = document.getElementById('custSize').value;
+      const qty = parseInt(document.getElementById('custQty').value) || 1;
+      const note = document.getElementById('custNote').value.trim();
+      const alsoWhats = sendWhatsapp.checked;
+
+      if (!name || !phone) return showOrderError('Name and phone are required.');
+
+      // Build order payload
+      const order = {
+        productId: currentProduct.id,
+        productName: currentProduct.name,
+        productPrice: currentProduct.price || 0,
+        customerName: name,
+        customerPhone: phone,
+        customerEmail: email || '',
+        address: address || '',
+        size: size || '',
+        quantity: qty,
+        note: note || '',
+        createdAt: new Date()
+      };
+
+      try {
+        // save to Firestore
+        await addDoc(collection(db, 'orders'), order);
+        showOrderSuccess('Order submitted. We will contact you shortly.');
+
+        // optionally open WhatsApp
+        if (alsoWhats) {
+          const msgLines = [
+            `New order for ${currentProduct.name}`,
+            `Price: ₹${currentProduct.price}`,
+            `Qty: ${qty}`,
+            `Size: ${size || 'N/A'}`,
+            `Name: ${name}`,
+            `Phone: ${phone}`,
+            `Address: ${address || 'N/A'}`,
+            note ? `Note: ${note}` : ''
+          ].filter(Boolean).join('\n');
+          const waUrl = `https://wa.me/${shopPhone}?text=${encodeURIComponent(msgLines)}`;
+          // slight delay so user sees success message
+          setTimeout(()=> window.open(waUrl, '_blank'), 600);
+        }
+
+        // reset form & close modal after short delay
+        orderForm.reset();
+        setTimeout(()=> {
+          orderModal.style.display = 'none';
+          orderModal.setAttribute('aria-hidden', 'true');
+        }, 800);
+
+      } catch (err) {
+        console.error('Order save failed', err);
+        showOrderError('Could not save order: ' + err.message);
+      }
+    });
+
+    function showOrderError(msg) {
+      orderMsg.innerHTML = `<div class="error">${escapeHtml(msg)}</div>`;
+    }
+    function showOrderSuccess(msg) {
+      orderMsg.innerHTML = `<div class="success">${escapeHtml(msg)}</div>`;
+    }
+    function clearOrderMsg() {
+      orderMsg.innerHTML = '';
+    }
+
+    // ---------- utils ----------
     function escapeHtml(str='') {
-      return String(str).replace(/[&<>"']/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+      return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
     }
-    function buyNow(name, price) {
-      // simple default action: open WhatsApp order or show prompt
-      const message = encodeURIComponent(`Hello, I want to order: ${name} - ₹${price}. Please provide order details.`);
-      // change phone number to your business number
-      window.open(`https://wa.me/919999999999?text=${message}`, '_blank');
-    }
+    function truncate(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n)+'...': s; }
   </script>
 </body>
 </html>
