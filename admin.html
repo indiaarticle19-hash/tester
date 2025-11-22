@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin - Add Products</title>
+  <title>Admin - Add Products (URL or Upload)</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body{font-family:'Poppins',sans-serif;background:#f3f4f6;margin:0;padding:24px;}
@@ -23,6 +23,9 @@
     .small{font-size:13px;color:#374151}
     .progress{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;}
     .progress > i{display:block;height:100%;background:#D10007;width:0%;}
+    .option-toggle{display:flex;gap:12px;align-items:center;margin-top:6px;}
+    .toggle-label{display:flex;gap:6px;align-items:center;cursor:pointer;}
+    .muted{color:#6b7280;font-size:13px;}
   </style>
 </head>
 <body>
@@ -37,7 +40,7 @@
 
       <div id="loginBox">
         <p class="small">Sign in with admin account (Email/Password)</p>
-        <div style="display:flex;gap:8px;max-width:520px">
+        <div style="display:flex;gap:8px;max-width:720px">
           <input id="email" placeholder="email@example.com" />
           <input id="password" placeholder="password" type="password" />
           <button class="btn" id="btnLogin">Sign in</button>
@@ -57,15 +60,31 @@
         </div>
         <textarea id="productDesc" placeholder="Product description" rows="3"></textarea>
 
+        <!-- Image source toggle -->
         <div>
-          <label class="small">Product image</label>
+          <label class="small">Image source</label>
+          <div class="option-toggle">
+            <label class="toggle-label"><input type="radio" name="imgSource" value="url" checked /> Use Image URL</label>
+            <label class="toggle-label"><input type="radio" name="imgSource" value="upload" /> Upload Image</label>
+          </div>
+          <p class="muted">Choose whether you'll paste an online image link or upload a file.</p>
+        </div>
+
+        <!-- Image URL input -->
+        <div id="imageUrlBox">
+          <input id="productImageUrl" placeholder="https://example.com/image.jpg (paste image URL)" />
+        </div>
+
+        <!-- File upload input (hidden by default) -->
+        <div id="imageUploadBox" style="display:none">
+          <label class="small">Product image (upload)</label>
           <input id="productImage" type="file" accept="image/*" />
           <div class="progress" style="margin-top:8px;display:none" id="uploadProgress"><i></i></div>
           <p id="uploadStatus" class="small" style="margin-top:6px"></p>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn" type="submit">Upload & Save</button>
+          <button class="btn" type="submit">Save Product</button>
           <button class="btn secondary" type="button" id="btnClear">Clear</button>
         </div>
       </form>
@@ -80,7 +99,7 @@
 
   <!-- Firebase SDK (modular) -->
   <script type="module">
-    // ---------- CONFIG ---------- //
+    // ---------- CONFIG & IMPORTS ---------- //
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import {
       getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword,
@@ -88,19 +107,19 @@
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
     import {
-      getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy
+      getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
     import {
       getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
 
-    // Replace with your config (user-supplied)
+    // Replace with your config (check storageBucket: appspot.com)
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
       authDomain: "prabha-graphics-7d269.firebaseapp.com",
       projectId: "prabha-graphics-7d269",
-      storageBucket: "prabha-graphics-7d269.appspot.com", // <-- check this value in console; appspot.com is common
+      storageBucket: "prabha-graphics-7d269.appspot.com", // correct format
       messagingSenderId: "968671773486",
       appId: "1:968671773486:web:234c477f4ba267f31770bf",
       measurementId: "G-52C61FGY39"
@@ -122,8 +141,25 @@
 
     const productForm = document.getElementById('productForm');
     const productImageInput = document.getElementById('productImage');
+    const productImageUrlInput = document.getElementById('productImageUrl');
     const uploadProgressEl = document.getElementById('uploadProgress');
     const uploadStatus = document.getElementById('uploadStatus');
+
+    const imageUrlBox = document.getElementById('imageUrlBox');
+    const imageUploadBox = document.getElementById('imageUploadBox');
+
+    // toggle radio
+    document.querySelectorAll('input[name="imgSource"]').forEach(r => {
+      r.addEventListener('change', () => {
+        if (r.checked && r.value === 'upload') {
+          imageUploadBox.style.display = 'block';
+          imageUrlBox.style.display = 'none';
+        } else if (r.checked && r.value === 'url') {
+          imageUploadBox.style.display = 'none';
+          imageUrlBox.style.display = 'block';
+        }
+      });
+    });
 
     // ---------- Auth ---------- //
     btnLogin.addEventListener('click', async () => {
@@ -155,7 +191,6 @@
 
     onAuthStateChanged(auth, user => {
       if (user) {
-        // Show admin interface
         loginBox.style.display = 'none';
         addProductCard.style.display = 'block';
         manageCard.style.display = 'block';
@@ -167,61 +202,73 @@
         manageCard.style.display = 'none';
         productsGrid.innerHTML = '';
         btnLogout.style.display = 'none';
-        // detach any listeners if needed
       }
     });
 
-    // ---------- Upload & Save Product ---------- //
+    // ---------- Save Product (either URL or Upload) ---------- //
     productForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('productName').value.trim();
       const price = parseFloat(document.getElementById('productPrice').value);
       const category = document.getElementById('productCategory').value.trim();
       const description = document.getElementById('productDesc').value.trim();
-      const file = productImageInput.files[0];
+      const imgSource = document.querySelector('input[name="imgSource"]:checked').value;
 
-      if (!name || !price || !file) return alert('Provide name, price and image.');
+      if (!name || !price) return alert('Provide name and price.');
 
       try {
-        // Upload image
-        uploadProgressEl.style.display = 'block';
-        uploadStatus.textContent = 'Uploading image...';
-        const storagePath = `products/${Date.now()}_${file.name}`;
-        const sRef = storageRef(storage, storagePath);
-        const uploadTask = uploadBytesResumable(sRef, file);
-
-        uploadTask.on('state_changed', snapshot => {
-          const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          uploadProgressEl.querySelector('i').style.width = pct + '%';
-        }, err => {
-          console.error(err);
-          alert('Upload failed: ' + err.message);
-          uploadProgressEl.style.display = 'none';
-        }, async () => {
-          // success
-          const url = await getDownloadURL(uploadTask.snapshot.ref);
-          uploadStatus.textContent = 'Saving product...';
-
-          // save product doc
-          const docRef = await addDoc(collection(db, 'products'), {
-            name, price, category, description, image: url, storagePath,
+        if (imgSource === 'url') {
+          const imageUrl = productImageUrlInput.value.trim();
+          if (!imageUrl) return alert('Paste an image URL or switch to Upload.');
+          // Save doc directly with provided image URL
+          await addDoc(collection(db, 'products'), {
+            name, price, category, description, image: imageUrl,
+            storagePath: '', // no storage path because URL used
             createdAt: new Date()
           });
-          uploadStatus.textContent = 'Product saved.';
           productForm.reset();
-          uploadProgressEl.style.display = 'none';
-          uploadProgressEl.querySelector('i').style.width = '0%';
-        });
+          productImageUrlInput.value = '';
+          alert('Product saved with external image URL.');
+        } else {
+          // Upload flow
+          const file = productImageInput.files[0];
+          if (!file) return alert('Choose a file to upload or switch to Image URL.');
+          uploadProgressEl.style.display = 'block';
+          uploadStatus.textContent = 'Uploading image...';
+          const storagePath = `products/${Date.now()}_${file.name}`;
+          const sRef = storageRef(storage, storagePath);
+          const uploadTask = uploadBytesResumable(sRef, file);
 
+          uploadTask.on('state_changed', snapshot => {
+            const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploadProgressEl.querySelector('i').style.width = pct + '%';
+          }, err => {
+            console.error(err);
+            alert('Upload failed: ' + err.message);
+            uploadProgressEl.style.display = 'none';
+          }, async () => {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            uploadStatus.textContent = 'Saving product...';
+            await addDoc(collection(db, 'products'), {
+              name, price, category, description, image: url,
+              storagePath,
+              createdAt: new Date()
+            });
+            uploadStatus.textContent = 'Product saved.';
+            productForm.reset();
+            uploadProgressEl.style.display = 'none';
+            uploadProgressEl.querySelector('i').style.width = '0%';
+            alert('Product saved with uploaded image.');
+          });
+        }
       } catch (err) {
         alert('Something went wrong: ' + err.message);
       }
     });
 
-    // ---------- Realtime list & delete ---------- //
+    // ---------- Realtime list & delete (delete storage only if storagePath present) ---------- //
     let unsubscribe = null;
     function loadProductsRealtime() {
-      // detach previous
       if (unsubscribe) unsubscribe();
 
       const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
@@ -244,16 +291,14 @@
           productsGrid.appendChild(el);
         });
 
-        // add delete handlers
+        // attach delete handlers
         document.querySelectorAll('.btn-delete').forEach(btn => {
           btn.onclick = async () => {
             if (!confirm('Delete product?')) return;
             const id = btn.dataset.id;
             const path = btn.dataset.path;
             try {
-              // delete doc
               await deleteDoc(doc(db, 'products', id));
-              // delete storage file if storagePath exists
               if (path) {
                 const delRef = storageRef(storage, path);
                 await deleteObject(delRef).catch(err => {
