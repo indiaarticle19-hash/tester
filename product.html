@@ -3,90 +3,130 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Products — T-Shirt Store</title>
+  <title>Products — Catalog</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--primary:#D10007;--muted:#6b7280}
     body{font-family:'Poppins',sans-serif;margin:0;padding:24px;background:#fff;color:#111827}
     .wrap{max-width:1200px;margin:0 auto}
     h1{font-size:28px;margin-bottom:12px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .columns{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+    .section{border:1px solid #eee;padding:12px;border-radius:8px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:8px}
     .card{border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.04);background:#fff}
-    .card img{width:100%;height:200px;object-fit:cover}
+    .card img{width:100%;height:160px;object-fit:cover}
     .card-content{padding:12px}
     .price{font-weight:700;color:var(--primary)}
     .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;margin-top:8px}
     .btn{background:var(--primary);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
     .btn.secondary{background:#374151}
     .muted{color:var(--muted);font-size:13px}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999}
-    .modal{width:96%;max-width:720px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
-    .modal img{width:100%;height:360px;object-fit:cover;border-radius:8px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:9999}
+    .modal{width:96%;max-width:800px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+    .gallery{display:flex;gap:8px;margin-top:10px}
+    .gallery img{width:100px;height:100px;object-fit:cover;border-radius:6px}
     input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6}
     .row{display:flex;gap:8px}
     .row > *{flex:1}
     .success{background:#dcfce7;color:#065f46;padding:8px;border-radius:8px}
     .error{background:#fee2e2;color:#991b1b;padding:8px;border-radius:8px}
-    @media (max-width:600px){ .modal img{height:220px} }
+    @media (max-width:900px){ .columns{grid-template-columns:1fr} .card img{height:200px} .gallery img{width:70px;height:70px} }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Our Products</h1>
-    <div id="productsGrid" class="grid"></div>
-    <p id="emptyMsg" class="muted" style="display:none">No products yet. Check back soon!</p>
-  </div>
+    <h1>Products Catalog</h1>
 
-  <!-- Detail Modal -->
-  <div id="detailModal" style="display:none" class="modal-backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px">
-        <div>
-          <h2 id="modalName" style="margin:0"></h2>
-          <div id="modalCategory" class="muted" style="margin-top:6px"></div>
-        </div>
-        <button id="closeDetail" class="link-like" style="background:none;border:0;cursor:pointer">Close ✕</button>
+    <div class="columns">
+      <div class="section">
+        <h3>Ready-made</h3>
+        <div id="readyGrid" class="grid"></div>
       </div>
 
-      <img id="modalImage" src="" alt="Product image"/>
-      <p id="modalDesc" class="muted" style="margin-top:8px"></p>
-
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button id="waButton" class="btn">WhatsApp</button>
-        <button id="orderNowBtn" class="btn secondary">Order Now</button>
+      <div class="section">
+        <h3>Customized</h3>
+        <div id="customGrid" class="grid"></div>
       </div>
     </div>
   </div>
 
-  <!-- Order Modal (for ready-made only) -->
-  <div id="orderModal" style="display:none" class="modal-backdrop" aria-hidden="true">
+  <!-- Detail modal -->
+  <div id="detailModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0">Place Order</h3>
+        <div>
+          <h2 id="modalName"></h2>
+          <div class="muted" id="modalSKU"></div>
+        </div>
+        <button id="closeDetail" class="link-like" style="background:none;border:0;cursor:pointer">Close ✕</button>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:280px">
+          <img id="modalImage" src="" alt="" style="width:100%;height:360px;object-fit:cover;border-radius:8px"/>
+          <div class="gallery" id="modalGallery"></div>
+        </div>
+        <div style="flex:1;min-width:260px">
+          <div id="modalVendor" class="small muted"></div>
+          <div style="margin-top:8px" id="modalDesc"></div>
+          <div style="margin-top:12px" id="variantBlock"></div>
+          <div style="margin-top:12px">
+            <div class="price" id="modalPrice"></div>
+            <div class="muted" id="modalStock"></div>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button id="waButton" class="btn">WhatsApp</button>
+              <button id="orderNowBtn" class="btn secondary">Order Now</button>
+            </div>
+            <div style="margin-top:12px"><strong>Shipping:</strong> <span id="modalShipping"></span></div>
+            <div style="margin-top:8px" id="modalTags"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order modal -->
+  <div id="orderModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Place Order</h3>
         <button id="closeOrder" class="link-like" style="background:none;border:0;cursor:pointer">Close ✕</button>
       </div>
 
       <form id="orderForm" style="margin-top:12px">
-        <div style="display:flex;gap:8px">
-          <input id="custName" placeholder="Your name" required />
+        <div class="row">
+          <input id="custName" placeholder="Full name" required />
           <input id="custPhone" placeholder="Phone (required)" required />
         </div>
-        <input id="custEmail" placeholder="Email (optional)" style="margin-top:8px"/>
-        <textarea id="custAddress" placeholder="Shipping address" rows="3" style="margin-top:8px"></textarea>
-
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <select id="custSize">
-            <option value="">Select size (optional)</option>
-            <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
-          </select>
-          <input id="custQty" type="number" min="1" value="1" />
+        <div style="margin-top:8px">
+          <input id="custEmail" placeholder="Email (optional)" />
+        </div>
+        <div style="margin-top:8px">
+          <input id="addrLine1" placeholder="Address line 1 (house, building, street)" />
+        </div>
+        <div style="margin-top:8px">
+          <input id="addrLine2" placeholder="Address line 2 (optional)" />
+        </div>
+        <div class="row" style="margin-top:8px">
+          <input id="addrCity" placeholder="City" />
+          <input id="addrState" placeholder="State" />
+        </div>
+        <div class="row" style="margin-top:8px">
+          <input id="addrPincode" placeholder="Pincode" />
+          <input id="addrCountry" placeholder="Country" value="India" />
         </div>
 
-        <textarea id="custNote" placeholder="Additional note (optional)" rows="2" style="margin-top:8px"></textarea>
+        <div style="margin-top:8px" id="orderSizeColor"></div>
+        <div class="row" style="margin-top:8px">
+          <input id="custQty" type="number" min="1" value="1" />
+          <select id="paymentMethod"><option>COD</option><option>Online</option></select>
+        </div>
 
-        <label style="display:flex;align-items:center;gap:8px;margin-top:10px">
-          <input type="checkbox" id="sendWhatsapp" />
-          <span class="small">Also send this order via WhatsApp to the shop</span>
+        <textarea id="custNote" placeholder="Note (optional)" rows="3" style="margin-top:8px"></textarea>
+
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <input type="checkbox" id="alsoWhatsapp" checked />
+          <span class="small">Also send this order via WhatsApp</span>
         </label>
 
         <div id="orderMsg" style="margin-top:10px"></div>
@@ -100,11 +140,8 @@
   </div>
 
   <script type="module">
-    // ---------- CONFIG & IMPORTS ----------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import {
-      getFirestore, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
@@ -116,150 +153,229 @@
       measurementId: "G-52C61FGY39"
     };
 
-    const shopPhone = "917457994888"; // wa.me format (country + number, no +)
+    const shopPhone = "917457994888"; // wa.me format (no +)
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ---------- UI refs ----------
-    const productsGrid = document.getElementById('productsGrid');
-    const emptyMsg = document.getElementById('emptyMsg');
+    // UI refs
+    const readyGrid = document.getElementById('readyGrid');
+    const customGrid = document.getElementById('customGrid');
 
     const detailModal = document.getElementById('detailModal');
     const modalName = document.getElementById('modalName');
+    const modalSKU = document.getElementById('modalSKU');
+    const modalVendor = document.getElementById('modalVendor');
     const modalImage = document.getElementById('modalImage');
+    const modalGallery = document.getElementById('modalGallery');
     const modalDesc = document.getElementById('modalDesc');
-    const modalCategory = document.getElementById('modalCategory');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalStock = document.getElementById('modalStock');
     const waButton = document.getElementById('waButton');
     const orderNowBtn = document.getElementById('orderNowBtn');
     const closeDetail = document.getElementById('closeDetail');
+    const modalTags = document.getElementById('modalTags');
+    const modalShipping = document.getElementById('modalShipping');
+    const variantBlock = document.getElementById('variantBlock');
 
     const orderModal = document.getElementById('orderModal');
     const orderForm = document.getElementById('orderForm');
     const closeOrder = document.getElementById('closeOrder');
     const orderMsg = document.getElementById('orderMsg');
     const orderCancel = document.getElementById('orderCancel');
-    const sendWhatsapp = document.getElementById('sendWhatsapp');
+    const orderSizeColor = document.getElementById('orderSizeColor');
+    const alsoWhatsapp = document.getElementById('alsoWhatsapp');
 
     let currentProduct = null;
+    let liveSnapshot = null;
 
-    // ---------- Load products ----------
-    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    // load products
+    const q = query(collection(db,'products'), orderBy('createdAt','desc'));
     onSnapshot(q, snapshot => {
-      productsGrid.innerHTML = '';
-      if (snapshot.empty) { emptyMsg.style.display = 'block'; return; }
-      else emptyMsg.style.display = 'none';
-
+      readyGrid.innerHTML = ''; customGrid.innerHTML = '';
+      if (snapshot.empty) {
+        readyGrid.innerHTML = '<div class="muted">No ready-made items yet.</div>';
+        customGrid.innerHTML = '<div class="muted">No customized items yet.</div>';
+        return;
+      }
       snapshot.forEach(docSnap => {
-        const p = docSnap.data(); const id = docSnap.id;
-        const card = document.createElement('div');
-        card.className = 'card';
+        const d = docSnap.data(); d.id = docSnap.id;
+        const card = document.createElement('div'); card.className = 'card';
         card.innerHTML = `
-          <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}"/>
+          <img src="${escapeHtml((d.images && d.images[0]) || '')}" alt="${escapeHtml(d.name)}"/>
           <div class="card-content">
-            <h3 style="margin:0">${escapeHtml(p.name)}</h3>
-            <p class="price">₹${escapeHtml(String(p.price || '0'))}</p>
-            <p style="color:#374151;margin:6px 0">${escapeHtml(truncate(p.description || '',80))}</p>
+            <h3 style="margin:0">${escapeHtml(d.name)}</h3>
+            <p class="price">₹${escapeHtml(String(d.price || 0))}</p>
+            <p style="color:#374151;margin:6px 0">${escapeHtml(truncate(d.description || '',80))}</p>
             <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
-              <span class="badge">${escapeHtml(p.type || 'ready-made')}</span>
-              <div style="margin-left:auto;display:flex;gap:8px">
-                <button class="btn viewBtn" data-id="${id}">View Details</button>
-              </div>
+              <span class="badge">${escapeHtml(d.type || '')}</span>
+              <div style="margin-left:auto"><button class="btn viewBtn" data-id="${d.id}">View Details</button></div>
             </div>
           </div>
         `;
-        productsGrid.appendChild(card);
+        if (d.type === 'customized') customGrid.appendChild(card); else readyGrid.appendChild(card);
       });
 
       // attach handlers
       document.querySelectorAll('.viewBtn').forEach(btn=>{
         btn.onclick = () => {
           const id = btn.dataset.id;
-          const s = snapshot.docs.find(d=>d.id===id);
-          if (!s) return alert('Product not found');
-          currentProduct = { id: s.id, ...s.data() };
-          openDetail(currentProduct);
+          const doc = snapshot.docs.find(s=>s.id === id);
+          if (!doc) return alert('Product not found');
+          openDetail({ id: doc.id, ...(doc.data()) });
         };
       });
+
     }, err => {
-      console.error('Error loading products', err);
-      productsGrid.innerHTML = `<p class="muted">Could not load products: ${err.message}</p>`;
+      console.error('load products err', err);
     });
 
-    // ---------- detail modal ----------
-    function openDetail(prod) {
-      modalName.textContent = prod.name;
-      modalImage.src = prod.image || '';
-      modalDesc.textContent = prod.description || '';
-      modalCategory.textContent = (prod.category?prod.category+' • ':'') + '₹' + (prod.price||0);
-      detailModal.style.display = 'flex'; detailModal.setAttribute('aria-hidden','false');
+    // detail modal open
+    function openDetail(p) {
+      currentProduct = p;
+      modalName.textContent = p.name;
+      modalSKU.textContent = p.sku ? 'SKU: ' + p.sku : '';
+      modalVendor.textContent = p.vendor ? 'By ' + p.vendor : '';
+      modalImage.src = (p.images && p.images[0]) || '';
+      modalGallery.innerHTML = '';
+      (p.images || []).forEach(url=>{ const img = document.createElement('img'); img.src = url; modalGallery.appendChild(img); });
+      modalDesc.textContent = p.description || '';
+      modalPrice.textContent = '₹' + (p.price || 0);
+      modalStock.textContent = p.variants && p.variants.length ? 'Variants: ' + p.variants.length : 'Stock: ' + (p.stock||0);
+      modalTags.innerHTML = (p.tags||[]).map(t=>`<span class="inline-small">${escapeHtml(t)}</span>`).join(' ');
+      modalShipping.textContent = p.shipping ? `${p.shipping.weight_g || 0} g — ${p.dimensions ? `${p.dimensions.length_cm}×${p.dimensions.width_cm}×${p.dimensions.height_cm} cm` : ''}` : 'N/A';
 
-      // For customized: show only WhatsApp (orderNowBtn hidden)
-      if (prod.type === 'customized') {
+      // variants / sizes / colors
+      renderVariantBlock(p);
+
+      if (p.type === 'customized') {
         orderNowBtn.style.display = 'none';
-        waButton.textContent = 'Contact via WhatsApp';
         waButton.onclick = ()=> {
-          const msg = `Hello, I'm interested in this customized product: ${prod.name} (₹${prod.price}). Please help me with customization details.`;
+          const msg = `Hello, I'm interested in this customized product: ${p.name} (SKU: ${p.sku || '-'})`;
           window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
       } else {
-        // ready-made: show order form option + whatsapp optional
         orderNowBtn.style.display = 'inline-block';
-        waButton.textContent = 'WhatsApp';
         waButton.onclick = ()=> {
-          const msg = `Hello, I want to ask about this product: ${prod.name} (₹${prod.price}).`;
+          const msg = `Hello, I have a question about ${p.name} (SKU: ${p.sku || '-'})`;
           window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
+        orderNowBtn.onclick = ()=> openOrderModal(p);
       }
 
-      orderNowBtn.onclick = ()=> {
-        if (prod.type === 'customized') {
-          // safety: shouldn't happen since hidden, but fallback to wa
-          waButton.click();
-        } else {
-          openOrderModal(prod);
-        }
-      };
+      detailModal.style.display = 'flex'; detailModal.setAttribute('aria-hidden','false');
     }
 
-    closeDetail.onclick = ()=> { detailModal.style.display = 'none'; detailModal.setAttribute('aria-hidden','true'); currentProduct = null; };
+    function renderVariantBlock(p) {
+      variantBlock.innerHTML = '';
+      // variants
+      if (p.variants && p.variants.length) {
+        const sel = document.createElement('select'); sel.id = 'variantSelect';
+        p.variants.forEach(v => {
+          const priceText = v.price ? ` - ₹${v.price}` : '';
+          const stockText = v.stock ? ` (${v.stock} in stock)` : '';
+          sel.innerHTML += `<option value="${escapeHtml(JSON.stringify(v))}">${escapeHtml(v.label)}${priceText}${stockText}</option>`;
+        });
+        sel.addEventListener('change', ()=> {
+          const v = JSON.parse(sel.value);
+          modalPrice.textContent = '₹' + (v.price || p.price || 0);
+          modalStock.textContent = v.stock ? ('Stock: ' + v.stock) : (p.stock ? ('Stock: '+p.stock) : 'Stock: N/A');
+        });
+        variantBlock.appendChild(sel);
+        // trigger change to set price
+        setTimeout(()=> sel.dispatchEvent(new Event('change')), 0);
+      }
 
-    // ---------- order modal ----------
-    function openOrderModal(prod) {
-      if (!prod) return alert('No product selected');
-      orderModal.style.display = 'flex'; orderModal.setAttribute('aria-hidden','false');
-      orderMsg.innerHTML = `<div class="muted">Ordering: <strong>${escapeHtml(prod.name)}</strong> • ₹${escapeHtml(String(prod.price||0))}</div>`;
-      sendWhatsapp.checked = true;
+      // sizes
+      if (p.sizes && p.sizes.length) {
+        const ssel = document.createElement('select'); ssel.id = 'sizeSelect'; ssel.innerHTML = '<option value="">Select size</option>';
+        p.sizes.forEach(s=> ssel.innerHTML += `<option>${escapeHtml(s)}</option>`);
+        const wrap = document.createElement('div'); wrap.style.marginTop = '8px'; wrap.appendChild(ssel);
+        variantBlock.appendChild(wrap);
+      }
+
+      // colors
+      if (p.colors && p.colors.length) {
+        const csel = document.createElement('select'); csel.id = 'colorSelect'; csel.innerHTML = '<option value="">Select color</option>';
+        p.colors.forEach(c=> csel.innerHTML += `<option>${escapeHtml(c)}</option>`);
+        const wrap2 = document.createElement('div'); wrap2.style.marginTop = '8px'; wrap2.appendChild(csel);
+        variantBlock.appendChild(wrap2);
+      }
     }
-    closeOrder.onclick = ()=> { orderModal.style.display = 'none'; orderModal.setAttribute('aria-hidden','true'); };
+
+    closeDetail.onclick = ()=> { detailModal.style.display='none'; currentProduct=null; };
+
+    // order modal
+    function openOrderModal(p) {
+      if(!p) return alert('No product chosen');
+      // prefill order form little UI: show available size/color selects if exist
+      orderSizeColor.innerHTML = '';
+      if (p.sizes && p.sizes.length) {
+        const sel = document.createElement('select'); sel.id='orderSize'; sel.innerHTML='<option value=\"\">Select size</option>';
+        p.sizes.forEach(s=> sel.innerHTML += `<option>${escapeHtml(s)}</option>`);
+        const wrap=document.createElement('div'); wrap.style.marginTop='8px'; wrap.appendChild(sel); orderSizeColor.appendChild(wrap);
+      }
+      if (p.colors && p.colors.length) {
+        const sel2 = document.createElement('select'); sel2.id='orderColor'; sel2.innerHTML='<option value=\"\">Select color</option>';
+        p.colors.forEach(c=> sel2.innerHTML += `<option>${escapeHtml(c)}</option>`);
+        const wrap2=document.createElement('div'); wrap2.style.marginTop='8px'; wrap2.appendChild(sel2); orderSizeColor.appendChild(wrap2);
+      }
+      orderModal.style.display='flex';
+      orderModal.setAttribute('aria-hidden','false');
+      orderMsg.innerHTML = `<div class="muted">Ordering: <strong>${escapeHtml(p.name)}</strong> • ₹${escapeHtml(String(p.price || 0))}</div>`;
+    }
+
+    closeOrder.onclick = ()=> { orderModal.style.display='none'; orderModal.setAttribute('aria-hidden','true'); };
     orderCancel.onclick = closeOrder;
 
-    // ---------- submit order ----------
     orderForm.addEventListener('submit', async (e) => {
-      e.preventDefault(); orderMsg.innerHTML = '';
-      if (!currentProduct) return showOrderError('No product selected');
+      e.preventDefault(); orderMsg.innerHTML='';
+      if (!currentProduct) return showOrderError('No product selected.');
 
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const email = document.getElementById('custEmail').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
-      const size = document.getElementById('custSize').value;
+      const line1 = document.getElementById('addrLine1').value.trim();
+      const line2 = document.getElementById('addrLine2').value.trim();
+      const city = document.getElementById('addrCity').value.trim();
+      const state = document.getElementById('addrState').value.trim();
+      const pincode = document.getElementById('addrPincode').value.trim();
+      const country = document.getElementById('addrCountry').value.trim();
+      const size = document.getElementById('orderSize') ? document.getElementById('orderSize').value : '';
+      const color = document.getElementById('orderColor') ? document.getElementById('orderColor').value : '';
       const qty = parseInt(document.getElementById('custQty').value) || 1;
       const note = document.getElementById('custNote').value.trim();
-      const alsoWhats = sendWhatsapp.checked;
+      const alsoWhats = alsoWhatsapp.checked;
+      const paymentMethod = document.getElementById('paymentMethod').value || 'COD';
 
       if (!name || !phone) return showOrderError('Name and phone are required.');
 
+      // get selected variant if any
+      let variant = null;
+      const variantSelect = document.getElementById('variantSelect');
+      if (variantSelect && variantSelect.value) variant = JSON.parse(variantSelect.value);
+
+      // Build order payload
       const order = {
         productId: currentProduct.id,
         productName: currentProduct.name,
-        productPrice: currentProduct.price || 0,
+        productSnapshot: {
+          name: currentProduct.name,
+          sku: currentProduct.sku || '',
+          images: currentProduct.images || [],
+          vendor: currentProduct.vendor || '',
+        },
         productType: currentProduct.type || 'ready-made',
+        variantId: variant ? variant.id : '',
+        variantLabel: variant ? variant.label : '',
+        variantPrice: variant ? (variant.price || currentProduct.price) : currentProduct.price,
+        selectedSize: size || '',
+        selectedColor: color || '',
+        quantity: qty,
         customerName: name,
         customerPhone: phone,
         customerEmail: email || '',
-        address: address || '',
-        size: size || '',
-        quantity: qty,
+        address: { line1, line2, city, state, pincode, country },
+        paymentMethod,
         note: note || '',
         status: 'pending',
         createdAt: serverTimestamp()
@@ -267,19 +383,20 @@
 
       try {
         await addDoc(collection(db, 'orders'), order);
-        showOrderSuccess('Order submitted. We will contact you shortly.');
+        showOrderSuccess('Order submitted successfully.');
+        // optionally open whatsapp with order summary
         if (alsoWhats) {
-          const msgLines = [
-            `New order - ${currentProduct.name}`,
-            `Price: ₹${currentProduct.price || 0}`,
+          const lines = [
+            `Order: ${currentProduct.name}${order.variantLabel ? ' ('+order.variantLabel+')' : ''}`,
             `Qty: ${qty}`,
-            `Size: ${size || 'N/A'}`,
+            `Size: ${order.selectedSize || 'N/A'}`,
+            `Color: ${order.selectedColor || 'N/A'}`,
             `Name: ${name}`,
             `Phone: ${phone}`,
-            `Address: ${address || 'N/A'}`,
-            note ? `Note: ${note}` : ''
-          ].filter(Boolean).join('\n');
-          setTimeout(()=> window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(msgLines)}`, '_blank'), 600);
+            `Address: ${line1} ${line2}, ${city} - ${pincode}`,
+            `Note: ${note || '-'}`
+          ].join('\n');
+          setTimeout(()=> window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(lines)}`, '_blank'), 600);
         }
         orderForm.reset();
         setTimeout(()=> { orderModal.style.display='none'; orderModal.setAttribute('aria-hidden','true'); }, 900);
@@ -289,12 +406,11 @@
       }
     });
 
-    function showOrderError(msg) { orderMsg.innerHTML = `<div class="error">${escapeHtml(msg)}</div>`; }
-    function showOrderSuccess(msg) { orderMsg.innerHTML = `<div class="success">${escapeHtml(msg)}</div>`; }
+    function showOrderError(msg){ orderMsg.innerHTML = `<div class="error">${escapeHtml(msg)}</div>`; }
+    function showOrderSuccess(msg){ orderMsg.innerHTML = `<div class="success">${escapeHtml(msg)}</div>`; }
 
-    // ---------- utils ----------
-    function escapeHtml(str='') { return String(str).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
-    function truncate(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n)+'...': s; }
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+    function truncate(s,n){ if(!s) return ''; return s.length>n ? s.slice(0,n)+'...' : s; }
 
   </script>
 </body>
