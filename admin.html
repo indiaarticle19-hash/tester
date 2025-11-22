@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Products & Orders (Grouped)</title>
+  <title>Admin — Advanced Product & Orders</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--primary:#D10007;--dark:#A00006;--muted:#6b7280;--bg:#f3f4f6}
-    body{font-family:'Poppins',sans-serif;background:var(--bg);margin:0;padding:28px;color:#111827}
+    :root{--primary:#D10007;--muted:#6b7280;--bg:#f7f7f8}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);margin:0;padding:24px;color:#111827}
     .wrap{max-width:1200px;margin:0 auto}
-    h1{margin:0 0 12px;font-size:22px}
+    h1{margin:0 0 12px}
     .layout{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
     .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
     input,textarea,select,button{font-family:inherit}
@@ -20,33 +20,36 @@
     .section-title{font-size:16px;margin-bottom:8px}
     .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
     .product-item{border:1px solid #eee;padding:10px;border-radius:8px;background:#fff}
-    .thumb{width:100%;height:150px;object-fit:cover;border-radius:6px}
+    .thumb{width:100%;height:140px;object-fit:cover;border-radius:6px}
     .row{display:flex;gap:8px}
     .row > *{flex:1}
-    .progress{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:8px;display:none}
-    .progress > i{display:block;height:100%;background:var(--primary);width:0%}
     .orders-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
     .order-card{border:1px solid #eee;padding:12px;border-radius:10px;background:#fff}
     .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#f3f4f6;font-size:12px}
-    .status{font-weight:700}
+    .field-label{font-weight:600;font-size:13px;margin-top:8px}
     .muted{color:var(--muted)}
     .link-like{background:none;border:0;color:var(--primary);cursor:pointer;text-decoration:underline;padding:0;font-size:13px}
+    .gallery-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .gallery-preview img{width:70px;height:70px;object-fit:cover;border-radius:6px}
+    .inline-small{display:inline-block;padding:6px 8px;border-radius:6px;background:#f3f4f6;margin-right:6px;font-size:12px}
+    .switch-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .error{background:#fee2e2;color:#991b1b;padding:8px;border-radius:8px}
+    .success{background:#dcfce7;color:#065f46;padding:8px;border-radius:8px}
     @media (max-width:980px){.layout{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h1>Admin — Products & Orders</h1>
+      <h1>Admin — Advanced Products & Orders</h1>
       <div style="text-align:right">
         <div id="adminInfo" class="small muted">Not signed in</div>
       </div>
     </div>
 
     <div class="layout">
-      <!-- LEFT COLUMN: Auth + Add Product -->
+      <!-- LEFT: Auth + Add/Edit product -->
       <div>
-        <!-- AUTH -->
         <div class="card">
           <div class="section-title">Sign in / Register</div>
           <div id="authError" style="display:none"></div>
@@ -60,67 +63,126 @@
           <div style="margin-top:10px">
             <button class="btn secondary" id="btnSignOut" style="display:none">Sign out</button>
           </div>
-          <p class="small" style="margin-top:8px">Tip: You can create admin here or create via Firebase Console (Authentication → Users)</p>
+          <p class="small" style="margin-top:8px">Tip: create admin here or add via Firebase Console (Authentication → Users).</p>
         </div>
 
-        <!-- ADD PRODUCT -->
         <div class="card" id="addCard" style="margin-top:12px;display:none">
-          <div class="section-title">Add Product</div>
+          <div class="section-title">Add / Edit Product</div>
+          <div id="saveMsg" style="display:none"></div>
+
           <form id="productForm">
+            <input id="productId" type="hidden" />
+            <label class="field-label">Name</label>
             <input id="productName" placeholder="Product name" required />
-            <div class="row" style="margin-top:8px">
-              <input id="productPrice" placeholder="Price (e.g., 499)" required type="number" min="0" />
-              <select id="productType" style="padding:10px;border-radius:8px;">
-                <option value="ready-made">Ready-made</option>
-                <option value="customized">Customized</option>
-              </select>
-            </div>
 
-            <input id="productCategory" placeholder="Category (T-Shirts, Mugs...)" style="margin-top:8px" />
-            <textarea id="productDesc" placeholder="Short description" rows="3" style="margin-top:8px"></textarea>
-
-            <div style="margin-top:10px">
-              <div class="small">Image source</div>
-              <div style="display:flex;gap:12px;margin-top:6px;align-items:center">
-                <label><input type="radio" name="imgSource" value="url" checked /> Use Image URL</label>
-                <label><input type="radio" name="imgSource" value="upload" /> Upload Image</label>
+            <div class="row">
+              <div>
+                <label class="field-label">SKU</label>
+                <input id="productSKU" placeholder="SKU or item code (e.g., PRB-001)" />
+              </div>
+              <div>
+                <label class="field-label">Type</label>
+                <select id="productType">
+                  <option value="ready-made">Ready-made</option>
+                  <option value="customized">Customized</option>
+                </select>
               </div>
             </div>
 
-            <div id="imageUrlBox" style="margin-top:8px">
-              <input id="productImageUrl" placeholder="https://example.com/image.jpg" />
+            <label class="field-label">Category</label>
+            <input id="productCategory" placeholder="Category (Apparel, Mugs...)" />
+
+            <label class="field-label">Vendor</label>
+            <input id="productVendor" placeholder="Vendor / Brand" />
+
+            <label class="field-label">Base Price (INR)</label>
+            <input id="productPrice" type="number" min="0" placeholder="499" />
+
+            <label class="field-label">Stock (if no variants)</label>
+            <input id="productStock" type="number" min="0" placeholder="120" />
+
+            <label class="field-label">Variants (JSON array — helper below)</label>
+            <textarea id="productVariants" placeholder='Example: [{"id":"v1","label":"S","price":499,"stock":30},{"id":"v2","label":"M","price":499,"stock":40}]' rows="4"></textarea>
+            <div class="small muted">Variants override base price/stock when provided. Use JSON array.</div>
+
+            <label class="field-label">Sizes (comma separated)</label>
+            <input id="productSizes" placeholder="S,M,L,XL" />
+
+            <label class="field-label">Colors (comma separated)</label>
+            <input id="productColors" placeholder="black,white,red" />
+
+            <label class="field-label">Tags (comma separated)</label>
+            <input id="productTags" placeholder="cotton,summer,unisex" />
+
+            <label class="field-label">Description (long)</label>
+            <textarea id="productDesc" rows="4"></textarea>
+
+            <div style="margin-top:10px">
+              <div class="small">Image source — multiple URLs OR upload</div>
+              <div style="display:flex;gap:12px;margin-top:6px;align-items:center">
+                <label><input type="radio" name="imgSource" value="urls" checked /> Paste URLs</label>
+                <label><input type="radio" name="imgSource" value="upload" /> Upload Files</label>
+              </div>
             </div>
 
-            <div id="imageUploadBox" style="margin-top:8px;display:none">
-              <input id="productImage" type="file" accept="image/*" />
-              <div class="progress" id="uploadProgress"><i></i></div>
-              <div id="uploadStatus" class="small" style="margin-top:6px"></div>
+            <label class="field-label">Image URLs (comma separated)</label>
+            <textarea id="productImageUrls" placeholder="https://.../1.jpg, https://.../2.jpg" rows="3"></textarea>
+            <div class="small muted">Or choose Upload Files option below.</div>
+
+            <div id="imageUploadBox" style="display:none;margin-top:8px">
+              <input id="productImageFiles" type="file" accept="image/*" multiple />
+              <div id="galleryPreview" class="gallery-preview"></div>
             </div>
+
+            <label class="field-label">Shipping weight (grams)</label>
+            <input id="productWeight" type="number" min="0" placeholder="300" />
+
+            <div class="row">
+              <div>
+                <label class="field-label">Length (cm)</label>
+                <input id="productLength" type="number" min="0" placeholder="30" />
+              </div>
+              <div>
+                <label class="field-label">Width (cm)</label>
+                <input id="productWidth" type="number" min="0" placeholder="25" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label class="field-label">Height (cm)</label>
+                <input id="productHeight" type="number" min="0" placeholder="2" />
+              </div>
+              <div>
+                <label class="field-label">Featured?</label>
+                <select id="productFeatured"><option value="false">No</option><option value="true">Yes</option></select>
+              </div>
+            </div>
+
+            <label class="field-label">SEO Title (optional)</label>
+            <input id="productSeoTitle" placeholder="SEO title" />
+            <label class="field-label">SEO Description (optional)</label>
+            <textarea id="productSeoDesc" rows="2"></textarea>
 
             <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn" type="submit">Save Product</button>
-              <button class="btn secondary" type="button" id="btnClear">Clear</button>
+              <button class="btn" type="submit" id="btnSaveProduct">Save Product</button>
+              <button class="btn secondary" type="button" id="btnReset">Reset</button>
             </div>
-            <div id="saveMsg" style="margin-top:10px"></div>
           </form>
         </div>
 
-        <!-- QUICK HELP -->
-        <div class="card" style="margin-top:12px">
-          <div class="small muted">Products are grouped into <strong>Ready-made</strong> and <strong>Customized</strong>. For customized items we expect customers to contact you via WhatsApp; for ready-made items customers use the order form (or optionally WhatsApp).</div>
-        </div>
       </div>
 
-      <!-- RIGHT COLUMN: Manage Products & Orders -->
+      <!-- RIGHT: Product lists and Orders -->
       <div>
-        <!-- MANAGE PRODUCTS (grouped) -->
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="section-title">Manage Products</div>
-            <button class="btn secondary" id="btnRefreshProducts">Refresh</button>
+            <div class="section-title">Manage Products (grouped)</div>
+            <div>
+              <button class="btn secondary" id="btnRefreshProducts">Refresh</button>
+            </div>
           </div>
 
-          <div style="margin-top:10px">
+          <div style="margin-top:12px">
             <h4 style="margin:6px 0">Ready-made</h4>
             <div id="readyGrid" class="products-grid"></div>
 
@@ -129,18 +191,17 @@
           </div>
         </div>
 
-        <!-- ORDERS (grouped by product type) -->
         <div class="card" style="margin-top:12px">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="section-title">Orders (real-time)</div>
-            <button class="btn secondary" id="btnRefreshOrders">Refresh</button>
+            <div class="section-title">Orders</div>
+            <div><button class="btn secondary" id="btnRefreshOrders">Refresh</button></div>
           </div>
 
           <div style="margin-top:10px">
-            <h4 style="margin:6px 0">Orders — Ready-made</h4>
+            <h4 style="margin:6px 0">Ready-made Orders</h4>
             <div id="ordersReady" class="orders-grid"></div>
 
-            <h4 style="margin:16px 0 6px">Orders — Customized</h4>
+            <h4 style="margin:16px 0 6px">Customized Orders</h4>
             <div id="ordersCustom" class="orders-grid"></div>
           </div>
         </div>
@@ -153,17 +214,16 @@
     // ---------- IMPORTS ----------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import {
-      getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword,
-      onAuthStateChanged
+      getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
     import {
-      getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, serverTimestamp
+      getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc, serverTimestamp, getDoc
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
     import {
       getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
     } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
 
-    // ---------- FIREBASE CONFIG ----------
+    // ---------- CONFIG ----------
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
       authDomain: "prabha-graphics-7d269.firebaseapp.com",
@@ -179,7 +239,7 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    // ---------- UI references ----------
+    // ---------- UI refs ----------
     const emailEl = document.getElementById('email');
     const passEl = document.getElementById('password');
     const btnLogin = document.getElementById('btnLogin');
@@ -190,18 +250,32 @@
 
     const addCard = document.getElementById('addCard');
     const productForm = document.getElementById('productForm');
+    const productIdEl = document.getElementById('productId');
     const productName = document.getElementById('productName');
-    const productPrice = document.getElementById('productPrice');
+    const productSKU = document.getElementById('productSKU');
+    const productType = document.getElementById('productType');
     const productCategory = document.getElementById('productCategory');
+    const productVendor = document.getElementById('productVendor');
+    const productPrice = document.getElementById('productPrice');
+    const productStock = document.getElementById('productStock');
+    const productVariants = document.getElementById('productVariants');
+    const productSizes = document.getElementById('productSizes');
+    const productColors = document.getElementById('productColors');
+    const productTags = document.getElementById('productTags');
     const productDesc = document.getElementById('productDesc');
-    const productImage = document.getElementById('productImage');
-    const productImageUrl = document.getElementById('productImageUrl');
-    const imageUrlBox = document.getElementById('imageUrlBox');
+    const productImageUrls = document.getElementById('productImageUrls');
+    const productImageFiles = document.getElementById('productImageFiles');
     const imageUploadBox = document.getElementById('imageUploadBox');
-    const uploadProgress = document.getElementById('uploadProgress');
-    const uploadStatus = document.getElementById('uploadStatus');
+    const galleryPreview = document.getElementById('galleryPreview');
+    const productWeight = document.getElementById('productWeight');
+    const productLength = document.getElementById('productLength');
+    const productWidth = document.getElementById('productWidth');
+    const productHeight = document.getElementById('productHeight');
+    const productFeatured = document.getElementById('productFeatured');
+    const productSeoTitle = document.getElementById('productSeoTitle');
+    const productSeoDesc = document.getElementById('productSeoDesc');
     const saveMsg = document.getElementById('saveMsg');
-    const btnClear = document.getElementById('btnClear');
+    const btnReset = document.getElementById('btnReset');
     const btnRefreshProducts = document.getElementById('btnRefreshProducts');
 
     const readyGrid = document.getElementById('readyGrid');
@@ -211,246 +285,322 @@
     const ordersCustom = document.getElementById('ordersCustom');
     const btnRefreshOrders = document.getElementById('btnRefreshOrders');
 
-    // ---------- small helpers ----------
-    function showError(el, msg) { el.style.display='block'; el.className='error'; el.textContent = msg; }
-    function showSuccess(el, msg) { el.style.display='block'; el.className='success'; el.textContent = msg; setTimeout(()=>{ el.style.display='none'; }, 3500) }
-    function clearBox(el) { el.style.display='none'; el.textContent=''; el.className=''; }
+    // ---------- helpers ----------
+    function showError(el, msg){ el.style.display='block'; el.className='error'; el.textContent = msg; }
+    function showSuccess(el, msg){ el.style.display='block'; el.className='success'; el.textContent = msg; setTimeout(()=>{ el.style.display='none'; }, 3500) }
+    function clearBox(el){ el.style.display='none'; el.textContent=''; el.className=''; }
 
     // ---------- Auth ----------
-    btnLogin.addEventListener('click', async () => {
+    btnLogin.addEventListener('click', async ()=> {
       clearBox(authError);
       const email = emailEl.value.trim();
       const pass = passEl.value;
-      if (!email || !pass) return showError(authError, 'Enter email and password.');
-      try { await signInWithEmailAndPassword(auth, email, pass); }
-      catch (err) { showError(authError, 'Sign-in failed: ' + err.message); }
+      if(!email || !pass) return showError(authError,'Enter email & password.');
+      try{ await signInWithEmailAndPassword(auth,email,pass); }
+      catch(err){ showError(authError,'Sign-in failed: '+err.message); }
     });
 
-    btnRegister.addEventListener('click', async () => {
+    btnRegister.addEventListener('click', async ()=> {
       clearBox(authError);
       const email = emailEl.value.trim();
       const pass = passEl.value;
-      if (!email || !pass) return showError(authError, 'Enter email and password.');
-      if (pass.length < 6) return showError(authError, 'Password must be at least 6 characters.');
-      try { await createUserWithEmailAndPassword(auth, email, pass); showSuccess(saveMsg, 'Admin created and signed in.'); }
-      catch (err) { showError(authError, 'Register failed: ' + err.message); }
+      if(!email || !pass) return showError(authError,'Enter email & password.');
+      if(pass.length<6) return showError(authError,'Password must be at least 6 chars.');
+      try{ await createUserWithEmailAndPassword(auth,email,pass); showSuccess(saveMsg,'Admin created & signed in.'); }
+      catch(err){ showError(authError,'Register failed: '+err.message); }
     });
 
-    btnSignOut.addEventListener('click', async () => { await signOut(auth); });
+    btnSignOut.addEventListener('click', async ()=> { await signOut(auth); });
 
     onAuthStateChanged(auth, user => {
       clearBox(authError);
-      if (user) {
+      if(user){
         adminInfo.textContent = `Signed in: ${user.email} (uid: ${user.uid})`;
-        btnSignOut.style.display = 'inline-block';
-        btnLogin.style.display = 'none';
-        btnRegister.style.display = 'none';
-        addCard.style.display = 'block';
-        // start listeners
-        startProductsListener();
-        startOrdersListener();
+        btnSignOut.style.display='inline-block';
+        btnLogin.style.display='none'; btnRegister.style.display='none';
+        addCard.style.display='block';
+        startProductsListener(); startOrdersListener();
       } else {
         adminInfo.textContent = 'Not signed in';
-        btnSignOut.style.display = 'none';
-        btnLogin.style.display = 'inline-block';
-        btnRegister.style.display = 'inline-block';
-        addCard.style.display = 'none';
+        btnSignOut.style.display='none';
+        btnLogin.style.display='inline-block'; btnRegister.style.display='inline-block';
+        addCard.style.display='none';
         stopListeners();
-        readyGrid.innerHTML = customGrid.innerHTML = '';
-        ordersReady.innerHTML = ordersCustom.innerHTML = '';
+        readyGrid.innerHTML = customGrid.innerHTML = ordersReady.innerHTML = ordersCustom.innerHTML = '';
       }
     });
 
-    // ---------- Toggle image method ----------
+    // ---------- Image source toggle ----------
     document.querySelectorAll('input[name="imgSource"]').forEach(r=>{
-      r.addEventListener('change', ()=>{
-        if (r.checked && r.value === 'upload') { imageUploadBox.style.display='block'; imageUrlBox.style.display='none'; }
-        else { imageUploadBox.style.display='none'; imageUrlBox.style.display='block'; }
+      r.addEventListener('change', ()=> {
+        if (r.checked && r.value === 'upload'){ imageUploadBox.style.display='block'; productImageUrls.parentElement.style.display='none'; }
+        else { imageUploadBox.style.display='none'; productImageUrls.parentElement.style.display='block'; }
       });
     });
 
-    // ---------- Save product ----------
-    productForm.addEventListener('submit', async (e) => {
+    // preview uploaded images
+    productImageFiles.addEventListener('change', ()=> {
+      galleryPreview.innerHTML = '';
+      const files = Array.from(productImageFiles.files || []);
+      files.forEach(f=>{
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img');
+        img.src = url;
+        galleryPreview.appendChild(img);
+      });
+    });
+
+    // ---------- Save product (create / update) ----------
+    productForm.addEventListener('submit', async (e)=> {
       e.preventDefault();
       clearBox(saveMsg);
+      const id = productIdEl.value || '';
       const name = productName.value.trim();
-      const price = parseFloat(productPrice.value);
+      const sku = productSKU.value.trim();
+      const type = productType.value;
       const category = productCategory.value.trim();
-      const description = productDesc.value.trim();
-      const type = document.getElementById('productType').value;
-      const imgSource = document.querySelector('input[name="imgSource"]:checked').value;
+      const vendor = productVendor.value.trim();
+      const price = parseFloat(productPrice.value) || 0;
+      const stock = parseInt(productStock.value) || 0;
+      const sizes = productSizes.value.split(',').map(s=>s.trim()).filter(Boolean);
+      const colors = productColors.value.split(',').map(c=>c.trim()).filter(Boolean);
+      const tags = productTags.value.split(',').map(t=>t.trim()).filter(Boolean);
+      const desc = productDesc.value.trim();
+      const variantsText = productVariants.value.trim();
+      let variants = [];
+      if (variantsText) {
+        try { variants = JSON.parse(variantsText); }
+        catch(e){ return showError(saveMsg,'Variants JSON invalid: '+ e.message); }
+      }
+      const imageUrls = productImageUrls.value.split(',').map(u=>u.trim()).filter(Boolean);
+      const files = Array.from(productImageFiles.files || []);
+      const weight = parseFloat(productWeight.value) || 0;
+      const length_cm = parseFloat(productLength.value) || 0;
+      const width_cm = parseFloat(productWidth.value) || 0;
+      const height_cm = parseFloat(productHeight.value) || 0;
+      const featured = productFeatured.value === 'true';
+      const seoTitle = productSeoTitle.value.trim();
+      const seoDesc = productSeoDesc.value.trim();
 
-      if (!name || !price) return showError(saveMsg, 'Provide name and price.');
+      if (!name) return showError(saveMsg,'Product name required.');
 
       try {
-        if (imgSource === 'url') {
-          const imageUrl = productImageUrl.value.trim();
-          if (!imageUrl) return showError(saveMsg, 'Paste an image URL or choose Upload.');
-          await addDoc(collection(db, 'products'), {
-            name, price, category, description, image: imageUrl,
-            storagePath:'', type, createdAt: serverTimestamp()
-          });
-          productForm.reset();
-          showSuccess(saveMsg, 'Product saved (image URL).');
-        } else {
-          const file = productImage.files[0];
-          if (!file) return showError(saveMsg, 'Choose a file to upload or switch to URL.');
-          uploadProgress.style.display = 'block';
-          uploadStatus.textContent = 'Uploading image...';
-          const storagePath = `products/${Date.now()}_${file.name}`;
-          const sRef = storageRef(storage, storagePath);
-          const uploadTask = uploadBytesResumable(sRef, file);
-          uploadTask.on('state_changed', snapshot=>{
-            const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            uploadProgress.querySelector('i').style.width = pct + '%';
-          }, err=>{
-            uploadProgress.style.display = 'none'; showError(saveMsg, 'Upload failed: ' + err.message);
-          }, async ()=>{
-            const url = await getDownloadURL(uploadTask.snapshot.ref);
-            await addDoc(collection(db, 'products'), {
-              name, price, category, description, image: url,
-              storagePath, type, createdAt: serverTimestamp()
+        // upload files if provided
+        let uploadedUrls = [];
+        let uploadedPaths = [];
+        if (files.length) {
+          for (const f of files) {
+            const path = `products/${Date.now()}_${f.name}`;
+            const sRef = storageRef(storage, path);
+            const task = uploadBytesResumable(sRef, f);
+            await new Promise((res, rej) => {
+              task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{
+                const url = await getDownloadURL(task.snapshot.ref);
+                uploadedUrls.push(url);
+                uploadedPaths.push(path);
+                res();
+              });
             });
-            uploadProgress.style.display = 'none';
-            uploadProgress.querySelector('i').style.width = '0%';
-            productForm.reset();
-            showSuccess(saveMsg, 'Product saved (uploaded).');
-          });
+          }
         }
+
+        const images = [...imageUrls, ...uploadedUrls];
+
+        const docData = {
+          name, sku, type, category, vendor, price, stock,
+          sizes, colors, tags, description: desc,
+          variants, images,
+          imageStoragePaths: uploadedPaths,
+          shipping: { weight_g: weight, length_cm, width_cm, height_cm },
+          dimensions: { length_cm, width_cm, height_cm },
+          seo: { title: seoTitle, description: seoDesc },
+          featured,
+          createdAt: serverTimestamp()
+        };
+
+        if (!id) {
+          await addDoc(collection(db, 'products'), docData);
+          productForm.reset(); galleryPreview.innerHTML=''; showSuccess(saveMsg,'Product created.');
+        } else {
+          // update existing doc
+          await updateDoc(doc(db,'products', id), docData);
+          productForm.reset(); productIdEl.value=''; galleryPreview.innerHTML=''; showSuccess(saveMsg,'Product updated.');
+        }
+
       } catch (err) {
-        showError(saveMsg, 'Something went wrong: ' + err.message);
+        console.error('save product err', err);
+        showError(saveMsg,'Could not save product: '+ err.message);
       }
     });
 
-    btnClear.addEventListener('click', ()=> productForm.reset());
-    btnRefreshProducts.addEventListener('click', ()=> { startProductsListener(true); });
+    btnReset.addEventListener('click', ()=> productForm.reset());
+    btnRefreshProducts.addEventListener('click', ()=> startProductsListener(true));
 
-    // ---------- Products listener (group by type) ----------
+    // ---------- Products list listener ----------
     let productsUnsub = null;
-    function startProductsListener(force=false) {
+    function startProductsListener(force=false){
       if (productsUnsub && !force) return;
-      if (productsUnsub) productsUnsub(); // detach first if force
-      const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+      if (productsUnsub) productsUnsub();
+      const q = query(collection(db,'products'), orderBy('createdAt','desc'));
       productsUnsub = onSnapshot(q, snapshot => {
         readyGrid.innerHTML = customGrid.innerHTML = '';
         snapshot.forEach(docSnap => {
-          const d = docSnap.data();
-          const id = docSnap.id;
+          const d = docSnap.data(); const id = docSnap.id;
           const el = document.createElement('div');
           el.className = 'product-item';
           el.innerHTML = `
-            <img class="thumb" src="${d.image || ''}" alt="${escapeHtml(d.name)}" />
+            <img class="thumb" src="${(d.images && d.images[0]) || ''}" alt="${escapeHtml(d.name)}" />
             <h4 style="margin:8px 0 6px">${escapeHtml(d.name)}</h4>
-            <div class="small">${escapeHtml(d.category || '')} • ₹${escapeHtml(String(d.price || 0))}</div>
+            <div class="small muted">SKU: ${escapeHtml(d.sku || '')} • ${escapeHtml(d.category || '')}</div>
+            <div style="margin-top:6px">${d.variants && d.variants.length ? '<span class="inline-small">Variants: '+ d.variants.length +'</span>' : '<span class="inline-small">Stock: '+ (d.stock||0) +'</span>'}<span class="badge" style="margin-left:6px">${escapeHtml(d.type||'')}</span></div>
             <div style="display:flex;gap:8px;margin-top:8px">
-              <button class="btn btn-delete" data-id="${id}" data-path="${d.storagePath || ''}">Delete</button>
-              <div style="margin-left:auto"><span class="badge">${escapeHtml(d.type || '')}</span></div>
+              <button class="btn btn-edit" data-id="${id}">Edit</button>
+              <button class="btn secondary btn-delete" data-id="${id}" data-path='${JSON.stringify(d.imageStoragePaths||[])}'>Delete</button>
             </div>
           `;
-          if (d.type === 'customized') customGrid.appendChild(el);
-          else readyGrid.appendChild(el);
+          if (d.type === 'customized') customGrid.appendChild(el); else readyGrid.appendChild(el);
+        });
+
+        // edit handlers
+        document.querySelectorAll('.btn-edit').forEach(b=>{
+          b.onclick = async ()=> {
+            const id = b.dataset.id;
+            const snap = await getDoc(doc(db,'products',id));
+            if (!snap.exists()) return alert('Product not found');
+            const d = snap.data();
+            productIdEl.value = snap.id;
+            productName.value = d.name || '';
+            productSKU.value = d.sku || '';
+            productType.value = d.type || 'ready-made';
+            productCategory.value = d.category || '';
+            productVendor.value = d.vendor || '';
+            productPrice.value = d.price || '';
+            productStock.value = d.stock || '';
+            productVariants.value = d.variants && d.variants.length ? JSON.stringify(d.variants,null,2) : '';
+            productSizes.value = (d.sizes||[]).join(',');
+            productColors.value = (d.colors||[]).join(',');
+            productTags.value = (d.tags||[]).join(',');
+            productDesc.value = d.description || '';
+            productImageUrls.value = (d.images||[]).join(',');
+            productSeoTitle.value = (d.seo && d.seo.title) || '';
+            productSeoDesc.value = (d.seo && d.seo.description) || '';
+            productWeight.value = (d.shipping && d.shipping.weight_g) || '';
+            productLength.value = (d.dimensions && d.dimensions.length_cm) || '';
+            productWidth.value = (d.dimensions && d.dimensions.width_cm) || '';
+            productHeight.value = (d.dimensions && d.dimensions.height_cm) || '';
+            productFeatured.value = d.featured ? 'true':'false';
+            // preview gallery
+            galleryPreview.innerHTML = '';
+            (d.images||[]).forEach(url=>{
+              const img = document.createElement('img'); img.src = url; galleryPreview.appendChild(img);
+            });
+            window.scrollTo({top:0, behavior:'smooth'});
+          };
         });
 
         // delete handlers
-        document.querySelectorAll('.btn-delete').forEach(btn=>{
-          btn.onclick = async ()=> {
+        document.querySelectorAll('.btn-delete').forEach(b=>{
+          b.onclick = async ()=> {
             if (!confirm('Delete product?')) return;
-            const id = btn.getAttribute('data-id'); const path = btn.getAttribute('data-path');
+            const id = b.dataset.id;
+            const paths = JSON.parse(b.getAttribute('data-path')||'[]');
             try {
               await deleteDoc(doc(db, 'products', id));
-              if (path) {
-                const delRef = storageRef(storage, path);
-                await deleteObject(delRef).catch(e=>console.warn('delete storage failed', e.message));
+              // delete storage objects if any
+              for (const p of paths){
+                try{ await deleteObject(storageRef(storage, p)); } catch(e){ console.warn('delete storage err', e.message); }
               }
-              showSuccess(saveMsg, 'Product deleted.');
-            } catch (err) { showError(saveMsg, 'Delete failed: ' + err.message); }
+              showSuccess(saveMsg,'Product deleted.');
+            } catch (err){ showError(saveMsg,'Delete failed: '+ err.message); }
           };
         });
-      }, err => {
-        showError(saveMsg, 'Could not load products: ' + err.message);
-      });
+
+      }, err => { showError(saveMsg,'Could not load products: '+ err.message); });
     }
 
-    // ---------- Orders listener (group by productType) ----------
+    // ---------- Orders listener ----------
     let ordersUnsub = null;
-    function startOrdersListener(force=false) {
+    function startOrdersListener(force=false){
       if (ordersUnsub && !force) return;
       if (ordersUnsub) ordersUnsub();
-      const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-      ordersUnsub = onSnapshot(q, snapshot => {
+      const q = query(collection(db,'orders'), orderBy('createdAt','desc'));
+      ordersUnsub = onSnapshot(q, snapshot=>{
         ordersReady.innerHTML = ordersCustom.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const o = docSnap.data();
-          const id = docSnap.id;
+        snapshot.forEach(docSnap=>{
+          const o = docSnap.data(); const id = docSnap.id;
           const target = (o.productType === 'customized') ? ordersCustom : ordersReady;
           const el = document.createElement('div');
           el.className = 'order-card';
           el.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div>
-                <div style="font-weight:700">${escapeHtml(o.productName || 'Product')}</div>
+                <div style="font-weight:700">${escapeHtml(o.productName || '')} ${o.variantLabel ? '('+escapeHtml(o.variantLabel)+')':''}</div>
                 <div class="small muted">${escapeHtml(o.customerName || '')} • ${escapeHtml(o.customerPhone || '')}</div>
               </div>
               <div style="text-align:right">
-                <div class="small">Qty: ${escapeHtml(String(o.quantity || 1))}</div>
-                <div style="margin-top:6px"><span class="status">${escapeHtml(o.status || 'pending')}</span></div>
+                <div class="small">Qty: ${escapeHtml(String(o.quantity||1))}</div>
+                <div style="margin-top:6px"><span class="badge">${escapeHtml(o.status || 'pending')}</span></div>
               </div>
             </div>
-            <div style="margin-top:8px;color:#374151">${escapeHtml(o.address || '')}</div>
+            <div style="margin-top:8px;color:#374151">${escapeHtml(o.address.line1 || '')} ${escapeHtml(o.address.line2 || '')}, ${escapeHtml(o.address.city || '')} - ${escapeHtml(o.address.pincode || '')}</div>
             <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
               <button class="btn btn-mark" data-id="${id}" data-status="processing">Processing</button>
               <button class="btn secondary btn-mark" data-id="${id}" data-status="shipped">Shipped</button>
               <button class="btn secondary btn-mark" data-id="${id}" data-status="delivered">Delivered</button>
               <button class="btn secondary btn-view" data-id="${id}">View</button>
+              <button class="btn secondary btn-delete-order" data-id="${id}">Delete Order</button>
             </div>
           `;
           target.appendChild(el);
         });
 
-        // attach handlers
+        // handlers
         document.querySelectorAll('.btn-mark').forEach(b=>{
           b.onclick = async ()=> {
             const id = b.dataset.id; const status = b.dataset.status;
-            try {
-              await updateDoc(doc(db, 'orders', id), { status, updatedAt: serverTimestamp() });
-              // optionally notify admin via UI
-            } catch (err) { console.error('status update failed', err); }
+            try { await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); }
+            catch(err){ console.error('status update err', err); }
           };
         });
 
-        // view order - show detailed alert modal (simple)
         document.querySelectorAll('.btn-view').forEach(b=>{
           b.onclick = async ()=> {
             const id = b.dataset.id;
-            const snap = await (await import('https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js')).getDoc(doc(db, 'orders', id));
-            if (!snap.exists()) return alert('Order not found');
+            const snap = await getDoc(doc(db,'orders',id));
+            if(!snap.exists()) return alert('Order not found');
             const o = snap.data();
             const details = [
-              `Product: ${o.productName}`,
+              `Product: ${o.productName} ${o.variantLabel? '('+o.variantLabel+')':''}`,
               `Type: ${o.productType}`,
               `Qty: ${o.quantity}`,
               `Size: ${o.size || 'N/A'}`,
               `Name: ${o.customerName}`,
               `Phone: ${o.customerPhone}`,
               `Email: ${o.customerEmail || 'N/A'}`,
-              `Address: ${o.address || 'N/A'}`,
+              `Address: ${o.address.line1 || ''} ${o.address.line2 || ''}, ${o.address.city || ''} - ${o.address.pincode || ''}`,
               `Note: ${o.note || 'N/A'}`,
               `Status: ${o.status || 'pending'}`
-            ].join('\n');
+            ].join('\n\n');
             alert(details);
           };
         });
 
-      }, err => {
-        console.error('orders snapshot err', err);
-      });
+        document.querySelectorAll('.btn-delete-order').forEach(b=>{
+          b.onclick = async ()=> {
+            if(!confirm('Delete this order?')) return;
+            const id = b.dataset.id;
+            try{ await deleteDoc(doc(db,'orders',id)); alert('Deleted'); }
+            catch(err){ alert('Delete failed: '+ err.message); }
+          };
+        });
+
+      }, err => { console.error('orders snapshot', err); });
     }
 
-    function stopListeners(){ if (productsUnsub) productsUnsub(); if (ordersUnsub) ordersUnsub(); productsUnsub = ordersUnsub = null; }
-
+    function stopListeners(){ if(productsUnsub) productsUnsub(); if(ordersUnsub) ordersUnsub(); productsUnsub = ordersUnsub = null; }
     btnRefreshOrders.addEventListener('click', ()=> startOrdersListener(true));
 
-    // ---------- utils ----------
+    // ---------- small util ----------
     function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g,m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
 
   </script>
