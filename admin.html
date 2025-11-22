@@ -1,141 +1,412 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Panel</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 500px;
-            margin: auto;
-        }
-        .box {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-        }
-        button {
-            padding: 10px;
-            width: 100%;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Products (Login on same page)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#D10007;
+      --dark:#A00006;
+      --muted:#6b7280;
+      --bg:#f3f4f6;
+    }
+    body{font-family:'Poppins',sans-serif;background:var(--bg);margin:0;padding:28px;color:#111827}
+    .wrap{max-width:1100px;margin:0 auto}
+    .grid-2{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    h1{margin:0 0 8px;font-size:20px}
+    .muted{color:var(--muted);font-size:13px}
+    input,textarea,select,button{font-family:inherit}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin-top:8px}
+    textarea{resize:vertical}
+    .btn{background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .btn.secondary{background:#374151}
+    .small{font-size:13px;color:var(--muted)}
+    .section-title{font-size:16px;margin-bottom:8px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+    .product-item{border:1px solid #eee;padding:10px;border-radius:8px;background:#fff}
+    .thumb{width:100%;height:150px;object-fit:cover;border-radius:6px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    .progress{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:8px;display:none}
+    .progress > i{display:block;height:100%;background:var(--primary);width:0%}
+    .top-right{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+    .error{color:#b91c1c;background:#fee2e2;padding:8px;border-radius:8px}
+    .success{color:#064e3b;background:#d1fae5;padding:8px;border-radius:8px}
+    .link-like{background:none;border:0;color:var(--primary);cursor:pointer;text-decoration:underline;padding:0;font-size:13px}
+    @media (max-width:900px){.grid-2{grid-template-columns:1fr;}}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h1>Admin Panel — Products</h1>
+      <div class="top-right">
+        <div id="adminInfo" class="small muted">Not signed in</div>
+        <div id="authButtons"></div>
+      </div>
+    </div>
 
-<h1>Admin Panel</h1>
+    <div class="grid-2">
+      <!-- Left: Auth + Add Product -->
+      <div>
+        <!-- Auth Card -->
+        <div class="card" id="authCard">
+          <div class="section-title">Sign in / Register (same page)</div>
 
-<!-- LOGIN BOX -->
-<div id="loginBox" class="box">
-    <h3>Admin Login</h3>
-    <input type="email" id="loginEmail" placeholder="Admin Email">
-    <input type="password" id="loginPassword" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="loginMsg" style="color:red;"></p>
-</div>
+          <div id="authError" style="display:none;margin-bottom:8px"></div>
 
-<!-- ADMIN PANEL (HIDDEN UNTIL LOGIN) -->
-<div id="adminBox" class="box" style="display:none;">
-    <h3>Add Product</h3>
+          <input id="email" placeholder="admin@example.com" type="email" />
+          <input id="password" placeholder="password (min 6 chars)" type="password" />
 
-    <input type="text" id="productName" placeholder="Product Name">
-    <input type="text" id="productPrice" placeholder="Price">
-    <input type="text" id="productImage" placeholder="Image URL (Paste Online Link)">
-    
-    <button onclick="addProduct()">Add Product</button>
-    <p id="adminMsg" style="color:green;"></p>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="btnLogin">Sign in</button>
+            <button class="btn secondary" id="btnRegister">Register</button>
+            <button class="btn secondary" id="btnSignOut" style="display:none">Sign out</button>
+          </div>
 
-    <button style="background:red; color:white; margin-top:15px;" onclick="logout()">Logout</button>
-</div>
+          <p class="small" style="margin-top:10px">Tip: You can create admin user here or create via Firebase Console (Authentication → Users).</p>
+        </div>
 
-<!-- FIREBASE -->
-<script type="module">
-    // Firebase imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc }
-        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        <!-- Add product card (hidden until signed in) -->
+        <div class="card" id="addCard" style="margin-top:12px;display:none">
+          <div class="section-title">Add New Product</div>
+          <form id="productForm">
+            <input id="productName" placeholder="Product name" required />
+            <div class="row" style="margin-top:8px">
+              <input id="productPrice" placeholder="Price (e.g., 499)" required type="number" min="0" />
+              <input id="productCategory" placeholder="Category (T-Shirts, Mugs...)" />
+            </div>
+            <textarea id="productDesc" placeholder="Short description" rows="3"></textarea>
 
-    // Your Config
+            <!-- choose image method -->
+            <div style="margin-top:10px">
+              <div class="small">Image source</div>
+              <div style="display:flex;gap:12px;margin-top:6px;align-items:center">
+                <label><input type="radio" name="imgSource" value="url" checked /> Use Image URL</label>
+                <label><input type="radio" name="imgSource" value="upload" /> Upload Image</label>
+              </div>
+            </div>
+
+            <div id="imageUrlBox" style="margin-top:8px">
+              <input id="productImageUrl" placeholder="https://example.com/image.jpg" />
+            </div>
+
+            <div id="imageUploadBox" style="margin-top:8px;display:none">
+              <input id="productImage" type="file" accept="image/*" />
+              <div class="progress" id="uploadProgress"><i></i></div>
+              <div id="uploadStatus" class="small" style="margin-top:6px"></div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn" type="submit" id="btnSave">Save Product</button>
+              <button type="button" class="btn secondary" id="btnClear">Clear</button>
+            </div>
+
+            <div id="saveMsg" style="margin-top:10px"></div>
+          </form>
+        </div>
+
+        <!-- optional: quick rules reminder -->
+        <div class="card" style="margin-top:12px">
+          <div class="small muted">Security reminder: Ensure Firestore & Storage rules require authenticated users for write operations. If you want, I can provide a tighter rule that restricts writes to one admin UID.</div>
+        </div>
+      </div>
+
+      <!-- Right: Manage Products -->
+      <div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="section-title">Manage Products</div>
+            <div>
+              <button class="btn secondary" id="btnRefresh">Refresh</button>
+            </div>
+          </div>
+
+          <div id="manageError" style="display:none;margin-top:8px"></div>
+          <div id="productsGrid" class="products-grid" style="margin-top:12px"></div>
+          <p id="emptyMsg" class="small muted" style="display:none;margin-top:12px">No products yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (modular) -->
+  <script type="module">
+    // ----------------- IMPORTS -----------------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import {
+      getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import {
+      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
+
+    // ----------------- FIREBASE CONFIG -----------------
     const firebaseConfig = {
-        apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
-        authDomain: "prabha-graphics-7d269.firebaseapp.com",
-        projectId: "prabha-graphics-7d269",
-        storageBucket: "prabha-graphics-7d269.appspot.com",
-        messagingSenderId: "968671773486",
-        appId: "1:968671773486:web:234c477f4ba267f31770bf"
+      apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
+      authDomain: "prabha-graphics-7d269.firebaseapp.com",
+      projectId: "prabha-graphics-7d269",
+      storageBucket: "prabha-graphics-7d269.appspot.com", // verify in Firebase console
+      messagingSenderId: "968671773486",
+      appId: "1:968671773486:web:234c477f4ba267f31770bf",
+      measurementId: "G-52C61FGY39"
     };
 
-    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // UI Elements
-    const loginBox = document.getElementById("loginBox");
-    const adminBox = document.getElementById("adminBox");
-    const loginMsg = document.getElementById("loginMsg");
-    const adminMsg = document.getElementById("adminMsg");
+    // ----------------- UI references -----------------
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnRegister = document.getElementById('btnRegister');
+    const btnSignOut = document.getElementById('btnSignOut');
+    const adminInfo = document.getElementById('adminInfo');
+    const authError = document.getElementById('authError');
 
-    // LOGIN FUNCTION
-    window.login = function () {
-        const email = document.getElementById("loginEmail").value;
-        const pass = document.getElementById("loginPassword").value;
+    const addCard = document.getElementById('addCard');
+    const productForm = document.getElementById('productForm');
+    const productName = document.getElementById('productName');
+    const productPrice = document.getElementById('productPrice');
+    const productCategory = document.getElementById('productCategory');
+    const productDesc = document.getElementById('productDesc');
+    const productImage = document.getElementById('productImage');
+    const productImageUrl = document.getElementById('productImageUrl');
+    const imageUrlBox = document.getElementById('imageUrlBox');
+    const imageUploadBox = document.getElementById('imageUploadBox');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const saveMsg = document.getElementById('saveMsg');
+    const btnClear = document.getElementById('btnClear');
+    const btnRefresh = document.getElementById('btnRefresh');
 
-        signInWithEmailAndPassword(auth, email, pass)
-            .then(() => {
-                loginMsg.innerText = "";
-            })
-            .catch((error) => {
-                loginMsg.innerText = "Invalid credentials!";
-            });
-    };
+    const productsGrid = document.getElementById('productsGrid');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const manageError = document.getElementById('manageError');
 
-    // LOGOUT FUNCTION
-    window.logout = function () {
-        signOut(auth);
-    };
+    // ----------------- Helper utils -----------------
+    function showError(el, msg) {
+      el.style.display = 'block';
+      el.className = 'error';
+      el.textContent = msg;
+    }
+    function showSuccess(el, msg) {
+      el.style.display = 'block';
+      el.className = 'success';
+      el.textContent = msg;
+      setTimeout(()=>{ el.style.display='none'; }, 3000);
+    }
+    function clearBox(el) { el.style.display = 'none'; el.textContent=''; el.className=''; }
 
-    // AUTH STATE CHANGE
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            loginBox.style.display = "none";
-            adminBox.style.display = "block";
-        } else {
-            loginBox.style.display = "block";
-            adminBox.style.display = "none";
-        }
+    // ----------------- Auth handlers -----------------
+    btnLogin.addEventListener('click', async () => {
+      clearBox(authError);
+      const email = emailEl.value.trim();
+      const pass = passEl.value;
+      if (!email || !pass) return showError(authError, 'Enter email and password.');
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (err) {
+        showError(authError, 'Sign-in failed: ' + err.message);
+      }
     });
 
-    // ADD PRODUCT FUNCTION
-    window.addProduct = async function () {
-        const name = document.getElementById("productName").value;
-        const price = document.getElementById("productPrice").value;
-        const image = document.getElementById("productImage").value;
+    btnRegister.addEventListener('click', async () => {
+      clearBox(authError);
+      const email = emailEl.value.trim();
+      const pass = passEl.value;
+      if (!email || !pass) return showError(authError, 'Enter email and password.');
+      if (pass.length < 6) return showError(authError, 'Password must be at least 6 characters.');
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        showSuccess(saveMsg, 'Admin account created and signed in.');
+      } catch (err) {
+        showError(authError, 'Register failed: ' + err.message);
+      }
+    });
 
-        if (!name || !price || !image) {
-            adminMsg.style.color = "red";
-            adminMsg.innerText = "All fields required.";
-            return;
+    btnSignOut.addEventListener('click', async () => {
+      await signOut(auth);
+    });
+
+    // Auth state change — toggle UI
+    onAuthStateChanged(auth, user => {
+      clearBox(authError);
+      if (user) {
+        adminInfo.textContent = `Signed in: ${user.email} (uid: ${user.uid})`;
+        btnSignOut.style.display = 'inline-block';
+        btnLogin.style.display = 'none';
+        btnRegister.style.display = 'none';
+        addCard.style.display = 'block';
+        // load products
+        loadProductsRealtime();
+      } else {
+        adminInfo.textContent = 'Not signed in';
+        btnSignOut.style.display = 'none';
+        btnLogin.style.display = 'inline-block';
+        btnRegister.style.display = 'inline-block';
+        addCard.style.display = 'none';
+        productsGrid.innerHTML = '';
+        emptyMsg.style.display = 'none';
+        clearBox(manageError);
+        // detach listeners by reloading page or leave — onSnapshot returns unsubscribe handled below
+      }
+    });
+
+    // ----------------- Toggle image method -----------------
+    document.querySelectorAll('input[name="imgSource"]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        if (r.checked && r.value === 'upload') {
+          imageUploadBox.style.display = 'block';
+          imageUrlBox.style.display = 'none';
+        } else if (r.checked && r.value === 'url') {
+          imageUploadBox.style.display = 'none';
+          imageUrlBox.style.display = 'block';
         }
+      });
+    });
 
-        await addDoc(collection(db, "products"), {
-            name,
-            price,
-            image
+    // ----------------- Save product (upload or URL) -----------------
+    productForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearBox(saveMsg);
+      clearBox(authError);
+      const name = productName.value.trim();
+      const price = parseFloat(productPrice.value);
+      const category = productCategory.value.trim();
+      const desc = productDesc.value.trim();
+      const imgSource = document.querySelector('input[name="imgSource"]:checked').value;
+
+      if (!name || !price) return showError(saveMsg, 'Provide name and price.');
+
+      try {
+        if (imgSource === 'url') {
+          const imageUrl = productImageUrl.value.trim();
+          if (!imageUrl) return showError(saveMsg, 'Paste an image URL or choose Upload.');
+          // Save doc with provided image URL
+          await addDoc(collection(db, 'products'), {
+            name, price, category, description: desc, image: imageUrl,
+            storagePath: '', createdAt: new Date()
+          });
+          productForm.reset();
+          showSuccess(saveMsg, 'Product saved (image URL).');
+        } else {
+          const file = productImage.files[0];
+          if (!file) return showError(saveMsg, 'Choose a file to upload or switch to Image URL.');
+
+          uploadProgress.style.display = 'block';
+          uploadStatus.textContent = 'Uploading image...';
+
+          const storagePath = `products/${Date.now()}_${file.name}`;
+          const sRef = storageRef(storage, storagePath);
+          const uploadTask = uploadBytesResumable(sRef, file);
+
+          uploadTask.on('state_changed', snapshot=>{
+            const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploadProgress.querySelector('i').style.width = pct + '%';
+          }, err=>{
+            uploadProgress.style.display = 'none';
+            showError(saveMsg, 'Upload failed: ' + err.message);
+          }, async ()=>{
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            uploadStatus.textContent = 'Saving product...';
+            await addDoc(collection(db, 'products'), {
+              name, price, category, description: desc, image: url,
+              storagePath, createdAt: new Date()
+            });
+            uploadProgress.style.display = 'none';
+            uploadProgress.querySelector('i').style.width = '0%';
+            productForm.reset();
+            showSuccess(saveMsg, 'Product saved (uploaded image).');
+          });
+        }
+      } catch (err) {
+        // Likely permission error or auth error
+        showError(saveMsg, 'Something went wrong: ' + err.message);
+      }
+    });
+
+    btnClear.addEventListener('click', ()=> productForm.reset());
+
+    // ----------------- Realtime product listing & delete -----------------
+    let unsubscribe = null;
+    function loadProductsRealtime() {
+      if (unsubscribe) {
+        // detach previous
+        unsubscribe();
+      }
+      const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+      unsubscribe = onSnapshot(q, snapshot => {
+        productsGrid.innerHTML = '';
+        if (snapshot.empty) {
+          emptyMsg.style.display = 'block';
+          return;
+        } else {
+          emptyMsg.style.display = 'none';
+        }
+        snapshot.forEach(docSnap=>{
+          const data = docSnap.data();
+          const id = docSnap.id;
+          const el = document.createElement('div');
+          el.className = 'product-item';
+          el.innerHTML = `
+            <img class="thumb" src="${data.image}" alt="${escapeHtml(data.name)}" />
+            <h4 style="margin:8px 0 6px">${escapeHtml(data.name)}</h4>
+            <div class="small">${escapeHtml(data.category || '')} • ₹${data.price}</div>
+            <div class="small" style="margin-top:6px">${escapeHtml(truncate(data.description,140))}</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn btn-delete" data-id="${id}" data-path="${data.storagePath || ''}">Delete</button>
+            </div>
+          `;
+          productsGrid.appendChild(el);
         });
 
-        adminMsg.style.color = "green";
-        adminMsg.innerText = "Product Added!";
-    };
-</script>
+        // attach delete handlers
+        document.querySelectorAll('.btn-delete').forEach(btn=>{
+          btn.onclick = async ()=>{
+            if (!confirm('Delete product? This will remove Firestore entry. Storage file will also be deleted if it exists.')) return;
+            const id = btn.dataset.id;
+            const path = btn.dataset.path;
+            try {
+              await deleteDoc(doc(db, 'products', id));
+              if (path) {
+                const delRef = storageRef(storage, path);
+                await deleteObject(delRef).catch(err=>{
+                  console.warn('Storage delete failed:', err.message);
+                });
+              }
+              showSuccess(saveMsg, 'Deleted product.');
+            } catch (err) {
+              showError(manageError, 'Delete failed: ' + err.message);
+            }
+          };
+        });
+      }, err=>{
+        showError(manageError, 'Could not load products: ' + err.message);
+      });
+    }
 
+    btnRefresh.addEventListener('click', ()=>{
+      if (auth.currentUser) loadProductsRealtime();
+    });
+
+    // ----------------- small utils -----------------
+    function escapeHtml(str='') {
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+      });
+    }
+    function truncate(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n)+'...': s; }
+
+  </script>
 </body>
 </html>
