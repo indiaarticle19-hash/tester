@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Prabha Graphics — Admin</title>
+  <meta name="description" content="Prabha Graphics - Catalog" />
+  <title>Prabha Graphics — Products</title>
 
   <!-- Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -11,279 +12,374 @@
 
   <style>
     :root{
-      --primary:#D10007; --dark:#0f172a; --muted:#6b7280; --bg:#fbfbfd; --card:0 10px 30px rgba(2,6,23,0.06);
-      --green:#065f46; --red:#b91c1c; --blue:#334155;
+      --primary:#D10007;
+      --white:#ffffff;
+      --dark:#0f172a;
+      --muted:#6b7280;
+      --bg:#fbfbfd;
+      --card:0 10px 30px rgba(2,6,23,0.06);
       --max:1280px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--dark);margin:0;line-height:1.45}
+    body{
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg); color:var(--dark); margin:0; line-height:1.45;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    .container{max-width:var(--max);margin:0 auto;padding:0 20px}
 
-    /* Header (aligned with site) */
+    /* Header */
     .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1100;transition:all .28s}
     .navbar.scrolled{box-shadow:var(--card);backdrop-filter:blur(4px)}
     .nav-container{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between}
     .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer}
-    .logo-circle{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .logo-img{width:48px;height:48px;border-radius:8px;object-fit:contain}
     .logo-text{font-weight:700}
     .nav-links{display:flex;gap:18px;list-style:none;align-items:center}
-    .nav-link{color:var(--dark);text-decoration:none;font-weight:500}
-    .cta-btn{background:var(--primary);color:#fff;padding:8px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .nav-link{color:var(--dark);text-decoration:none;font-weight:500;position:relative;padding:6px 0}
+    .nav-link::after{content:'';position:absolute;left:0;right:0;height:2px;background:var(--primary);bottom:-6px;transform:scaleX(0);transform-origin:left center;transition:transform .22s}
+    .nav-link:hover::after{transform:scaleX(1)}
+    .cta-btn{background:var(--primary);color:#fff;padding:8px 16px;border-radius:8px;border:0;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(209,0,7,0.12)}
+    .hamburger{display:none;border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--dark)}
 
-    /* Layout */
-    .container{max-width:var(--max);margin:100px auto 30px;padding:0 20px}
-    .grid{display:grid;grid-template-columns:1.35fr 0.65fr;gap:18px}
-    .card{background:#fff;border-radius:12px;box-shadow:var(--card);padding:14px}
-    h2{margin:0 0 10px 0;font-size:18px}
-    .small{font-size:13px;color:var(--muted)}
+    /* Hero */
+    .hero{height:320px;background:linear-gradient(90deg,#fff7f7,#fff);display:flex;align-items:center;margin-top:76px}
+    .hero .container{display:flex;gap:24px;align-items:center}
+    .hero h1{font-size:32px;margin:0 0 8px 0}
+    .hero p{color:var(--muted);margin:0}
 
-    /* Form */
-    label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
-    input[type=text],input[type=password],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e7eb;font-size:14px;margin-top:6px}
-    textarea{min-height:88px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .row .col{flex:1}
-    .btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-    .btn.secondary{background:var(--blue)}
+    /* Categories */
+    .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:24px 0}
+    .category-card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;min-height:160px;background:#fff;box-shadow:var(--card);transition:transform .18s}
+    .category-card:hover{transform:translateY(-6px)}
+    .category-card img{width:100%;height:100%;object-fit:cover;display:block}
+    .category-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.5));display:flex;align-items:flex-end;padding:16px;color:#fff}
+    .category-overlay h3{margin:0;font-size:18px}
+    .category-overlay p{margin:4px 0 0 0;font-size:13px;opacity:0.95}
+
+    /* Sections + product grid */
+    .section{margin:24px 0}
+    .section h2{margin:0 0 12px 0;font-size:20px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .product-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--card);display:flex;flex-direction:column;transition:transform .18s}
+    .product-card:hover{transform:translateY(-6px)}
+    .product-card img{width:100%;height:170px;object-fit:cover}
+    .product-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+    .product-title{font-size:16px;font-weight:700}
+    .product-vendor{color:var(--muted);font-size:13px}
+    .product-desc{color:#334155;font-size:14px}
+    .product-footer{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .badge{background:#f1f5f9;color:#0f172a;padding:4px 8px;border-radius:999px;font-size:12px}
+    .price{font-weight:800;color:var(--primary);margin-left:auto}
+    .old{color:#9ca3af;text-decoration:line-through;font-size:13px}
+
+    /* Modal */
+    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.5);z-index:2200;padding:18px}
+    .modal{width:100%;max-width:1050px;background:#fff;border-radius:12px;padding:18px;max-height:94vh;overflow:auto;box-shadow:0 30px 60px rgba(2,6,23,0.22)}
+    .modal .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+    .modal .left{flex:0 1 440px;min-width:280px}
+    .modal .right{flex:1;min-width:320px}
+    .main-image{width:100%;height:400px;object-fit:cover;border-radius:10px;border:1px solid #f1f5f9;background:#fff;display:block}
+    .thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .thumbs img{width:74px;height:74px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+    .thumbs img.active{border-color:var(--primary)}
+    .rating{display:flex;gap:6px;align-items:center;color:#b45309;font-weight:600}
+    .price-row{display:flex;gap:12px;align-items:baseline;margin:10px 0}
+    .price-row .big{font-size:22px;color:var(--primary);font-weight:800}
+    .saving{color:#065f46;background:#dcfce7;padding:6px 8px;border-radius:8px;font-weight:600}
+    .stock{color:var(--muted);margin-top:4px}
+    .meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .meta{background:#f8fafc;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted)}
+    .specs{margin-top:12px;border-radius:8px;padding:12px;background:#fff;border:1px solid #eef2f7}
+    .specs table{width:100%;border-collapse:collapse;font-size:14px}
+    .specs td{padding:6px 8px;border-bottom:1px dashed #f1f5f9;color:var(--muted)}
+    .specs td:first-child{width:40%;color:#374151;font-weight:600}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .tag{background:#f1f5f9;padding:6px 10px;border-radius:999px;font-size:13px;color:#111}
+    .trust{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .trust .meta{display:flex;gap:8px;align-items:center}
+
+    .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+    .btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.ghost{background:#fff;border:1px solid #e5e7eb;color:var(--dark)}
-    .btn.danger{background:#ffecec;color:#991b1b;border:1px solid #f8d7da}
+    .btn.secondary{background:#334155}
 
-    /* Lists */
-    .product-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:12px}
-    .product-item{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #eef2f7}
-    .product-item img{width:100%;height:140px;object-fit:cover}
-    .product-body{padding:10px;display:flex;flex-direction:column;gap:6px}
-    .muted{color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:8px;margin-top:8px}
-    .actions .btn{flex:1}
+    /* Order modal */
+    .form-row{display:flex;gap:10px;margin-top:8px}
+    .form-row > *{flex:1}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e7eb;font-size:14px}
+    textarea{resize:vertical}
+    .o-msg{margin-top:10px}
 
-    .order-card{background:#fff;padding:10px;border-radius:10px;border:1px solid #eef2f7;margin-bottom:10px}
-    .status-badge{background:#f1f5f9;color:#111;padding:4px 8px;border-radius:999px;font-size:12px}
-
-    .search{display:flex;gap:8px;margin-bottom:12px}
-
-    /* Sticky save bar */
-    .sticky-controls{position:sticky;bottom:0;background:#fff;border-top:1px solid #eef2f7;padding:10px;border-radius:0 0 12px 12px;display:flex;gap:8px}
+    /* Footer */
+    .footer{background:#0b1220;color:#fff;padding:48px 0;margin-top:28px}
+    .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;align-items:start}
+    .footer-col{display:flex;flex-direction:column;gap:10px}
+    .footer-brand{display:flex;align-items:center;gap:12px}
+    .footer-logo{width:44px;height:44px;object-fit:contain;border-radius:8px;background:var(--primary);padding:6px}
+    .footer-title{color:#fff;margin:0;font-size:16px}
+    .footer-list{list-style:none;padding:0;margin:0;color:#9aa3b2;display:flex;flex-direction:column;gap:8px}
+    .footer-contact{color:#9aa3b2;margin:0;display:flex;gap:8px;align-items:center}
 
     /* Responsive */
-    @media (max-width:980px){ .grid{grid-template-columns:1fr} .nav-links{display:none} }
+    @media (max-width:900px){
+      .nav-links{display:none;position:fixed;inset:68px 16px auto 16px;background:#fff;border-radius:10px;padding:16px;flex-direction:column;gap:12px;box-shadow:0 12px 60px rgba(2,6,23,0.08)}
+      .nav-links.show{display:flex}
+      .hamburger{display:block}
+      .nav-container{padding:10px 14px}
+      .main-image{height:320px}
+    }
+    @media (max-width:520px){
+      .hero{height:280px}
+      .product-card img{height:140px}
+      .logo-text{display:none}
+      .main-image{height:220px}
+    }
   </style>
 </head>
 <body>
   <!-- Header -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <div class="nav-logo" onclick="location.href='index.html'">
-        <div class="logo-circle">PG</div>
+  <nav class="navbar" id="navbar" aria-label="Primary Navigation">
+    <div class="nav-container container" id="navContainer">
+      <div class="nav-logo" id="navLogo" onclick="location.href='index.html'">
+        <img src="logo.png" alt="Prabha Graphics" class="logo-img"/>
         <span class="logo-text">Prabha Graphics</span>
       </div>
-      <ul class="nav-links" id="navLinks">
-        <li><a class="nav-link" href="index.html">Home</a></li>
-        <li><a class="nav-link" href="index.html#about">About</a></li>
-        <li><a class="nav-link" href="products.html">Products</a></li>
-        <li><a class="nav-link" href="get-a-quote.html">Get a Quote</a></li>
+
+      <button class="hamburger" id="hambBtn" aria-label="Toggle menu" title="Menu">
+        <i class="fa fa-bars"></i>
+      </button>
+
+      <ul class="nav-links" id="navLinks" role="menubar">
+        <li role="none"><a class="nav-link" role="menuitem" href="index.html#home">Home</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="index.html#about">About Us</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="products.html#corporate">Corporate Gifts</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="products.html#personalized">Personalized Gifts</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="products.html#business">Business Essentials</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="index.html#contact">Contact Us</a></li>
       </ul>
-      <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
+      </div>
     </div>
   </nav>
 
-  <main class="container">
-    <div class="grid">
-      <!-- Left column: auth + product editor + product list -->
-      <div>
-        <div class="card" id="authCard">
-          <h2>Admin login</h2>
-          <p class="small">Sign in with email and password. Make sure Email/Password auth is enabled in Firebase.</p>
-          <label>Email</label>
-          <input id="adminEmail" type="text" placeholder="admin@example.com"/>
-          <label>Password</label>
-          <input id="adminPassword" type="password" placeholder="Password"/>
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button id="signInBtn" class="btn">Sign in</button>
-            <button id="signOutBtn" class="btn secondary" style="display:none">Sign out</button>
-          </div>
-          <div id="authMsg" class="small" style="margin-top:8px;color:var(--red)"></div>
-        </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="left">
+        <h1>All Products — Find exactly what you need</h1>
+        <p>Browse corporate gifts, promotional items, personalized treasures, business essentials and ready-made products. Click category to jump.</p>
+      </div>
+      <div class="right">
+        <img src="https://images.unsplash.com/photo-1556821552-5f73541e6b1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600" alt="Catalog hero" style="width:240px;border-radius:10px;object-fit:cover" />
+      </div>
+    </div>
+  </section>
 
-        <div id="panelArea" style="display:none">
-          <!-- Product editor -->
-          <div class="card" style="margin-top:16px">
-            <h2>Add or edit product</h2>
-            <div class="small">Categories: Apparel, Personalized Products, Corporate Gifts, Business Essentials</div>
+  <div class="container" style="padding-top:18px;">
+    <!-- Category cards -->
+    <div class="categories-grid">
+      <div class="category-card" onclick="scrollToSection('corporate')">
+        <img src="https://images.unsplash.com/photo-1612521334484-bfb1f3f0cedc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Corporate"/>
+        <div class="category-overlay"><div><h3>Corporate & Promotional</h3><p>Keychains, Pens, Gift Sets</p></div></div>
+      </div>
+      <div class="category-card" onclick="scrollToSection('personalized')">
+        <img src="https://images.unsplash.com/photo-1572302265669-2acefa827fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Personalized"/>
+        <div class="category-overlay"><div><h3>Personalized Gifts</h3><p>Mugs, Cushions, Photo Gifts</p></div></div>
+      </div>
+      <div class="category-card" onclick="scrollToSection('business')">
+        <img src="https://images.unsplash.com/photo-1599909695241-b6c7e2ae4e6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Business"/>
+        <div class="category-overlay"><div><h3>Business Essentials</h3><p>Visiting cards, Stationery</p></div></div>
+      </div>
+      <div class="category-card" onclick="scrollToSection('apparel')">
+        <img src="https://images.unsplash.com/photo-1586419604178-25ade1770efc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Apparel"/>
+        <div class="category-overlay"><div><h3>Apparel</h3><p>T-Shirts, Polo, Jackets</p></div></div>
+      </div>
+    </div>
 
-            <input id="prodId" type="hidden"/>
+    <!-- Product Sections -->
+    <section id="corporate" class="section" aria-label="Corporate Gifts Section">
+      <h2>Corporate & Promotional</h2>
+      <div id="corporateGrid" class="products-grid"></div>
+    </section>
 
-            <label>Main category</label>
-            <select id="mainCategory">
-              <option>Apparel</option>
-              <option>Personalized Products</option>
-              <option>Corporate Gifts</option>
-              <option>Business Essentials</option>
-            </select>
+    <section id="personalized" class="section" aria-label="Personalized Gifts Section">
+      <h2>Personalized Gifts</h2>
+      <div id="personalizedGrid" class="products-grid"></div>
+    </section>
 
-            <label>Sub-category</label>
-            <select id="subCategory"></select>
+    <section id="business" class="section" aria-label="Business Essentials Section">
+      <h2>Business Essentials</h2>
+      <div id="businessGrid" class="products-grid"></div>
+    </section>
 
-            <div class="row">
-              <div class="col">
-                <label>Product name</label>
-                <input id="pName" type="text" placeholder="e.g., Classic Cotton T-Shirt"/>
-              </div>
-              <div class="col" style="max-width:160px">
-                <label>Price (₹)</label>
-                <input id="pPrice" type="number" placeholder="499"/>
-              </div>
-              <div class="col" style="max-width:160px">
-                <label>Old price (₹)</label>
-                <input id="pOldPrice" type="number" placeholder="699"/>
-              </div>
-            </div>
+    <section id="apparel" class="section" aria-label="Apparel Section">
+      <h2>Apparel & Wearables</h2>
+      <div id="apparelGrid" class="products-grid"></div>
+    </section>
 
-            <div class="row">
-              <div class="col">
-                <label>Unique code (SKU) — auto-generated</label>
-                <input id="pSKU" type="text" readonly/>
-              </div>
-              <div class="col">
-                <label>Type</label>
-                <select id="pTypeSelect">
-                  <option value="ready-made">Ready-made</option>
-                  <option value="customized">Customized</option>
-                </select>
-              </div>
-              <div class="col">
-                <label>Delivery estimate</label>
-                <input id="pDelivery" type="text" placeholder="3–6 days"/>
-              </div>
-            </div>
+    <section id="other" class="section" aria-label="Other Products Section">
+      <h2>Other Products</h2>
+      <div id="otherGrid" class="products-grid"></div>
+    </section>
+  </div>
 
-            <label>Image URL (preferred)</label>
-            <input id="pImageUrl" type="text" placeholder="https://..."/>
-
-            <label>Or upload images (optional)</label>
-            <input id="pFiles" type="file" accept="image/*" multiple/>
-            <div id="uploadPreview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
-
-            <label>Description</label>
-            <textarea id="pDescription" placeholder="Product description"></textarea>
-
-            <div class="row">
-              <div class="col">
-                <label>Sizes (comma separated)</label>
-                <input id="pSizes" placeholder="S,M,L,XL"/>
-              </div>
-              <div class="col">
-                <label>Colors (comma separated)</label>
-                <input id="pColors" placeholder="Red,Black,White"/>
-              </div>
-              <div class="col">
-                <label>Tags (comma separated)</label>
-                <input id="pTags" placeholder="party,bulk,gift"/>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col" style="max-width:160px">
-                <label>Minimum order qty</label>
-                <input id="pMinQty" type="number" placeholder="1"/>
-              </div>
-              <div class="col" style="max-width:160px">
-                <label>Stock</label>
-                <input id="pStock" type="number" placeholder="50"/>
-              </div>
-              <div class="col">
-                <label>Vendor</label>
-                <input id="pVendor" type="text" placeholder="Prabha Graphics"/>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col">
-                <label>Material</label>
-                <input id="pMaterial" type="text" placeholder="Cotton, Ceramic, etc."/>
-              </div>
-              <div class="col">
-                <label>Dimensions</label>
-                <input id="pDimensions" type="text" placeholder="10 x 12 cm"/>
-              </div>
-              <div class="col">
-                <label>Weight</label>
-                <input id="pWeight" type="text" placeholder="250 g"/>
-              </div>
-            </div>
-
-            <div class="sticky-controls">
-              <button id="saveProduct" class="btn">Save product</button>
-              <button id="clearProduct" class="btn ghost">Clear</button>
-              <button id="deleteProduct" class="btn danger" style="display:none">Delete</button>
-              <div id="prodMsg" class="small" style="margin-left:auto"></div>
-            </div>
-          </div>
-
-          <!-- Product list -->
-          <div class="card" style="margin-top:14px">
-            <h2>Products</h2>
-            <div class="search">
-              <input id="searchInput" placeholder="Search by name, SKU, tag"/>
-              <select id="filterCategory">
-                <option value="">All categories</option>
-                <option>Apparel</option>
-                <option>Personalized Products</option>
-                <option>Corporate Gifts</option>
-                <option>Business Essentials</option>
-              </select>
-            </div>
-            <div class="product-list" id="productsList">Loading…</div>
+  <!-- Product detail modal (Amazon-like) -->
+  <div id="detailModal" class="modal-bg" role="dialog" aria-hidden="true" aria-modal="true">
+    <div class="modal" role="document" aria-labelledby="dTitle">
+      <div class="top">
+        <div>
+          <h2 id="dTitle" style="margin:0"></h2>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <div class="rating" id="dRating"><i class="fa fa-star"></i> 4.7</div>
+            <span class="badge" id="dAvailability">In stock</span>
+            <span class="badge" id="dDeliveryBadge">Delivery in 3-6 days</span>
+            <span class="badge" id="dSkuBadge">SKU: —</span>
           </div>
         </div>
+        <button class="btn ghost" id="detailCloseBtn" aria-label="Close">Close</button>
       </div>
 
-      <!-- Right column: orders and quotes -->
-      <aside>
-        <div class="card">
-          <h2>Orders</h2>
-          <div id="ordersArea">Loading orders…</div>
+      <div style="display:flex;gap:18px;margin-top:12px;flex-wrap:wrap">
+        <div class="left">
+          <img id="dMainImage" class="main-image" src="" alt="product image"/>
+          <div class="thumbs" id="dThumbs"></div>
+          <div class="tags" id="dTagList"></div>
+          <div class="trust">
+            <div class="meta"><i class="fa fa-shield-alt"></i> Secure payments</div>
+            <div class="meta"><i class="fa fa-undo"></i> Easy returns</div>
+            <div class="meta"><i class="fa fa-truck"></i> Fast delivery</div>
+          </div>
         </div>
 
-        <div class="card" style="margin-top:14px">
-          <h2>Get-a-quote requests</h2>
-          <div id="quotesArea">Loading quotes…</div>
+        <div class="right">
+          <div id="dShortDesc" style="color:#111"></div>
+
+          <div class="price-row" aria-live="polite">
+            <div class="big" id="dPrice">₹0</div>
+            <div class="old" id="dOldPrice"></div>
+            <div class="saving" id="dSaving" style="display:none"></div>
+          </div>
+          <div class="stock" id="dStockInfo">Stock: -</div>
+
+          <div class="meta-row">
+            <div class="meta" id="dDimensions">Dimensions: -</div>
+            <div class="meta" id="dMaterial">Material: -</div>
+            <div class="meta" id="dWeight">Weight: -</div>
+          </div>
+
+          <div style="margin-top:12px" id="dVariant"></div>
+
+          <div class="specs" style="margin-top:12px">
+            <table id="dSpecsTable"></table>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="dWhats"><i class="fa fa-whatsapp" style="margin-right:8px"></i> WhatsApp</button>
+            <button class="btn secondary" id="dOrder">Order Now</button>
+            <button class="btn ghost" id="dShareBtn">Share</button>
+          </div>
+
+          <div style="margin-top:10px;color:var(--muted);font-size:13px" id="dVendor">Seller: —</div>
         </div>
-      </aside>
+      </div>
     </div>
-  </main>
+  </div>
+
+  <!-- Order modal -->
+  <div id="orderModal" class="modal-bg" aria-hidden="true" aria-modal="true">
+    <div class="modal" role="document" aria-labelledby="orderTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 id="orderTitle">Place Order</h3>
+        <button class="btn ghost" id="orderCloseBtn">Close</button>
+      </div>
+
+      <form id="orderForm" style="margin-top:12px" novalidate>
+        <div class="form-row">
+          <input id="oName" placeholder="Full name" required aria-required="true"/>
+          <input id="oPhone" placeholder="Phone (required)" required aria-required="true"/>
+        </div>
+        <div class="form-row">
+          <input id="oEmail" placeholder="Email (optional)" type="email"/>
+        </div>
+        <div class="form-row">
+          <input id="oLine1" placeholder="Address line 1 (house/building/street)"/>
+        </div>
+        <div class="form-row">
+          <input id="oLine2" placeholder="Address line 2 (area/landmark)"/>
+        </div>
+        <div class="form-row">
+          <input id="oCity" placeholder="City"/>
+          <input id="oState" placeholder="State"/>
+        </div>
+        <div class="form-row">
+          <input id="oPincode" placeholder="Pincode"/>
+          <input id="oCountry" placeholder="Country" value="India"/>
+        </div>
+
+        <div id="orderVariantBlock" style="margin-top:10px"></div>
+
+        <div class="form-row">
+          <input id="oQty" type="number" min="1" value="1"/>
+          <select id="oPayment" aria-label="Payment method"><option>COD</option><option>Online</option></select>
+        </div>
+
+        <textarea id="oNote" placeholder="Additional note (optional)" rows="3" style="margin-top:8px"></textarea>
+
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <input type="checkbox" id="oWhatsapp" /> <span style="color:var(--muted)">Also send this order via WhatsApp</span>
+        </label>
+
+        <div id="oMsg" class="o-msg"></div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" type="submit">Submit Order</button>
+          <button type="button" class="btn ghost" id="orderCancelBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer -->
-  <footer id="contact" class="footer" style="background:#0b1220;color:#fff;padding:40px 0;margin-top:24px">
-    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div class="logo-circle">PG</div><strong>Prabha Graphics</strong></div>
-        <p style="color:#9aa3b2">Your trusted partner in Lucknow for corporate and personalized printing and gifting.</p>
+  <footer class="footer" id="contact">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <img src="logo.png" alt="Prabha Graphics" class="footer-logo"/>
+          <strong style="color:#fff">Prabha Graphics</strong>
+        </div>
+        <p style="color:#9aa3b2;margin:0">Your trusted partner in Lucknow for all corporate and personalized printing and gifting needs.</p>
       </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px 0">Quick Links</h4>
-        <div style="color:#9aa3b2">T-Shirts • Mugs • Keychains • Clocks • Custom Gifts</div>
+
+      <div class="footer-col">
+        <h4 class="footer-title">Quick Links</h4>
+        <ul class="footer-list"><li>T-Shirts</li><li>Mugs</li><li>Keychains</li></ul>
       </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px 0">Company</h4>
-        <div style="color:#9aa3b2">About Us • Contact Us • View Full Catalog</div>
+
+      <div class="footer-col">
+        <h4 class="footer-title">Company</h4>
+        <ul class="footer-list"><li>About Us</li><li>Contact Us</li><li><a href="get-a-quote.html" style="color:#9aa3b2">View Full Catalog</a></li></ul>
       </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px 0">Contact</h4>
-        <div style="color:#9aa3b2">074579 94888</div>
-        <div style="color:#9aa3b2">Shop No. 4/74, Gomti Nagar, Lucknow, Uttar Pradesh 226010</div>
-        <div style="color:#9aa3b2">www.prabhagraphics.in</div>
+
+      <div class="footer-col">
+        <h4 class="footer-title">Contact Us</h4>
+        <p class="footer-contact"><i class="fas fa-phone"></i> 074579 94888</p>
+        <p class="footer-contact"><i class="fas fa-map-marker-alt"></i> Shop No. 4/74, Gomti Nagar, Lucknow, 226010</p>
+        <p class="footer-contact"><i class="fas fa-globe"></i> www.prabhagraphics.in</p>
       </div>
     </div>
-    <div style="height:1px;background:linear-gradient(to right,transparent,rgba(209,0,7,0.12),transparent);margin:18px 0"></div>
-    <div style="text-align:center;color:#8f9aa6">&copy; 2025 Prabha Graphics</div>
+
+    <div style="height:1px;background:linear-gradient(to right, transparent, rgba(209,0,7,0.15), transparent);margin:18px 0"></div>
+    <div style="text-align:center;color:#9aa3b2">&copy; 2025 Prabha Graphics. All rights reserved.</div>
   </footer>
 
+  <!-- Firebase + App Logic -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, getDoc } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
-    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
@@ -296,406 +392,372 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+    const shopPhone = "917457994888"; // wa.me format
 
-    // Header scroll
+    // Grid refs
+    const corporateGrid = document.getElementById('corporateGrid');
+    const personalizedGrid = document.getElementById('personalizedGrid');
+    const businessGrid = document.getElementById('businessGrid');
+    const apparelGrid = document.getElementById('apparelGrid');
+    const otherGrid = document.getElementById('otherGrid');
+
+    // Detail modal refs
+    const detailModal = document.getElementById('detailModal');
+    const dTitle = document.getElementById('dTitle');
+    const dMainImage = document.getElementById('dMainImage');
+    const dThumbs = document.getElementById('dThumbs');
+    const dShortDesc = document.getElementById('dShortDesc');
+    const dPrice = document.getElementById('dPrice');
+    const dOldPrice = document.getElementById('dOldPrice');
+    const dSaving = document.getElementById('dSaving');
+    const dStockInfo = document.getElementById('dStockInfo');
+    const dVariant = document.getElementById('dVariant');
+    const dVendor = document.getElementById('dVendor');
+    const dTagList = document.getElementById('dTagList');
+    const dDimensions = document.getElementById('dDimensions');
+    const dMaterial = document.getElementById('dMaterial');
+    const dWeight = document.getElementById('dWeight');
+    const dSpecsTable = document.getElementById('dSpecsTable');
+    const dDeliveryBadge = document.getElementById('dDeliveryBadge');
+    const dSkuBadge = document.getElementById('dSkuBadge');
+    const dAvailability = document.getElementById('dAvailability');
+    const dWhats = document.getElementById('dWhats');
+    const dOrderBtn = document.getElementById('dOrder');
+    const dShareBtn = document.getElementById('dShareBtn');
+    const detailCloseBtn = document.getElementById('detailCloseBtn');
+
+    // Order modal refs
+    const orderModal = document.getElementById('orderModal');
+    const orderForm = document.getElementById('orderForm');
+    const orderVariantBlock = document.getElementById('orderVariantBlock');
+    const oMsg = document.getElementById('oMsg');
+    const orderCloseBtn = document.getElementById('orderCloseBtn');
+    const orderCancelBtn = document.getElementById('orderCancelBtn');
+
+    let activeProduct = null;
+
+    // Real-time products
+    const qProducts = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    onSnapshot(qProducts, snapshot => {
+      corporateGrid.innerHTML = personalizedGrid.innerHTML = businessGrid.innerHTML = apparelGrid.innerHTML = otherGrid.innerHTML = '';
+      snapshot.forEach(docSnap => {
+        const p = docSnap.data(); p.id = docSnap.id;
+        const card = createProductCard(p);
+        const cat = (p.category || '').toLowerCase();
+        if (cat.includes('corporate') || cat.includes('promot')) corporateGrid.appendChild(card);
+        else if (cat.includes('personal')) personalizedGrid.appendChild(card);
+        else if (cat.includes('business') || cat.includes('essent')) businessGrid.appendChild(card);
+        else if (cat.includes('apparel') || cat.includes('shirt') || cat.includes('t-shirt')) apparelGrid.appendChild(card);
+        else otherGrid.appendChild(card);
+      });
+      setTimeout(()=> {
+        const h = location.hash.replace('#','');
+        if (h) scrollToSection(h);
+      }, 200);
+    });
+
+    function createProductCard(p){
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      const discount = p.oldPrice && p.price && p.oldPrice > p.price ? Math.round(((p.oldPrice - p.price)/p.oldPrice)*100) : 0;
+      card.innerHTML = `
+        <img src="${escapeHtml((p.images && p.images[0]) || p.image || '')}" alt="${escapeHtml(p.name)}"/>
+        <div class="product-body">
+          <div>
+            <div class="product-title">${escapeHtml(p.name)}</div>
+            <div class="product-vendor">${escapeHtml(p.vendor||'')}</div>
+          </div>
+          <div class="product-desc">${escapeHtml((p.description||'').slice(0,100))}...</div>
+          <div class="product-footer">
+            ${discount ? `<span class="badge">-${discount}%</span>` : `<span class="badge">${escapeHtml(p.type||'ready')}</span>`}
+            ${p.oldPrice ? `<span class="old">₹${escapeHtml(String(p.oldPrice))}</span>` : ''}
+            <div class="price">₹${escapeHtml(String(p.price||0))}</div>
+            <button class="btn" onclick='openDetail("${p.id}")' aria-label="View product details">View</button>
+          </div>
+        </div>
+      `;
+      card.dataset.productId = p.id;
+      window._prabhaProducts = window._prabhaProducts || {}; window._prabhaProducts[p.id] = p;
+      return card;
+    }
+
+    // Scroll helper
+    function scrollToSection(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      el.style.boxShadow = '0 10px 30px rgba(209,0,7,0.12)';
+      setTimeout(()=> el.style.boxShadow = '', 1300);
+    }
+    window.scrollToSection = scrollToSection;
+
+    // Open detail
+    window.openDetail = function(id){
+      const p = window._prabhaProducts && window._prabhaProducts[id];
+      if (!p) return alert('Product not found');
+      activeProduct = p;
+
+      dTitle.textContent = p.name || '';
+      dMainImage.src = (p.images && p.images[0]) || p.image || '';
+      dThumbs.innerHTML = '';
+      (p.images || []).forEach((u, i) => {
+        const t = document.createElement('img'); t.src = u; if(i===0) t.classList.add('active');
+        t.onclick = () => { dMainImage.src = u; Array.from(dThumbs.children).forEach(c=>c.classList.remove('active')); t.classList.add('active'); };
+        dThumbs.appendChild(t);
+      });
+
+      dShortDesc.textContent = p.shortDescription || (p.description || '').slice(0,220);
+      dPrice.textContent = '₹' + (p.price || 0);
+      dOldPrice.textContent = p.oldPrice ? '₹' + p.oldPrice : '';
+      if(p.oldPrice && p.price && p.oldPrice > p.price){
+        dSaving.style.display='inline-block'; dSaving.textContent = 'Save ₹' + (p.oldPrice - p.price);
+      } else { dSaving.style.display='none'; }
+
+      dStockInfo.textContent = (p.variants && p.variants.length) ? ('Variants: '+p.variants.length) : ('Stock: '+(p.stock||0));
+      dDeliveryBadge.textContent = p.deliveryEstimate || 'Delivery in 3-6 days';
+      dSkuBadge.textContent = 'SKU: ' + (p.sku || '—');
+      dAvailability.textContent = (p.stock > 0 || (p.variants && p.variants.some(v=>v.stock>0))) ? 'In stock' : 'Out of stock';
+
+      // Meta fields
+      dDimensions.textContent = 'Dimensions: ' + (p.dimensions || '-');
+      dMaterial.textContent = 'Material: ' + (p.material || '-');
+      dWeight.textContent = 'Weight: ' + (p.weight || '-');
+
+      // Specs table
+      dSpecsTable.innerHTML = '';
+      const specRows = [
+        ['SKU', p.sku || '-'],
+        ['Brand', p.brand || p.vendor || '-'],
+        ['Material', p.material || '-'],
+        ['Dimensions', p.dimensions || '-'],
+        ['Weight', p.weight || '-'],
+        ['Type', p.type || '-'],
+        ['Category', p.category || '-'],
+        ['Warranty', p.warranty || '-']
+      ];
+      specRows.forEach(([k,v])=>{
+        const tr = document.createElement('tr'); tr.innerHTML = `<td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td>`;
+        dSpecsTable.appendChild(tr);
+      });
+
+      // Tags
+      dTagList.innerHTML = '';
+      (p.tags || []).forEach(t => {
+        const s = document.createElement('span'); s.className='tag'; s.textContent = t; dTagList.appendChild(s);
+      });
+
+      // Variants
+      dVariant.innerHTML = '';
+      if (p.variants && p.variants.length){
+        const s = document.createElement('select'); s.id='modalVariantSelect';
+        s.innerHTML = '<option value="">Select variant</option>';
+        p.variants.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = encodeURIComponent(JSON.stringify(v));
+          opt.textContent = `${v.label}${v.price ? ' - ₹'+v.price : ''}${v.stock ? ' ('+v.stock+' in stock)' : ''}`;
+          s.appendChild(opt);
+        });
+        s.onchange = () => {
+          if (!s.value) { dPrice.textContent = '₹' + (p.price||0); dStockInfo.textContent = 'Stock: '+(p.stock||0); return; }
+          const v = JSON.parse(decodeURIComponent(s.value));
+          dPrice.textContent = '₹' + (v.price || p.price || 0);
+          dStockInfo.textContent = v.stock ? ('Stock: '+v.stock) : ('Stock: '+(p.stock||0));
+        };
+        dVariant.appendChild(s);
+      }
+
+      // Seller + actions
+      dVendor.textContent = 'Seller: ' + (p.vendor || 'Prabha Graphics');
+
+      dWhats.onclick = ()=> {
+        const msg = `Hi, query about: ${p.name} (SKU: ${p.sku || '-'})`;
+        window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      };
+
+      if (p.type === 'customized'){
+        dOrderBtn.style.display = 'none';
+      } else {
+        dOrderBtn.style.display = 'inline-block';
+        dOrderBtn.onclick = ()=> openOrderModal(p);
+      }
+
+      dShareBtn.onclick = () => {
+        const url = location.origin + location.pathname + '#product-' + encodeURIComponent(p.id);
+        if (navigator.share) {
+          navigator.share({title: p.name, text: p.shortDescription || '', url }).catch(()=>{});
+        } else {
+          navigator.clipboard?.writeText(url).then(()=> alert('Product link copied to clipboard'));
+        }
+      };
+
+      // Show modal
+      detailModal.style.display = 'flex';
+      detailModal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    function closeDetail(){
+      detailModal.style.display='none';
+      detailModal.setAttribute('aria-hidden','true');
+      activeProduct=null;
+      document.body.style.overflow = '';
+    }
+
+    // Order modal
+    function openOrderModal(p){
+      activeProduct = p;
+      orderVariantBlock.innerHTML = '';
+
+      if (p.variants && p.variants.length){
+        const sel = document.createElement('select'); sel.id = 'orderVariant';
+        sel.innerHTML = '<option value="">Select variant</option>';
+        p.variants.forEach(v=> sel.innerHTML += `<option value='${encodeURIComponent(JSON.stringify(v))}'>${v.label}${v.price?' - ₹'+v.price:''}${v.stock?' ('+v.stock+' in stock)':''}</option>`);
+        orderVariantBlock.appendChild(sel);
+      }
+      if (p.sizes && p.sizes.length){
+        const sel2 = document.createElement('select'); sel2.id='orderSize';
+        sel2.innerHTML = '<option value="">Select size</option>';
+        p.sizes.forEach(s=> sel2.innerHTML += `<option>${s}</option>`);
+        orderVariantBlock.appendChild(sel2);
+      }
+      if (p.colors && p.colors.length){
+        const sel3 = document.createElement('select'); sel3.id='orderColor';
+        sel3.innerHTML = '<option value="">Select color</option>';
+        p.colors.forEach(c=> sel3.innerHTML += `<option>${c}</option>`);
+        orderVariantBlock.appendChild(sel3);
+      }
+      orderModal.style.display='flex'; orderModal.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    }
+    function closeOrder(){
+      orderModal.style.display='none'; orderModal.setAttribute('aria-hidden','true');
+      orderForm.reset(); oMsg.innerHTML=''; document.body.style.overflow='';
+    }
+
+    // Submit order -> Firestore
+    orderForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!activeProduct) return showOrderError('No product selected.');
+      const name = document.getElementById('oName').value.trim();
+      const phone = document.getElementById('oPhone').value.trim();
+      if (!name || !phone) return showOrderError('Name and phone required.');
+      const email = document.getElementById('oEmail').value.trim();
+      const line1 = document.getElementById('oLine1').value.trim();
+      const line2 = document.getElementById('oLine2').value.trim();
+      const city = document.getElementById('oCity').value.trim();
+      const state = document.getElementById('oState').value.trim();
+      const pincode = document.getElementById('oPincode').value.trim();
+      const country = document.getElementById('oCountry').value.trim();
+      const qty = parseInt(document.getElementById('oQty').value) || 1;
+      const note = document.getElementById('oNote').value.trim();
+      const alsoWhats = document.getElementById('oWhatsapp').checked;
+      const paymentMethod = document.getElementById('oPayment').value;
+
+      let variant = null;
+      const vsel = document.getElementById('orderVariant');
+      if (vsel && vsel.value) variant = JSON.parse(decodeURIComponent(vsel.value));
+
+      const size = document.getElementById('orderSize') ? document.getElementById('orderSize').value : '';
+      const color = document.getElementById('orderColor') ? document.getElementById('orderColor').value : '';
+
+      const order = {
+        productId: activeProduct.id,
+        productName: activeProduct.name,
+        productSnapshot: {
+          name: activeProduct.name,
+          sku: activeProduct.sku || '',
+          images: activeProduct.images || [],
+          vendor: activeProduct.vendor || ''
+        },
+        productType: activeProduct.type || 'ready-made',
+        variantId: variant ? variant.id : '',
+        variantLabel: variant ? variant.label : '',
+        variantPrice: variant ? (variant.price || activeProduct.price) : activeProduct.price,
+        selectedSize: size || '',
+        selectedColor: color || '',
+        quantity: qty,
+        customerName: name,
+        customerPhone: phone,
+        customerEmail: email || '',
+        address: { line1, line2, city, state, pincode, country },
+        paymentMethod,
+        note: note || '',
+        status: 'pending',
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        const ordersCol = collection(db, 'orders');
+        await addDoc(ordersCol, order);
+        showOrderSuccess('Order saved. We will contact you soon.');
+        if (alsoWhats){
+          const lines = [
+            `New order - ${activeProduct.name}`,
+            `Qty: ${qty}`,
+            `Size: ${order.selectedSize || '-'}`,
+            `Color: ${order.selectedColor || '-'}`,
+            `Name: ${name}`,
+            `Phone: ${phone}`,
+            `Address: ${line1} ${line2}, ${city} - ${pincode}`,
+            `Note: ${note || '-'}`
+          ].join('\n');
+          setTimeout(()=> window.open(`https://wa.me/${shopPhone}?text=${encodeURIComponent(lines)}`, '_blank'), 700);
+        }
+        setTimeout(()=> closeOrder(), 900);
+      } catch (err) {
+        console.error('order save failed', err);
+        showOrderError('Could not submit order: '+ err.message);
+      }
+    });
+
+    function showOrderError(msg){ oMsg.innerHTML = `<div style="background:#fee2e2;padding:10px;border-radius:8px;color:#991b1b">${escapeHtml(msg)}</div>`; }
+    function showOrderSuccess(msg){ oMsg.innerHTML = `<div style="background:#dcfce7;padding:10px;border-radius:8px;color:#065f46">${escapeHtml(msg)}</div>`; }
+
+    // Helpers
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+
+    // Header behavior
     const navbar = document.getElementById('navbar');
+    const navLinks = document.getElementById('navLinks');
+    const hambBtn = document.getElementById('hambBtn');
+
     window.addEventListener('scroll', () => {
       const y = window.scrollY || window.pageYOffset;
       if (y > 8) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
     }, {passive:true});
 
-    // UI refs
-    const signInBtn = document.getElementById('signInBtn');
-    const signOutBtn = document.getElementById('signOutBtn');
-    const adminEmail = document.getElementById('adminEmail');
-    const adminPassword = document.getElementById('adminPassword');
-    const authMsg = document.getElementById('authMsg');
-
-    const panelArea = document.getElementById('panelArea');
-    const prodId = document.getElementById('prodId');
-    const mainCategory = document.getElementById('mainCategory');
-    const subCategory = document.getElementById('subCategory');
-    const pName = document.getElementById('pName');
-    const pPrice = document.getElementById('pPrice');
-    const pOldPrice = document.getElementById('pOldPrice');
-    const pSKU = document.getElementById('pSKU');
-    const pImageUrl = document.getElementById('pImageUrl');
-    const pFiles = document.getElementById('pFiles');
-    const uploadPreview = document.getElementById('uploadPreview');
-    const pDescription = document.getElementById('pDescription');
-    const pSizes = document.getElementById('pSizes');
-    const pColors = document.getElementById('pColors');
-    const pTags = document.getElementById('pTags');
-    const pMinQty = document.getElementById('pMinQty');
-    const pTypeSelect = document.getElementById('pTypeSelect');
-    const pDelivery = document.getElementById('pDelivery');
-    const pStock = document.getElementById('pStock');
-    const pVendor = document.getElementById('pVendor');
-    const pMaterial = document.getElementById('pMaterial');
-    const pDimensions = document.getElementById('pDimensions');
-    const pWeight = document.getElementById('pWeight');
-    const saveProduct = document.getElementById('saveProduct');
-    const clearProduct = document.getElementById('clearProduct');
-    const deleteProduct = document.getElementById('deleteProduct');
-    const prodMsg = document.getElementById('prodMsg');
-    const productsList = document.getElementById('productsList');
-
-    const ordersArea = document.getElementById('ordersArea');
-    const quotesArea = document.getElementById('quotesArea');
-
-    const searchInput = document.getElementById('searchInput');
-    const filterCategory = document.getElementById('filterCategory');
-
-    // Sub-categories
-    const subMap = {
-      'Apparel': ['T-shirts','Hoodies','Polo','Jackets','Caps'],
-      'Personalized Products': ['Mugs','Photo Frames','Cushions','Phone Covers','Bottles','Keychains'],
-      'Corporate Gifts': ['Pens','Notebooks','Gift Hampers','Corporate T-shirts','Gift Boxes'],
-      'Business Essentials': ['Visiting Cards','Letterheads','Lanyards','Stamps','Banners']
-    };
-    function populateSub(){
-      const list = subMap[mainCategory.value] || [];
-      subCategory.innerHTML = '';
-      list.forEach(s=> subCategory.innerHTML += `<option>${s}</option>`);
-      if (!list.length) subCategory.innerHTML = '<option>Other</option>';
-    }
-    mainCategory.addEventListener('change', populateSub);
-    populateSub();
-
-    // Auth
-    signInBtn.addEventListener('click', async ()=>{
-      authMsg.textContent = '';
-      const e = adminEmail.value.trim(); const p = adminPassword.value;
-      if (!e || !p) { authMsg.textContent = 'Email and password required'; return; }
-      try{ await signInWithEmailAndPassword(auth, e, p); }
-      catch(err){ authMsg.textContent = 'Sign-in failed: ' + err.message; }
+    hambBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinks.classList.toggle('show');
+      hambBtn.classList.toggle('open');
     });
-    signOutBtn.addEventListener('click', async ()=>{ await signOut(auth); });
-
-    let unsubProducts=null, unsubOrders=null, unsubQuotes=null;
-    onAuthStateChanged(auth, user =>{
-      if (user){
-        authMsg.textContent = '';
-        signInBtn.style.display='none'; signOutBtn.style.display='inline-block';
-        panelArea.style.display='block'; document.getElementById('authCard').style.display='none';
-        startListeners();
-      } else {
-        signInBtn.style.display='inline-block'; signOutBtn.style.display='none';
-        panelArea.style.display='none'; document.getElementById('authCard').style.display='block';
-        stopListeners();
+    document.addEventListener('click', (e) => {
+      if (!navLinks.contains(e.target) && !hambBtn.contains(e.target) && navLinks.classList.contains('show')) {
+        navLinks.classList.remove('show');
       }
     });
 
-    // SKU generator
-    function generateSKU(category){
-      const prefix = (category || 'PR').split(' ').map(w=>w[0]).join('').toUpperCase();
-      const ts = Date.now().toString(36).toUpperCase();
-      const rnd = Math.floor(Math.random()*900+100).toString();
-      return `${prefix}-${ts}-${rnd}`;
-    }
-
-    // Preview uploads
-    pFiles.addEventListener('change', ()=>{
-      uploadPreview.innerHTML = '';
-      Array.from(pFiles.files || []).forEach(f=>{
-        const url = URL.createObjectURL(f);
-        const img = document.createElement('img'); img.src = url;
-        img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
-        uploadPreview.appendChild(img);
-      });
-    });
-
-    // Save product
-    saveProduct.addEventListener('click', async ()=>{
-      prodMsg.style.color = ''; prodMsg.textContent = '';
-      const name = pName.value.trim(); if(!name) { prodMsg.style.color = '#b91c1c'; prodMsg.textContent='Product name required'; return; }
-      const mainCat = mainCategory.value; const subCat = subCategory.value || 'Other';
-      const price = parseFloat(pPrice.value) || 0;
-      const oldPrice = parseFloat(pOldPrice.value) || 0;
-      const stock = parseInt(pStock.value) || 0;
-      const sku = pSKU.value || generateSKU(mainCat);
-
-      const product = {
-        name,
-        mainCategory: mainCat,
-        subCategory: subCat,
-        category: `${mainCat} • ${subCat}`, // helps front-end grouping too
-        price,
-        oldPrice: oldPrice || null,
-        sku,
-        description: pDescription.value.trim(),
-        sizes: (pSizes.value||'').split(',').map(s=>s.trim()).filter(Boolean),
-        colors: (pColors.value||'').split(',').map(s=>s.trim()).filter(Boolean),
-        tags: (pTags.value||'').split(',').map(s=>s.trim()).filter(Boolean),
-        minQty: parseInt(pMinQty.value) || 1,
-        type: pTypeSelect.value || 'ready-made',
-        deliveryEstimate: pDelivery.value.trim() || '',
-        stock,
-        vendor: pVendor.value.trim() || 'Prabha Graphics',
-        material: pMaterial.value.trim() || '',
-        dimensions: pDimensions.value.trim() || '',
-        weight: pWeight.value.trim() || '',
-        createdAt: serverTimestamp()
-      };
-
-      // Upload files if any
-      const files = Array.from(pFiles.files || []);
-      product.images = [];
-      try{
-        for(const f of files){
-          const path = `products/${sku}_${Date.now()}_${f.name}`;
-          const r = storageRef(storage, path);
-          const task = uploadBytesResumable(r, f);
-          await new Promise((res,rej)=> task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{
-            product.images.push(await getDownloadURL(task.snapshot.ref)); res();
-          }));
-        }
-      }catch(err){
-        console.error('upload failed', err);
-        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Upload failed: ' + err.message;
-      }
-
-      if (pImageUrl.value && !product.images.length) product.images.push(pImageUrl.value.trim());
-
-      try{
-        if(prodId.value){
-          await updateDoc(doc(db, 'products', prodId.value), product);
-          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product updated';
-        } else {
-          await addDoc(collection(db, 'products'), product);
-          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product added';
-        }
-        deleteProduct.style.display = prodId.value ? 'inline-block' : 'none';
-        setTimeout(()=> clearForm(), 900);
-      }catch(err){
-        console.error(err);
-        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Save failed: ' + err.message;
-      }
-    });
-
-    // Delete product
-    deleteProduct.addEventListener('click', async ()=>{
-      if(!prodId.value) return;
-      if(!confirm('Delete this product? This cannot be undone.')) return;
-      try{
-        await deleteDoc(doc(db, 'products', prodId.value));
-        prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product deleted';
-        setTimeout(()=> clearForm(), 700);
-      }catch(err){
-        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Delete failed: ' + err.message;
-      }
-    });
-
-    clearProduct.addEventListener('click', clearForm);
-    function clearForm(){
-      prodId.value=''; pName.value=''; pPrice.value=''; pOldPrice.value='';
-      pSKU.value=''; pImageUrl.value=''; pFiles.value=''; uploadPreview.innerHTML='';
-      pDescription.value=''; pSizes.value=''; pColors.value=''; pTags.value='';
-      pMinQty.value=''; pTypeSelect.value='ready-made'; pDelivery.value='';
-      pStock.value=''; pVendor.value=''; pMaterial.value=''; pDimensions.value='';
-      pWeight.value=''; prodMsg.textContent='';
-      deleteProduct.style.display='none';
-    }
-
-    // Listeners
-    function startListeners(){
-      if (unsubProducts) return;
-
-      unsubProducts = onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap=>{
-        productsList.innerHTML = '';
-        snap.forEach(docSnap=>{
-          const d = docSnap.data(); d.id = docSnap.id;
-          const el = document.createElement('div'); el.className='product-item';
-          const discount = d.oldPrice && d.price && d.oldPrice > d.price ? Math.round(((d.oldPrice - d.price)/d.oldPrice)*100) : 0;
-          el.innerHTML = `
-            <img src="${escapeHtml((d.images && d.images[0]) || d.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image')}" alt="">
-            <div class="product-body">
-              <strong>${escapeHtml(d.name)}</strong>
-              <div class="muted">${escapeHtml(d.mainCategory || '')} • ${escapeHtml(d.subCategory || '')}</div>
-              <div style="display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:6px">
-                <div style="display:flex;gap:8px;align-items:center">
-                  ${discount ? `<span class="status-badge">-${discount}%</span>` : `<span class="status-badge">${escapeHtml(d.type||'ready-made')}</span>`}
-                  ${d.oldPrice ? `<span class="muted" style="text-decoration:line-through">₹${escapeHtml(String(d.oldPrice))}</span>` : ''}
-                </div>
-                <div style="color:var(--primary);font-weight:700">₹${escapeHtml(String(d.price || 0))}</div>
-              </div>
-              <div class="muted">SKU: ${escapeHtml(d.sku || '')}</div>
-              <div class="actions">
-                <button class="btn small edit-btn" data-id="${d.id}">Edit</button>
-                <button class="btn secondary small quick-order-btn" data-id="${d.id}">WhatsApp</button>
-                <button class="btn danger small delete-btn" data-id="${d.id}">Delete</button>
-              </div>
-            </div>
-          `;
-          productsList.appendChild(el);
-        });
-
-        // handlers
-        document.querySelectorAll('.edit-btn').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id;
-          const dref = doc(db,'products',id);
-          const snap = await getDoc(dref);
-          if(!snap.exists()) return alert('Not found');
-          const d = snap.data();
-          prodId.value = snap.id;
-          mainCategory.value = d.mainCategory || 'Apparel';
-          populateSub();
-          subCategory.value = d.subCategory || subCategory.value;
-          pName.value = d.name || '';
-          pPrice.value = d.price || 0;
-          pOldPrice.value = d.oldPrice || '';
-          pSKU.value = d.sku || generateSKU(mainCategory.value);
-          pImageUrl.value = (d.images && d.images[0]) || d.imageUrl || '';
-          pDescription.value = d.description || '';
-          pSizes.value = (d.sizes||[]).join(',');
-          pColors.value = (d.colors||[]).join(',');
-          pTags.value = (d.tags||[]).join(',');
-          pMinQty.value = d.minQty || 1;
-          pTypeSelect.value = d.type || 'ready-made';
-          pDelivery.value = d.deliveryEstimate || '';
-          pStock.value = d.stock || '';
-          pVendor.value = d.vendor || 'Prabha Graphics';
-          pMaterial.value = d.material || '';
-          pDimensions.value = d.dimensions || '';
-          pWeight.value = d.weight || '';
-          uploadPreview.innerHTML = '';
-          (d.images||[]).forEach(u=>{
-            const img=document.createElement('img'); img.src=u;
-            img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
-            uploadPreview.appendChild(img);
-          });
-          deleteProduct.style.display='inline-block';
-          window.scrollTo({top:0,behavior:'smooth'});
-        });
-
-        document.querySelectorAll('.quick-order-btn').forEach(b=> b.onclick = ()=>{
-          const id=b.dataset.id;
-          const d = snapFind(id);
-          if(!d) return;
-          const msg = `Hi, query about: ${d.name} (SKU: ${d.sku || '-'})`;
-          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(msg)}`, '_blank');
-        });
-
-        document.querySelectorAll('.delete-btn').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id;
-          if(!confirm('Delete product?')) return;
-          try{ await deleteDoc(doc(db,'products',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
-        });
-
-        filterProductsUI();
-      });
-
-      unsubOrders = onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap=>{
-        ordersArea.innerHTML='';
-        snap.forEach(s=>{
-          const o = s.data(); const id = s.id;
-          const el = document.createElement('div'); el.className='order-card';
-          el.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <strong>${escapeHtml(o.productName||'')}</strong>
-                <div class="muted">SKU: ${escapeHtml(o.productSnapshot && o.productSnapshot.sku || '')}</div>
-                <div class="muted">${escapeHtml(o.customerName||'')} • ${escapeHtml(o.customerPhone||'')}</div>
-              </div>
-              <div style="text-align:right">
-                <div class="status-badge">${escapeHtml(o.status||'pending')}</div>
-                <div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">
-                  <button class="btn small set-status" data-id="${id}" data-status="processing">Processing</button>
-                  <button class="btn small set-status" data-id="${id}" data-status="shipped">Shipped</button>
-                  <button class="btn small set-status" data-id="${id}" data-status="completed">Completed</button>
-                  <button class="btn danger small delete-order" data-id="${id}">Delete</button>
-                </div>
-              </div>
-            </div>
-          `;
-          ordersArea.appendChild(el);
-        });
-
-        document.querySelectorAll('.delete-order').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id; if(!confirm('Delete order?')) return;
-          try{ await deleteDoc(doc(db,'orders',id)); } catch(err){ alert('Delete failed: '+err.message); }
-        });
-        document.querySelectorAll('.set-status').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id; const status=b.dataset.status;
-          try{ await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); } catch(err){ console.error(err); }
-        });
-      });
-
-      unsubQuotes = onSnapshot(query(collection(db,'quotes'), orderBy('createdAt','desc')), snap=>{
-        quotesArea.innerHTML='';
-        snap.forEach(qsnap=>{
-          const q = qsnap.data(); const id = qsnap.id;
-          const el = document.createElement('div'); el.className='order-card';
-          el.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <strong>${escapeHtml(q.productName||'')}</strong>
-                <div class="muted">${escapeHtml(q.name||'')} • ${escapeHtml(q.phone||'')}</div>
-              </div>
-              <div style="display:flex;gap:6px">
-                <button class="btn small whatsapp-quote" data-id="${id}">WhatsApp</button>
-                <button class="btn danger small delete-quote" data-id="${id}">Delete</button>
-              </div>
-            </div>
-          `;
-          quotesArea.appendChild(el);
-        });
-
-        document.querySelectorAll('.delete-quote').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id; if(!confirm('Delete quote?')) return;
-          try{ await deleteDoc(doc(db,'quotes',id)); } catch(err){ alert('Delete failed: '+err.message); }
-        });
-        document.querySelectorAll('.whatsapp-quote').forEach(b=> b.onclick = async ()=>{
-          const id=b.dataset.id; const qsnap = await getDoc(doc(db,'quotes',id));
-          if(!qsnap.exists()) return;
-          const q = qsnap.data();
-          const text = `Quote request: ${q.productName || '-'}\nName: ${q.name || '-'}\nPhone: ${q.phone || '-'}\nQty: ${q.quantity || '-'}\nNote: ${q.note || '-'}`;
-          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(text)}`, '_blank');
-        });
-      });
-    }
-
-    function stopListeners(){
-      if(unsubProducts){ unsubProducts(); unsubProducts=null; }
-      if(unsubOrders){ unsubOrders(); unsubOrders=null; }
-      if(unsubQuotes){ unsubQuotes(); unsubQuotes=null; }
-      productsList.innerHTML=''; ordersArea.innerHTML=''; quotesArea.innerHTML='';
-    }
-
-    // Search + filter
-    searchInput?.addEventListener('input', filterProductsUI);
-    filterCategory?.addEventListener('change', filterProductsUI);
-    function filterProductsUI(){
-      const q = (searchInput.value||'').toLowerCase();
-      const cat = (filterCategory.value||'').toLowerCase();
-      document.querySelectorAll('#productsList .product-item').forEach(el=>{
-        const text = (el.textContent||'').toLowerCase();
-        const matchesQ = !q || text.includes(q);
-        const matchesCat = !cat || text.includes(cat);
-        el.style.display = (matchesQ && matchesCat) ? '' : 'none';
-      });
-    }
-
-    function snapFind(id){
-      const el = [...document.querySelectorAll('#productsList .product-item .edit-btn')].find(b=> b.dataset.id===id);
-      if(!el) return null;
-      // quick lookup via stored window map if you want to extend
-      return null;
-    }
-
-    function escapeHtml(s=''){ return String(s).replace(/[&<>"'\\]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\\':'&#92;'})[m]); }
-
-    // Escape to close any menus (future) or reset sticky messages
+    // Close buttons and Escape support
+    detailCloseBtn.addEventListener('click', closeDetail);
+    orderCloseBtn.addEventListener('click', closeOrder);
+    orderCancelBtn.addEventListener('click', closeOrder);
     document.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape'){ prodMsg.textContent=''; }
+      if (e.key === 'Escape') {
+        if (detailModal.style.display==='flex') closeDetail();
+        if (orderModal.style.display==='flex') closeOrder();
+        if (navLinks.classList.contains('show')) navLinks.classList.remove('show');
+      }
+    });
+
+    // Hash open product
+    window.addEventListener('load', ()=> {
+      const h = location.hash.replace('#','');
+      if (h.startsWith('product-')) {
+        const id = decodeURIComponent(h.replace('product-',''));
+        setTimeout(()=>{ if(window._prabhaProducts && window._prabhaProducts[id]) openDetail(id); }, 400);
+      }
     });
   </script>
-
-  <p style="text-align:center;color:#666;font-size:13px;margin:16px 0">
-    Tip: Protect Firestore with rules so only authenticated admins can write products and update orders. Allow unauthenticated creates for orders/quotes.
-  </p>
 </body>
 </html>
