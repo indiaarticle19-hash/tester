@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Prabha Graphics — Admin</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#D10007; --dark:#0f172a; --muted:#6b7280; --bg:#fbfbfd; --card:0 10px 30px rgba(2,6,23,0.06);
+      --green:#065f46; --red:#b91c1c; --blue:#334155;
+      --max:1280px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--dark);margin:0;line-height:1.45}
+
+    /* Header (aligned with site) */
+    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1100;transition:all .28s}
+    .navbar.scrolled{box-shadow:var(--card);backdrop-filter:blur(4px)}
+    .nav-container{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer}
+    .logo-circle{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .logo-text{font-weight:700}
+    .nav-links{display:flex;gap:18px;list-style:none;align-items:center}
+    .nav-link{color:var(--dark);text-decoration:none;font-weight:500}
+    .cta-btn{background:var(--primary);color:#fff;padding:8px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+
+    /* Layout */
+    .container{max-width:var(--max);margin:100px auto 30px;padding:0 20px}
+    .grid{display:grid;grid-template-columns:1.35fr 0.65fr;gap:18px}
+    .card{background:#fff;border-radius:12px;box-shadow:var(--card);padding:14px}
+    h2{margin:0 0 10px 0;font-size:18px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Form */
+    label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+    input[type=text],input[type=password],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e7eb;font-size:14px;margin-top:6px}
+    textarea{min-height:88px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row .col{flex:1}
+    .btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.secondary{background:var(--blue)}
+    .btn.ghost{background:#fff;border:1px solid #e5e7eb;color:var(--dark)}
+    .btn.danger{background:#ffecec;color:#991b1b;border:1px solid #f8d7da}
+
+    /* Lists */
+    .product-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:12px}
+    .product-item{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #eef2f7}
+    .product-item img{width:100%;height:140px;object-fit:cover}
+    .product-body{padding:10px;display:flex;flex-direction:column;gap:6px}
+    .muted{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px;margin-top:8px}
+    .actions .btn{flex:1}
+
+    .order-card{background:#fff;padding:10px;border-radius:10px;border:1px solid #eef2f7;margin-bottom:10px}
+    .status-badge{background:#f1f5f9;color:#111;padding:4px 8px;border-radius:999px;font-size:12px}
+
+    .search{display:flex;gap:8px;margin-bottom:12px}
+
+    /* Sticky save bar */
+    .sticky-controls{position:sticky;bottom:0;background:#fff;border-top:1px solid #eef2f7;padding:10px;border-radius:0 0 12px 12px;display:flex;gap:8px}
+
+    /* Responsive */
+    @media (max-width:980px){ .grid{grid-template-columns:1fr} .nav-links{display:none} }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo" onclick="location.href='index.html'">
+        <div class="logo-circle">PG</div>
+        <span class="logo-text">Prabha Graphics</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="index.html#about">About</a></li>
+        <li><a class="nav-link" href="products.html">Products</a></li>
+        <li><a class="nav-link" href="get-a-quote.html">Get a Quote</a></li>
+      </ul>
+      <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="grid">
+      <!-- Left column: auth + product editor + product list -->
+      <div>
+        <div class="card" id="authCard">
+          <h2>Admin login</h2>
+          <p class="small">Sign in with email and password. Make sure Email/Password auth is enabled in Firebase.</p>
+          <label>Email</label>
+          <input id="adminEmail" type="text" placeholder="admin@example.com"/>
+          <label>Password</label>
+          <input id="adminPassword" type="password" placeholder="Password"/>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button id="signInBtn" class="btn">Sign in</button>
+            <button id="signOutBtn" class="btn secondary" style="display:none">Sign out</button>
+          </div>
+          <div id="authMsg" class="small" style="margin-top:8px;color:var(--red)"></div>
+        </div>
+
+        <div id="panelArea" style="display:none">
+          <!-- Product editor -->
+          <div class="card" style="margin-top:16px">
+            <h2>Add or edit product</h2>
+            <div class="small">Categories: Apparel, Personalized Products, Corporate Gifts, Business Essentials</div>
+
+            <input id="prodId" type="hidden"/>
+
+            <label>Main category</label>
+            <select id="mainCategory">
+              <option>Apparel</option>
+              <option>Personalized Products</option>
+              <option>Corporate Gifts</option>
+              <option>Business Essentials</option>
+            </select>
+
+            <label>Sub-category</label>
+            <select id="subCategory"></select>
+
+            <div class="row">
+              <div class="col">
+                <label>Product name</label>
+                <input id="pName" type="text" placeholder="e.g., Classic Cotton T-Shirt"/>
+              </div>
+              <div class="col" style="max-width:160px">
+                <label>Price (₹)</label>
+                <input id="pPrice" type="number" placeholder="499"/>
+              </div>
+              <div class="col" style="max-width:160px">
+                <label>Old price (₹)</label>
+                <input id="pOldPrice" type="number" placeholder="699"/>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label>Unique code (SKU) — auto-generated</label>
+                <input id="pSKU" type="text" readonly/>
+              </div>
+              <div class="col">
+                <label>Type</label>
+                <select id="pTypeSelect">
+                  <option value="ready-made">Ready-made</option>
+                  <option value="customized">Customized</option>
+                </select>
+              </div>
+              <div class="col">
+                <label>Delivery estimate</label>
+                <input id="pDelivery" type="text" placeholder="3–6 days"/>
+              </div>
+            </div>
+
+            <label>Image URL (preferred)</label>
+            <input id="pImageUrl" type="text" placeholder="https://..."/>
+
+            <label>Or upload images (optional)</label>
+            <input id="pFiles" type="file" accept="image/*" multiple/>
+            <div id="uploadPreview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+
+            <label>Description</label>
+            <textarea id="pDescription" placeholder="Product description"></textarea>
+
+            <div class="row">
+              <div class="col">
+                <label>Sizes (comma separated)</label>
+                <input id="pSizes" placeholder="S,M,L,XL"/>
+              </div>
+              <div class="col">
+                <label>Colors (comma separated)</label>
+                <input id="pColors" placeholder="Red,Black,White"/>
+              </div>
+              <div class="col">
+                <label>Tags (comma separated)</label>
+                <input id="pTags" placeholder="party,bulk,gift"/>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col" style="max-width:160px">
+                <label>Minimum order qty</label>
+                <input id="pMinQty" type="number" placeholder="1"/>
+              </div>
+              <div class="col" style="max-width:160px">
+                <label>Stock</label>
+                <input id="pStock" type="number" placeholder="50"/>
+              </div>
+              <div class="col">
+                <label>Vendor</label>
+                <input id="pVendor" type="text" placeholder="Prabha Graphics"/>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label>Material</label>
+                <input id="pMaterial" type="text" placeholder="Cotton, Ceramic, etc."/>
+              </div>
+              <div class="col">
+                <label>Dimensions</label>
+                <input id="pDimensions" type="text" placeholder="10 x 12 cm"/>
+              </div>
+              <div class="col">
+                <label>Weight</label>
+                <input id="pWeight" type="text" placeholder="250 g"/>
+              </div>
+            </div>
+
+            <div class="sticky-controls">
+              <button id="saveProduct" class="btn">Save product</button>
+              <button id="clearProduct" class="btn ghost">Clear</button>
+              <button id="deleteProduct" class="btn danger" style="display:none">Delete</button>
+              <div id="prodMsg" class="small" style="margin-left:auto"></div>
+            </div>
+          </div>
+
+          <!-- Product list -->
+          <div class="card" style="margin-top:14px">
+            <h2>Products</h2>
+            <div class="search">
+              <input id="searchInput" placeholder="Search by name, SKU, tag"/>
+              <select id="filterCategory">
+                <option value="">All categories</option>
+                <option>Apparel</option>
+                <option>Personalized Products</option>
+                <option>Corporate Gifts</option>
+                <option>Business Essentials</option>
+              </select>
+            </div>
+            <div class="product-list" id="productsList">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: orders and quotes -->
+      <aside>
+        <div class="card">
+          <h2>Orders</h2>
+          <div id="ordersArea">Loading orders…</div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h2>Get-a-quote requests</h2>
+          <div id="quotesArea">Loading quotes…</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contact" class="footer" style="background:#0b1220;color:#fff;padding:40px 0;margin-top:24px">
+    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div class="logo-circle">PG</div><strong>Prabha Graphics</strong></div>
+        <p style="color:#9aa3b2">Your trusted partner in Lucknow for corporate and personalized printing and gifting.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Quick Links</h4>
+        <div style="color:#9aa3b2">T-Shirts • Mugs • Keychains • Clocks • Custom Gifts</div>
+      </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Company</h4>
+        <div style="color:#9aa3b2">About Us • Contact Us • View Full Catalog</div>
+      </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Contact</h4>
+        <div style="color:#9aa3b2">074579 94888</div>
+        <div style="color:#9aa3b2">Shop No. 4/74, Gomti Nagar, Lucknow, Uttar Pradesh 226010</div>
+        <div style="color:#9aa3b2">www.prabhagraphics.in</div>
+      </div>
+    </div>
+    <div style="height:1px;background:linear-gradient(to right,transparent,rgba(209,0,7,0.12),transparent);margin:18px 0"></div>
+    <div style="text-align:center;color:#8f9aa6">&copy; 2025 Prabha Graphics</div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, getDoc } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
+    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAj405kZSn-V6rOKE1BurRE3meYCGZ_wbU",
+      authDomain: "prabha-graphics-7d269.firebaseapp.com",
+      projectId: "prabha-graphics-7d269",
+      storageBucket: "prabha-graphics-7d269.appspot.com",
+      messagingSenderId: "968671773486",
+      appId: "1:968671773486:web:234c477f4ba267f31770bf",
+      measurementId: "G-52C61FGY39"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // Header scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 8) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+    }, {passive:true});
+
+    // UI refs
+    const signInBtn = document.getElementById('signInBtn');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPassword = document.getElementById('adminPassword');
+    const authMsg = document.getElementById('authMsg');
+
+    const panelArea = document.getElementById('panelArea');
+    const prodId = document.getElementById('prodId');
+    const mainCategory = document.getElementById('mainCategory');
+    const subCategory = document.getElementById('subCategory');
+    const pName = document.getElementById('pName');
+    const pPrice = document.getElementById('pPrice');
+    const pOldPrice = document.getElementById('pOldPrice');
+    const pSKU = document.getElementById('pSKU');
+    const pImageUrl = document.getElementById('pImageUrl');
+    const pFiles = document.getElementById('pFiles');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const pDescription = document.getElementById('pDescription');
+    const pSizes = document.getElementById('pSizes');
+    const pColors = document.getElementById('pColors');
+    const pTags = document.getElementById('pTags');
+    const pMinQty = document.getElementById('pMinQty');
+    const pTypeSelect = document.getElementById('pTypeSelect');
+    const pDelivery = document.getElementById('pDelivery');
+    const pStock = document.getElementById('pStock');
+    const pVendor = document.getElementById('pVendor');
+    const pMaterial = document.getElementById('pMaterial');
+    const pDimensions = document.getElementById('pDimensions');
+    const pWeight = document.getElementById('pWeight');
+    const saveProduct = document.getElementById('saveProduct');
+    const clearProduct = document.getElementById('clearProduct');
+    const deleteProduct = document.getElementById('deleteProduct');
+    const prodMsg = document.getElementById('prodMsg');
+    const productsList = document.getElementById('productsList');
+
+    const ordersArea = document.getElementById('ordersArea');
+    const quotesArea = document.getElementById('quotesArea');
+
+    const searchInput = document.getElementById('searchInput');
+    const filterCategory = document.getElementById('filterCategory');
+
+    // Sub-categories
+    const subMap = {
+      'Apparel': ['T-shirts','Hoodies','Polo','Jackets','Caps'],
+      'Personalized Products': ['Mugs','Photo Frames','Cushions','Phone Covers','Bottles','Keychains'],
+      'Corporate Gifts': ['Pens','Notebooks','Gift Hampers','Corporate T-shirts','Gift Boxes'],
+      'Business Essentials': ['Visiting Cards','Letterheads','Lanyards','Stamps','Banners']
+    };
+    function populateSub(){
+      const list = subMap[mainCategory.value] || [];
+      subCategory.innerHTML = '';
+      list.forEach(s=> subCategory.innerHTML += `<option>${s}</option>`);
+      if (!list.length) subCategory.innerHTML = '<option>Other</option>';
+    }
+    mainCategory.addEventListener('change', populateSub);
+    populateSub();
+
+    // Auth
+    signInBtn.addEventListener('click', async ()=>{
+      authMsg.textContent = '';
+      const e = adminEmail.value.trim(); const p = adminPassword.value;
+      if (!e || !p) { authMsg.textContent = 'Email and password required'; return; }
+      try{ await signInWithEmailAndPassword(auth, e, p); }
+      catch(err){ authMsg.textContent = 'Sign-in failed: ' + err.message; }
+    });
+    signOutBtn.addEventListener('click', async ()=>{ await signOut(auth); });
+
+    let unsubProducts=null, unsubOrders=null, unsubQuotes=null;
+    onAuthStateChanged(auth, user =>{
+      if (user){
+        authMsg.textContent = '';
+        signInBtn.style.display='none'; signOutBtn.style.display='inline-block';
+        panelArea.style.display='block'; document.getElementById('authCard').style.display='none';
+        startListeners();
+      } else {
+        signInBtn.style.display='inline-block'; signOutBtn.style.display='none';
+        panelArea.style.display='none'; document.getElementById('authCard').style.display='block';
+        stopListeners();
+      }
+    });
+
+    // SKU generator
+    function generateSKU(category){
+      const prefix = (category || 'PR').split(' ').map(w=>w[0]).join('').toUpperCase();
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.floor(Math.random()*900+100).toString();
+      return `${prefix}-${ts}-${rnd}`;
+    }
+
+    // Preview uploads
+    pFiles.addEventListener('change', ()=>{
+      uploadPreview.innerHTML = '';
+      Array.from(pFiles.files || []).forEach(f=>{
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img'); img.src = url;
+        img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
+        uploadPreview.appendChild(img);
+      });
+    });
+
+    // Save product
+    saveProduct.addEventListener('click', async ()=>{
+      prodMsg.style.color = ''; prodMsg.textContent = '';
+      const name = pName.value.trim(); if(!name) { prodMsg.style.color = '#b91c1c'; prodMsg.textContent='Product name required'; return; }
+      const mainCat = mainCategory.value; const subCat = subCategory.value || 'Other';
+      const price = parseFloat(pPrice.value) || 0;
+      const oldPrice = parseFloat(pOldPrice.value) || 0;
+      const stock = parseInt(pStock.value) || 0;
+      const sku = pSKU.value || generateSKU(mainCat);
+
+      const product = {
+        name,
+        mainCategory: mainCat,
+        subCategory: subCat,
+        category: `${mainCat} • ${subCat}`, // helps front-end grouping too
+        price,
+        oldPrice: oldPrice || null,
+        sku,
+        description: pDescription.value.trim(),
+        sizes: (pSizes.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        colors: (pColors.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        tags: (pTags.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        minQty: parseInt(pMinQty.value) || 1,
+        type: pTypeSelect.value || 'ready-made',
+        deliveryEstimate: pDelivery.value.trim() || '',
+        stock,
+        vendor: pVendor.value.trim() || 'Prabha Graphics',
+        material: pMaterial.value.trim() || '',
+        dimensions: pDimensions.value.trim() || '',
+        weight: pWeight.value.trim() || '',
+        createdAt: serverTimestamp()
+      };
+
+      // Upload files if any
+      const files = Array.from(pFiles.files || []);
+      product.images = [];
+      try{
+        for(const f of files){
+          const path = `products/${sku}_${Date.now()}_${f.name}`;
+          const r = storageRef(storage, path);
+          const task = uploadBytesResumable(r, f);
+          await new Promise((res,rej)=> task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{
+            product.images.push(await getDownloadURL(task.snapshot.ref)); res();
+          }));
+        }
+      }catch(err){
+        console.error('upload failed', err);
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Upload failed: ' + err.message;
+      }
+
+      if (pImageUrl.value && !product.images.length) product.images.push(pImageUrl.value.trim());
+
+      try{
+        if(prodId.value){
+          await updateDoc(doc(db, 'products', prodId.value), product);
+          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product updated';
+        } else {
+          await addDoc(collection(db, 'products'), product);
+          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product added';
+        }
+        deleteProduct.style.display = prodId.value ? 'inline-block' : 'none';
+        setTimeout(()=> clearForm(), 900);
+      }catch(err){
+        console.error(err);
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Save failed: ' + err.message;
+      }
+    });
+
+    // Delete product
+    deleteProduct.addEventListener('click', async ()=>{
+      if(!prodId.value) return;
+      if(!confirm('Delete this product? This cannot be undone.')) return;
+      try{
+        await deleteDoc(doc(db, 'products', prodId.value));
+        prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product deleted';
+        setTimeout(()=> clearForm(), 700);
+      }catch(err){
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Delete failed: ' + err.message;
+      }
+    });
+
+    clearProduct.addEventListener('click', clearForm);
+    function clearForm(){
+      prodId.value=''; pName.value=''; pPrice.value=''; pOldPrice.value='';
+      pSKU.value=''; pImageUrl.value=''; pFiles.value=''; uploadPreview.innerHTML='';
+      pDescription.value=''; pSizes.value=''; pColors.value=''; pTags.value='';
+      pMinQty.value=''; pTypeSelect.value='ready-made'; pDelivery.value='';
+      pStock.value=''; pVendor.value=''; pMaterial.value=''; pDimensions.value='';
+      pWeight.value=''; prodMsg.textContent='';
+      deleteProduct.style.display='none';
+    }
+
+    // Listeners
+    function startListeners(){
+      if (unsubProducts) return;
+
+      unsubProducts = onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap=>{
+        productsList.innerHTML = '';
+        snap.forEach(docSnap=>{
+          const d = docSnap.data(); d.id = docSnap.id;
+          const el = document.createElement('div'); el.className='product-item';
+          const discount = d.oldPrice && d.price && d.oldPrice > d.price ? Math.round(((d.oldPrice - d.price)/d.oldPrice)*100) : 0;
+          el.innerHTML = `
+            <img src="${escapeHtml((d.images && d.images[0]) || d.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image')}" alt="">
+            <div class="product-body">
+              <strong>${escapeHtml(d.name)}</strong>
+              <div class="muted">${escapeHtml(d.mainCategory || '')} • ${escapeHtml(d.subCategory || '')}</div>
+              <div style="display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:6px">
+                <div style="display:flex;gap:8px;align-items:center">
+                  ${discount ? `<span class="status-badge">-${discount}%</span>` : `<span class="status-badge">${escapeHtml(d.type||'ready-made')}</span>`}
+                  ${d.oldPrice ? `<span class="muted" style="text-decoration:line-through">₹${escapeHtml(String(d.oldPrice))}</span>` : ''}
+                </div>
+                <div style="color:var(--primary);font-weight:700">₹${escapeHtml(String(d.price || 0))}</div>
+              </div>
+              <div class="muted">SKU: ${escapeHtml(d.sku || '')}</div>
+              <div class="actions">
+                <button class="btn small edit-btn" data-id="${d.id}">Edit</button>
+                <button class="btn secondary small quick-order-btn" data-id="${d.id}">WhatsApp</button>
+                <button class="btn danger small delete-btn" data-id="${d.id}">Delete</button>
+              </div>
+            </div>
+          `;
+          productsList.appendChild(el);
+        });
+
+        // handlers
+        document.querySelectorAll('.edit-btn').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id;
+          const dref = doc(db,'products',id);
+          const snap = await getDoc(dref);
+          if(!snap.exists()) return alert('Not found');
+          const d = snap.data();
+          prodId.value = snap.id;
+          mainCategory.value = d.mainCategory || 'Apparel';
+          populateSub();
+          subCategory.value = d.subCategory || subCategory.value;
+          pName.value = d.name || '';
+          pPrice.value = d.price || 0;
+          pOldPrice.value = d.oldPrice || '';
+          pSKU.value = d.sku || generateSKU(mainCategory.value);
+          pImageUrl.value = (d.images && d.images[0]) || d.imageUrl || '';
+          pDescription.value = d.description || '';
+          pSizes.value = (d.sizes||[]).join(',');
+          pColors.value = (d.colors||[]).join(',');
+          pTags.value = (d.tags||[]).join(',');
+          pMinQty.value = d.minQty || 1;
+          pTypeSelect.value = d.type || 'ready-made';
+          pDelivery.value = d.deliveryEstimate || '';
+          pStock.value = d.stock || '';
+          pVendor.value = d.vendor || 'Prabha Graphics';
+          pMaterial.value = d.material || '';
+          pDimensions.value = d.dimensions || '';
+          pWeight.value = d.weight || '';
+          uploadPreview.innerHTML = '';
+          (d.images||[]).forEach(u=>{
+            const img=document.createElement('img'); img.src=u;
+            img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
+            uploadPreview.appendChild(img);
+          });
+          deleteProduct.style.display='inline-block';
+          window.scrollTo({top:0,behavior:'smooth'});
+        });
+
+        document.querySelectorAll('.quick-order-btn').forEach(b=> b.onclick = ()=>{
+          const id=b.dataset.id;
+          const d = snapFind(id);
+          if(!d) return;
+          const msg = `Hi, query about: ${d.name} (SKU: ${d.sku || '-'})`;
+          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(msg)}`, '_blank');
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id;
+          if(!confirm('Delete product?')) return;
+          try{ await deleteDoc(doc(db,'products',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+
+        filterProductsUI();
+      });
+
+      unsubOrders = onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap=>{
+        ordersArea.innerHTML='';
+        snap.forEach(s=>{
+          const o = s.data(); const id = s.id;
+          const el = document.createElement('div'); el.className='order-card';
+          el.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>${escapeHtml(o.productName||'')}</strong>
+                <div class="muted">SKU: ${escapeHtml(o.productSnapshot && o.productSnapshot.sku || '')}</div>
+                <div class="muted">${escapeHtml(o.customerName||'')} • ${escapeHtml(o.customerPhone||'')}</div>
+              </div>
+              <div style="text-align:right">
+                <div class="status-badge">${escapeHtml(o.status||'pending')}</div>
+                <div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+                  <button class="btn small set-status" data-id="${id}" data-status="processing">Processing</button>
+                  <button class="btn small set-status" data-id="${id}" data-status="shipped">Shipped</button>
+                  <button class="btn small set-status" data-id="${id}" data-status="completed">Completed</button>
+                  <button class="btn danger small delete-order" data-id="${id}">Delete</button>
+                </div>
+              </div>
+            </div>
+          `;
+          ordersArea.appendChild(el);
+        });
+
+        document.querySelectorAll('.delete-order').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; if(!confirm('Delete order?')) return;
+          try{ await deleteDoc(doc(db,'orders',id)); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+        document.querySelectorAll('.set-status').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; const status=b.dataset.status;
+          try{ await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); } catch(err){ console.error(err); }
+        });
+      });
+
+      unsubQuotes = onSnapshot(query(collection(db,'quotes'), orderBy('createdAt','desc')), snap=>{
+        quotesArea.innerHTML='';
+        snap.forEach(qsnap=>{
+          const q = qsnap.data(); const id = qsnap.id;
+          const el = document.createElement('div'); el.className='order-card';
+          el.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>${escapeHtml(q.productName||'')}</strong>
+                <div class="muted">${escapeHtml(q.name||'')} • ${escapeHtml(q.phone||'')}</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn small whatsapp-quote" data-id="${id}">WhatsApp</button>
+                <button class="btn danger small delete-quote" data-id="${id}">Delete</button>
+              </div>
+            </div>
+          `;
+          quotesArea.appendChild(el);
+        });
+
+        document.querySelectorAll('.delete-quote').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; if(!confirm('Delete quote?')) return;
+          try{ await deleteDoc(doc(db,'quotes',id)); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+        document.querySelectorAll('.whatsapp-quote').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; const qsnap = await getDoc(doc(db,'quotes',id));
+          if(!qsnap.exists()) return;
+          const q = qsnap.data();
+          const text = `Quote request: ${q.productName || '-'}\nName: ${q.name || '-'}\nPhone: ${q.phone || '-'}\nQty: ${q.quantity || '-'}\nNote: ${q.note || '-'}`;
+          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(text)}`, '_blank');
+        });
+      });
+    }
+
+    function stopListeners(){
+      if(unsubProducts){ unsubProducts(); unsubProducts=null; }
+      if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+      if(unsubQuotes){ unsubQuotes(); unsubQuotes=null; }
+      productsList.innerHTML=''; ordersArea.innerHTML=''; quotesArea.innerHTML='';
+    }
+
+    // Search + filter
+    searchInput?.addEventListener('input', filterProductsUI);
+    filterCategory?.addEventListener('change', filterProductsUI);
+    function filterProductsUI(){
+      const q = (searchInput.value||'').toLowerCase();
+      const cat = (filterCategory.value||'').toLowerCase();
+      document.querySelectorAll('#productsList .product-item').forEach(el=>{
+        const text = (el.textContent||'').toLowerCase();
+        const matchesQ = !q || text.includes(q);
+        const matchesCat = !cat || text.includes(cat);
+        el.style.display = (matchesQ && matchesCat) ? '' : 'none';
+      });
+    }
+
+    function snapFind(id){
+      const el = [...document.querySelectorAll('#productsList .product-item .edit-btn')].find(b=> b.dataset.id===id);
+      if(!el) return null;
+      // quick lookup via stored window map if you want to extend
+      return null;
+    }
+
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"'\\]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\\':'&#92;'})[m]); }
+
+    // Escape to close any menus (future) or reset sticky messages
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ prodMsg.textContent=''; }
+    });
+  </script>
+
+  <p style="text-align:center;color:#666;font-size:13px;margin:16px 0">
+    Tip: Protect Firestore with rules so only authenticated admins can write products and update orders. Allow unauthenticated creates for orders/quotes.
+  </p>
+</body>
+</html>
