@@ -22,8 +22,6 @@
       --gap:16px;
       --radius:12px;
       --nav-height:72px;
-      --break-sm:520px;
-      --break-md:900px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -64,6 +62,31 @@
     .hero-figure{width:260px;border-radius:12px;overflow:hidden;flex-shrink:0}
     .hero-figure img{width:100%;height:100%;display:block;object-fit:cover}
 
+    /* Compact filter bar */
+    .filter-bar-sm{
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+      gap:8px;
+      align-items:center;
+      margin:10px 0;
+      background:#fff;
+      border:1px solid #e5e7eb;
+      box-shadow: var(--card);
+      border-radius:10px;
+      padding:10px;
+    }
+    .f-group{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .f-label{font-size:11px;color:#6b7280;font-weight:600}
+    .f-select,.f-input{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid #e6e6e6;
+      font-size:13px;
+      background:#fff;
+    }
+    .f-search{grid-column: span 2}
+
     /* Categories */
     .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap);margin:22px 0}
     .category-card{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;min-height:140px;background:#fff;box-shadow:var(--card);transition:transform .18s,box-shadow .18s}
@@ -102,7 +125,6 @@
     .thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
     .thumbs img{width:68px;height:68px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
     .thumbs img.active{border-color:var(--primary)}
-    .rating{display:flex;gap:6px;align-items:center;color:#b45309;font-weight:600}
     .price-row{display:flex;gap:12px;align-items:baseline;margin:10px 0}
     .price-row .big{font-size:22px;color:var(--primary);font-weight:800}
     .saving{color:#065f46;background:#dcfce7;padding:6px 8px;border-radius:8px;font-weight:600}
@@ -140,8 +162,8 @@
     .footer-list{list-style:none;padding:0;margin:0;color:#9aa3b2;display:flex;flex-direction:column;gap:8px}
     .footer-contact{color:#9aa3b2;margin:0;display:flex;gap:8px;align-items:center}
 
-    /* Responsive */
-    @media (max-width:900px){
+    /* Laptop / tablets */
+    @media (max-width: 1024px){
       .nav-links{display:none;position:fixed;inset:var(--nav-height) 12px auto 12px;background:#fff;border-radius:10px;padding:16px;flex-direction:column;gap:12px;box-shadow:0 12px 60px rgba(2,6,23,0.08);max-height:70vh;overflow:auto}
       .nav-links.show{display:flex}
       .hamburger{display:block}
@@ -149,14 +171,26 @@
       .main-image{height:320px}
       .hero-grid{flex-direction:column;align-items:flex-start}
       .hero-figure{width:100%;max-width:360px}
+      .filter-bar-sm{grid-template-columns: repeat(3, minmax(0,1fr))}
+      .f-search{grid-column: span 3}
     }
-    @media (max-width:520px){
+    /* Mobile */
+    @media (max-width:560px){
       .hero{min-height:200px;padding:18px 0}
       .product-card img{height:140px}
       .logo-text{display:none}
       .main-image{height:220px}
       .products-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
       .thumbs img{width:56px;height:56px}
+      .filter-bar-sm{grid-template-columns: 1fr 1fr}
+      .f-label{font-size:10px}
+      .f-select,.f-input{padding:8px;font-size:13px}
+      .f-search{grid-column: span 2}
+    }
+    /* Ultra-small phones */
+    @media (max-width:380px){
+      .filter-bar-sm{grid-template-columns: 1fr}
+      .f-search{grid-column: span 1}
     }
 
     /* focus styles */
@@ -181,9 +215,9 @@
       <ul class="nav-links" id="navLinks" role="menubar">
         <li role="none"><a class="nav-link" role="menuitem" href="index.html#home">Home</a></li>
         <li role="none"><a class="nav-link" role="menuitem" href="index.html#about">About Us</a></li>
-        <li role="none"><a class="nav-link" role="menuitem" href="products.html#corporate">Corporate Gifts</a></li>
-        <li role="none"><a class="nav-link" role="menuitem" href="products.html#personalized">Personalized Gifts</a></li>
-        <li role="none"><a class="nav-link" role="menuitem" href="products.html#business">Business Essentials</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="#corporate">Corporate Gifts</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="#personalized">Personalized Gifts</a></li>
+        <li role="none"><a class="nav-link" role="menuitem" href="#business">Business Essentials</a></li>
         <li role="none"><a class="nav-link" role="menuitem" href="index.html#contact">Contact Us</a></li>
       </ul>
 
@@ -199,11 +233,68 @@
       <div class="container hero-grid">
         <div class="left">
           <h1 id="heroTitle">All Products — Find exactly what you need</h1>
-          <p>Browse corporate gifts, promotional items, personalized treasures, business essentials and ready-made products. Tap a category or use the search (coming soon) to jump straight to what you want.</p>
+          <p>Browse corporate gifts, personalized treasures, business essentials and apparel. Use the compact filters to jump straight to what you want.</p>
         </div>
         <figure class="hero-figure" aria-hidden="true">
           <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1556821552-5f73541e6b1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600" alt="Catalog hero"/>
         </figure>
+      </div>
+    </section>
+
+    <!-- Compact filter bar -->
+    <section class="section" id="browse" aria-label="Browse products">
+      <div class="container">
+        <h2>Browse products</h2>
+
+        <div class="filter-bar-sm" role="search">
+          <div class="f-group">
+            <label for="fMain" class="f-label">Category</label>
+            <select id="fMain" class="f-select">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="f-group">
+            <label for="fSub" class="f-label">Sub</label>
+            <select id="fSub" class="f-select" disabled>
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="f-group">
+            <label for="fItem" class="f-label">Item</label>
+            <select id="fItem" class="f-select" disabled>
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="f-group">
+            <label for="fType" class="f-label">Type</label>
+            <select id="fType" class="f-select">
+              <option value="">All</option>
+              <option value="ready-made">Ready-made</option>
+              <option value="customized">Customized</option>
+            </select>
+          </div>
+
+          <div class="f-group">
+            <label for="fSort" class="f-label">Sort</label>
+            <select id="fSort" class="f-select">
+              <option value="newest">Newest</option>
+              <option value="priceLow">Low → High</option>
+              <option value="priceHigh">High → Low</option>
+              <option value="discount">Best discount</option>
+            </select>
+          </div>
+
+          <div class="f-group f-search">
+            <label for="fSearch" class="f-label">Search</label>
+            <input id="fSearch" type="text" class="f-input" placeholder="Search…">
+          </div>
+        </div>
+
+        <div id="resultsGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="resultsEmpty" class="empty" style="display:none">No matching products. Try another filter.</div>
       </div>
     </section>
 
@@ -260,14 +351,13 @@
       </section>
     </div>
 
-    <!-- Product detail modal (accessible) -->
+    <!-- Product detail modal (rating removed) -->
     <div id="detailModal" class="modal-bg" role="dialog" aria-hidden="true" aria-labelledby="dTitle" aria-modal="true">
       <div class="modal" role="document">
         <div class="top">
           <div>
             <h2 id="dTitle" style="margin:0"></h2>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-              <div class="rating" id="dRating"><i class="fa fa-star" aria-hidden="true"></i> <span id="dRatingVal">4.7</span></div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
               <span class="badge" id="dAvailability">In stock</span>
               <span class="badge" id="dDeliveryBadge">Delivery in 3-6 days</span>
               <span class="badge" id="dSkuBadge">SKU: —</span>
@@ -424,7 +514,7 @@
     </footer>
   </main>
 
-  <!-- Firebase + App Logic (keeps original functionality, improved accessibility & focus handling) -->
+  <!-- Firebase + App Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
@@ -458,6 +548,16 @@
       apparel: document.getElementById('apparelEmpty'),
       other: document.getElementById('otherEmpty')
     };
+
+    // Filter bar refs
+    const fMain = document.getElementById('fMain');
+    const fSub  = document.getElementById('fSub');
+    const fItem = document.getElementById('fItem');
+    const fType = document.getElementById('fType');
+    const fSort = document.getElementById('fSort');
+    const fSearch = document.getElementById('fSearch');
+    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsEmpty = document.getElementById('resultsEmpty');
 
     // Detail modal refs
     const detailModal = document.getElementById('detailModal');
@@ -493,6 +593,7 @@
     const orderCancelBtn = document.getElementById('orderCancelBtn');
 
     let activeProduct = null;
+    let allProducts = [];
 
     // Real-time products
     const qProducts = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
@@ -501,8 +602,11 @@
       corporateGrid.innerHTML = personalizedGrid.innerHTML = businessGrid.innerHTML = apparelGrid.innerHTML = otherGrid.innerHTML = '';
       const counts = {corporate:0,personalized:0,business:0,apparel:0,other:0};
 
+      allProducts = [];
+
       snapshot.forEach(docSnap => {
         const p = docSnap.data(); p.id = docSnap.id;
+        allProducts.push(p);
         const card = createProductCard(p);
         const cat = (p.category || '').toLowerCase();
         if (cat.includes('corporate') || cat.includes('promot')) { corporateGrid.appendChild(card); counts.corporate++; }
@@ -514,6 +618,10 @@
 
       // toggle empties
       Object.keys(empties).forEach(k => empties[k].style.display = (counts[k] === 0 ? 'block' : 'none'));
+
+      // Build filters and render results
+      buildFilterOptions();
+      renderResults();
 
       // preserve hash scroll
       setTimeout(()=> {
@@ -528,7 +636,7 @@
       const discount = p.oldPrice && p.price && p.oldPrice > p.price ? Math.round(((p.oldPrice - p.price)/p.oldPrice)*100) : 0;
       const img = (p.images && p.images[0]) || p.image || '';
       card.innerHTML = `
-        <img loading="lazy" decoding="async" src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"/>
+        <img loading="lazy" decoding="async" src="${escapeHtml(img || 'https://via.placeholder.com/400x300?text=No+Image')}" alt="${escapeHtml(p.name)}"/>
         <div class="product-body">
           <div>
             <div class="product-title">${escapeHtml(p.name)}</div>
@@ -536,7 +644,7 @@
           </div>
           <div class="product-desc">${escapeHtml((p.description||'').slice(0,90))}...</div>
           <div class="product-footer">
-            ${discount ? `<span class="badge">-${discount}%</span>` : `<span class="badge">${escapeHtml(p.type||'ready')}</span>`}
+            ${discount ? `<span class="badge">-${discount}%</span>` : `<span class="badge">${escapeHtml(p.type||'ready-made')}</span>`}
             ${p.oldPrice ? `<span class="old">₹${escapeHtml(String(p.oldPrice))}</span>` : ''}
             <div class="price">₹${escapeHtml(String(p.price||0))}</div>
             <button class="btn" type="button" onclick='openDetail("${p.id}")' aria-label="View product details">View</button>
@@ -565,7 +673,7 @@
       activeProduct = p;
 
       dTitle.textContent = p.name || '';
-      dMainImage.src = (p.images && p.images[0]) || p.image || '';
+      dMainImage.src = (p.images && p.images[0]) || p.image || 'https://via.placeholder.com/800x600?text=No+Image';
       dThumbs.innerHTML = '';
       (p.images || []).forEach((u, i) => {
         const t = document.createElement('img'); t.src = u; if(i===0) t.classList.add('active');
@@ -843,11 +951,90 @@
         }
       };
       container.addEventListener('keydown', _trap);
-      // focus first element
       setTimeout(()=> first && first.focus(), 50);
     }
     function releaseTrap(){ if(!_trap) return; document.removeEventListener('keydown', _trap); _trap = null; }
 
+    /* ---------- Unified filter logic ---------- */
+    const uniq = arr => Array.from(new Set(arr.filter(Boolean))).sort((a,b)=> a.localeCompare(b));
+    function parseMainFromCategory(cat='') {
+      const parts = String(cat).split('•').map(s=>s.trim());
+      return parts[0] || '';
+    }
+    function parseSubFromCategory(cat='') {
+      const parts = String(cat).split('•').map(s=>s.trim());
+      return parts[1] || '';
+    }
+
+    function buildFilterOptions() {
+      const mains = uniq(allProducts.map(p => p.mainCategory || parseMainFromCategory(p.category)));
+      const prevMain = fMain.value;
+      fMain.innerHTML = '<option value="">All</option>' + mains.map(m=>`<option>${escapeHtml(m)}</option>`).join('');
+      if (mains.includes(prevMain)) fMain.value = prevMain;
+
+      const selMain = fMain.value;
+      const scoped = selMain ? allProducts.filter(p => (p.mainCategory || parseMainFromCategory(p.category)) === selMain) : allProducts;
+
+      const subs = uniq(scoped.map(p => p.subCategory || parseSubFromCategory(p.category)));
+      const prevSub = fSub.value;
+      fSub.innerHTML = '<option value="">All</option>' + subs.map(s=>`<option>${escapeHtml(s)}</option>`).join('');
+      fSub.disabled = subs.length === 0;
+      if (subs.includes(prevSub)) fSub.value = prevSub;
+
+      const selSub = fSub.value;
+      const scoped2 = scoped.filter(p => !selSub || (p.subCategory || parseSubFromCategory(p.category)) === selSub);
+      const names = uniq(scoped2.map(p => p.name));
+      const prevItem = fItem.value;
+      fItem.innerHTML = '<option value="">All</option>' + names.map(n=>`<option>${escapeHtml(n)}</option>`).join('');
+      fItem.disabled = names.length === 0;
+      if (names.includes(prevItem)) fItem.value = prevItem;
+    }
+
+    function renderResults() {
+      let list = [...allProducts];
+
+      const selMain = fMain.value;
+      const selSub  = fSub.value;
+      const selItem = fItem.value;
+      const selType = fType.value;
+      const term = (fSearch.value || '').toLowerCase();
+
+      if (selMain) list = list.filter(p => (p.mainCategory || parseMainFromCategory(p.category)) === selMain);
+      if (selSub)  list = list.filter(p => (p.subCategory || parseSubFromCategory(p.category)) === selSub);
+      if (selItem) list = list.filter(p => (p.name || '') === selItem);
+      if (selType) list = list.filter(p => (p.type || 'ready-made') === selType);
+
+      if (term) {
+        list = list.filter(p =>
+          (p.name || '').toLowerCase().includes(term) ||
+          (p.description || '').toLowerCase().includes(term) ||
+          (p.sku || '').toLowerCase().includes(term) ||
+          (p.tags || []).some(t => String(t).toLowerCase().includes(term))
+        );
+      }
+
+      switch (fSort.value) {
+        case 'priceLow': list.sort((a,b)=> (a.price||0) - (b.price||0)); break;
+        case 'priceHigh': list.sort((a,b)=> (b.price||0) - (a.price||0)); break;
+        case 'discount':
+          const disc = p => (p.oldPrice && p.price && p.oldPrice > p.price) ? ((p.oldPrice-p.price)/p.oldPrice) : 0;
+          list.sort((a,b)=> disc(b) - disc(a));
+          break;
+        case 'newest':
+        default:
+          list.sort((a,b)=> (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      }
+
+      resultsGrid.innerHTML = '';
+      list.forEach(p => resultsGrid.appendChild(createProductCard(p)));
+      resultsEmpty.style.display = list.length ? 'none' : 'block';
+    }
+
+    [fMain, fSub, fItem, fType, fSort].forEach(el => el.addEventListener('change', ()=>{
+      if (el === fMain || el === fSub) buildFilterOptions();
+      renderResults();
+    }));
+    fSearch.addEventListener('input', renderResults);
   </script>
 </body>
 </html>
