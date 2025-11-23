@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Prabha Graphics - Catalog" />
   <title>Prabha Graphics — Products</title>
 
@@ -18,7 +18,12 @@
       --muted:#6b7280;
       --bg:#fbfbfd;
       --card:0 10px 30px rgba(2,6,23,0.06);
-      --max:1280px;
+      --max:1200px;
+      --gap:16px;
+      --radius:12px;
+      --nav-height:72px;
+      --break-sm:520px;
+      --break-md:900px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -26,63 +31,76 @@
       font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
       background:var(--bg); color:var(--dark); margin:0; line-height:1.45;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    /* Skip link for keyboard users */
+    .skip-link{
+      position:fixed;left:8px;top:8px;background:#000;color:#fff;padding:8px 12px;border-radius:8px;z-index:9999;transform:translateY(-120%);transition:transform .18s;}
+    .skip-link:focus{transform:translateY(0)}
+
     .container{max-width:var(--max);margin:0 auto;padding:0 20px}
 
     /* Header */
-    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1100;transition:all .28s}
+    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1100;transition:all .28s;height:var(--nav-height);display:flex;align-items:center}
     .navbar.scrolled{box-shadow:var(--card);backdrop-filter:blur(4px)}
-    .nav-container{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .nav-container{width:100%;display:flex;align-items:center;gap:16px;justify-content:space-between}
     .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer}
-    .logo-img{width:48px;height:48px;border-radius:8px;object-fit:contain}
-    .logo-text{font-weight:700}
-    .nav-links{display:flex;gap:18px;list-style:none;align-items:center}
-    .nav-link{color:var(--dark);text-decoration:none;font-weight:500;position:relative;padding:6px 0}
-    .nav-link::after{content:'';position:absolute;left:0;right:0;height:2px;background:var(--primary);bottom:-6px;transform:scaleX(0);transform-origin:left center;transition:transform .22s}
-    .nav-link:hover::after{transform:scaleX(1)}
-    .cta-btn{background:var(--primary);color:#fff;padding:8px 16px;border-radius:8px;border:0;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(209,0,7,0.12)}
+    .logo-img{width:44px;height:44px;border-radius:8px;object-fit:contain}
+    .logo-text{font-weight:700;font-size:16px}
+    .nav-actions{display:flex;gap:12px;align-items:center}
+
+    .nav-links{display:flex;gap:18px;list-style:none;align-items:center;margin:0;padding:0}
+    .nav-link{color:var(--dark);text-decoration:none;font-weight:500;position:relative;padding:8px 6px;border-radius:8px}
+    .nav-link:hover,.nav-link:focus{background:#fff6f6}
+    .cta-btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(209,0,7,0.12)}
     .hamburger{display:none;border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--dark)}
 
     /* Hero */
-    .hero{height:320px;background:linear-gradient(90deg,#fff7f7,#fff);display:flex;align-items:center;margin-top:76px}
-    .hero .container{display:flex;gap:24px;align-items:center}
-    .hero h1{font-size:32px;margin:0 0 8px 0}
-    .hero p{color:var(--muted);margin:0}
+    .hero{min-height:220px;background:linear-gradient(90deg,#fff7f7,#fff);display:flex;align-items:center;margin-top:var(--nav-height);padding:28px 0}
+    .hero-grid{display:flex;gap:24px;align-items:center;justify-content:space-between}
+    .hero h1{font-size:26px;margin:0 0 8px 0}
+    .hero p{color:var(--muted);margin:0;max-width:58ch}
+    .hero-figure{width:260px;border-radius:12px;overflow:hidden;flex-shrink:0}
+    .hero-figure img{width:100%;height:100%;display:block;object-fit:cover}
 
     /* Categories */
-    .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:24px 0}
-    .category-card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;min-height:160px;background:#fff;box-shadow:var(--card);transition:transform .18s}
-    .category-card:hover{transform:translateY(-6px)}
+    .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap);margin:22px 0}
+    .category-card{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;min-height:140px;background:#fff;box-shadow:var(--card);transition:transform .18s,box-shadow .18s}
+    .category-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(2,6,23,0.08)}
     .category-card img{width:100%;height:100%;object-fit:cover;display:block}
-    .category-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.5));display:flex;align-items:flex-end;padding:16px;color:#fff}
-    .category-overlay h3{margin:0;font-size:18px}
+    .category-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.45));display:flex;align-items:flex-end;padding:14px;color:#fff}
+    .category-overlay h3{margin:0;font-size:16px}
     .category-overlay p{margin:4px 0 0 0;font-size:13px;opacity:0.95}
 
-    /* Sections + product grid */
-    .section{margin:24px 0}
-    .section h2{margin:0 0 12px 0;font-size:20px}
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    /* Product grid */
+    .section{margin:18px 0;padding-bottom:6px}
+    .section h2{margin:0 0 12px 0;font-size:18px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
     .product-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--card);display:flex;flex-direction:column;transition:transform .18s}
     .product-card:hover{transform:translateY(-6px)}
-    .product-card img{width:100%;height:170px;object-fit:cover}
+    .product-card img{width:100%;height:180px;object-fit:cover}
     .product-body{padding:12px;display:flex;flex-direction:column;gap:8px}
-    .product-title{font-size:16px;font-weight:700}
+    .product-title{font-size:15px;font-weight:700}
     .product-vendor{color:var(--muted);font-size:13px}
-    .product-desc{color:#334155;font-size:14px}
-    .product-footer{display:flex;align-items:center;gap:10px;margin-top:8px}
-    .badge{background:#f1f5f9;color:#0f172a;padding:4px 8px;border-radius:999px;font-size:12px}
+    .product-desc{color:#334155;font-size:13px}
+    .product-footer{display:flex;align-items:center;gap:8px;margin-top:8px}
+    .badge{background:#f1f5f9;color:#0f172a;padding:6px 9px;border-radius:999px;font-size:12px}
     .price{font-weight:800;color:var(--primary);margin-left:auto}
     .old{color:#9ca3af;text-decoration:line-through;font-size:13px}
 
+    /* Empty state */
+    .empty{padding:24px;border-radius:12px;background:#fff;text-align:center;color:var(--muted);box-shadow:var(--card)}
+
     /* Modal */
-    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.5);z-index:2200;padding:18px}
-    .modal{width:100%;max-width:1050px;background:#fff;border-radius:12px;padding:18px;max-height:94vh;overflow:auto;box-shadow:0 30px 60px rgba(2,6,23,0.22)}
+    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:2200;padding:18px}
+    .modal{width:100%;max-width:980px;background:#fff;border-radius:12px;padding:18px;max-height:92vh;overflow:auto;box-shadow:0 30px 60px rgba(2,6,23,0.22)}
     .modal .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-    .modal .left{flex:0 1 440px;min-width:280px}
-    .modal .right{flex:1;min-width:320px}
-    .main-image{width:100%;height:400px;object-fit:cover;border-radius:10px;border:1px solid #f1f5f9;background:#fff;display:block}
+    .modal .left{flex:0 1 420px;min-width:260px}
+    .modal .right{flex:1;min-width:240px}
+    .main-image{width:100%;height:420px;object-fit:cover;border-radius:10px;border:1px solid #f1f5f9;background:#fff;display:block}
     .thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-    .thumbs img{width:74px;height:74px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+    .thumbs img{width:68px;height:68px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
     .thumbs img.active{border-color:var(--primary)}
     .rating{display:flex;gap:6px;align-items:center;color:#b45309;font-weight:600}
     .price-row{display:flex;gap:12px;align-items:baseline;margin:10px 0}
@@ -124,31 +142,40 @@
 
     /* Responsive */
     @media (max-width:900px){
-      .nav-links{display:none;position:fixed;inset:68px 16px auto 16px;background:#fff;border-radius:10px;padding:16px;flex-direction:column;gap:12px;box-shadow:0 12px 60px rgba(2,6,23,0.08)}
+      .nav-links{display:none;position:fixed;inset:var(--nav-height) 12px auto 12px;background:#fff;border-radius:10px;padding:16px;flex-direction:column;gap:12px;box-shadow:0 12px 60px rgba(2,6,23,0.08);max-height:70vh;overflow:auto}
       .nav-links.show{display:flex}
       .hamburger{display:block}
       .nav-container{padding:10px 14px}
       .main-image{height:320px}
+      .hero-grid{flex-direction:column;align-items:flex-start}
+      .hero-figure{width:100%;max-width:360px}
     }
     @media (max-width:520px){
-      .hero{height:280px}
+      .hero{min-height:200px;padding:18px 0}
       .product-card img{height:140px}
       .logo-text{display:none}
       .main-image{height:220px}
+      .products-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+      .thumbs img{width:56px;height:56px}
     }
+
+    /* focus styles */
+    :focus{outline:3px solid rgba(209,0,7,0.18);outline-offset:2px}
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <!-- Header -->
   <nav class="navbar" id="navbar" aria-label="Primary Navigation">
     <div class="nav-container container" id="navContainer">
-      <div class="nav-logo" id="navLogo" onclick="location.href='index.html'">
+      <div class="nav-logo" id="navLogo" onclick="location.href='index.html'" role="button" tabindex="0">
         <img src="logo.png" alt="Prabha Graphics" class="logo-img"/>
         <span class="logo-text">Prabha Graphics</span>
       </div>
 
-      <button class="hamburger" id="hambBtn" aria-label="Toggle menu" title="Menu">
-        <i class="fa fa-bars"></i>
+      <button class="hamburger" id="hambBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu" title="Menu">
+        <i class="fa fa-bars" aria-hidden="true"></i>
       </button>
 
       <ul class="nav-links" id="navLinks" role="menubar">
@@ -160,223 +187,244 @@
         <li role="none"><a class="nav-link" role="menuitem" href="index.html#contact">Contact Us</a></li>
       </ul>
 
-      <div style="display:flex;gap:12px;align-items:center">
+      <div class="nav-actions">
         <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
       </div>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <div class="left">
-        <h1>All Products — Find exactly what you need</h1>
-        <p>Browse corporate gifts, promotional items, personalized treasures, business essentials and ready-made products. Click category to jump.</p>
-      </div>
-      <div class="right">
-        <img src="https://images.unsplash.com/photo-1556821552-5f73541e6b1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600" alt="Catalog hero" style="width:240px;border-radius:10px;object-fit:cover" />
-      </div>
-    </div>
-  </section>
-
-  <div class="container" style="padding-top:18px;">
-    <!-- Category cards -->
-    <div class="categories-grid">
-      <div class="category-card" onclick="scrollToSection('corporate')">
-        <img src="https://images.unsplash.com/photo-1612521334484-bfb1f3f0cedc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Corporate"/>
-        <div class="category-overlay"><div><h3>Corporate & Promotional</h3><p>Keychains, Pens, Gift Sets</p></div></div>
-      </div>
-      <div class="category-card" onclick="scrollToSection('personalized')">
-        <img src="https://images.unsplash.com/photo-1572302265669-2acefa827fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Personalized"/>
-        <div class="category-overlay"><div><h3>Personalized Gifts</h3><p>Mugs, Cushions, Photo Gifts</p></div></div>
-      </div>
-      <div class="category-card" onclick="scrollToSection('business')">
-        <img src="https://images.unsplash.com/photo-1599909695241-b6c7e2ae4e6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Business"/>
-        <div class="category-overlay"><div><h3>Business Essentials</h3><p>Visiting cards, Stationery</p></div></div>
-      </div>
-      <div class="category-card" onclick="scrollToSection('apparel')">
-        <img src="https://images.unsplash.com/photo-1586419604178-25ade1770efc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Apparel"/>
-        <div class="category-overlay"><div><h3>Apparel</h3><p>T-Shirts, Polo, Jackets</p></div></div>
-      </div>
-    </div>
-
-    <!-- Product Sections -->
-    <section id="corporate" class="section" aria-label="Corporate Gifts Section">
-      <h2>Corporate & Promotional</h2>
-      <div id="corporateGrid" class="products-grid"></div>
-    </section>
-
-    <section id="personalized" class="section" aria-label="Personalized Gifts Section">
-      <h2>Personalized Gifts</h2>
-      <div id="personalizedGrid" class="products-grid"></div>
-    </section>
-
-    <section id="business" class="section" aria-label="Business Essentials Section">
-      <h2>Business Essentials</h2>
-      <div id="businessGrid" class="products-grid"></div>
-    </section>
-
-    <section id="apparel" class="section" aria-label="Apparel Section">
-      <h2>Apparel & Wearables</h2>
-      <div id="apparelGrid" class="products-grid"></div>
-    </section>
-
-    <section id="other" class="section" aria-label="Other Products Section">
-      <h2>Other Products</h2>
-      <div id="otherGrid" class="products-grid"></div>
-    </section>
-  </div>
-
-  <!-- Product detail modal (Amazon-like) -->
-  <div id="detailModal" class="modal-bg" role="dialog" aria-hidden="true" aria-modal="true">
-    <div class="modal" role="document" aria-labelledby="dTitle">
-      <div class="top">
-        <div>
-          <h2 id="dTitle" style="margin:0"></h2>
-          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-            <div class="rating" id="dRating"><i class="fa fa-star"></i> 4.7</div>
-            <span class="badge" id="dAvailability">In stock</span>
-            <span class="badge" id="dDeliveryBadge">Delivery in 3-6 days</span>
-            <span class="badge" id="dSkuBadge">SKU: —</span>
-          </div>
-        </div>
-        <button class="btn ghost" id="detailCloseBtn" aria-label="Close">Close</button>
-      </div>
-
-      <div style="display:flex;gap:18px;margin-top:12px;flex-wrap:wrap">
+  <main id="main">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="container hero-grid">
         <div class="left">
-          <img id="dMainImage" class="main-image" src="" alt="product image"/>
-          <div class="thumbs" id="dThumbs"></div>
-          <div class="tags" id="dTagList"></div>
-          <div class="trust">
-            <div class="meta"><i class="fa fa-shield-alt"></i> Secure payments</div>
-            <div class="meta"><i class="fa fa-undo"></i> Easy returns</div>
-            <div class="meta"><i class="fa fa-truck"></i> Fast delivery</div>
+          <h1 id="heroTitle">All Products — Find exactly what you need</h1>
+          <p>Browse corporate gifts, promotional items, personalized treasures, business essentials and ready-made products. Tap a category or use the search (coming soon) to jump straight to what you want.</p>
+        </div>
+        <figure class="hero-figure" aria-hidden="true">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1556821552-5f73541e6b1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600" alt="Catalog hero"/>
+        </figure>
+      </div>
+    </section>
+
+    <div class="container" style="padding-top:6px;">
+      <!-- Category cards -->
+      <div class="categories-grid" role="list" aria-label="Product categories">
+        <div class="category-card" role="listitem" onclick="scrollToSection('corporate')" tabindex="0" onkeypress="if(event.key==='Enter')scrollToSection('corporate')">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1612521334484-bfb1f3f0cedc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Corporate"/>
+          <div class="category-overlay"><div><h3>Corporate & Promotional</h3><p>Keychains, Pens, Gift Sets</p></div></div>
+        </div>
+        <div class="category-card" role="listitem" onclick="scrollToSection('personalized')" tabindex="0" onkeypress="if(event.key==='Enter')scrollToSection('personalized')">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1572302265669-2acefa827fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Personalized"/>
+          <div class="category-overlay"><div><h3>Personalized Gifts</h3><p>Mugs, Cushions, Photo Gifts</p></div></div>
+        </div>
+        <div class="category-card" role="listitem" onclick="scrollToSection('business')" tabindex="0" onkeypress="if(event.key==='Enter')scrollToSection('business')">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1599909695241-b6c7e2ae4e6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Business"/>
+          <div class="category-overlay"><div><h3>Business Essentials</h3><p>Visiting cards, Stationery</p></div></div>
+        </div>
+        <div class="category-card" role="listitem" onclick="scrollToSection('apparel')" tabindex="0" onkeypress="if(event.key==='Enter')scrollToSection('apparel')">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1586419604178-25ade1770efc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Apparel"/>
+          <div class="category-overlay"><div><h3>Apparel</h3><p>T-Shirts, Polo, Jackets</p></div></div>
+        </div>
+      </div>
+
+      <!-- Product Sections -->
+      <section id="corporate" class="section" aria-label="Corporate Gifts Section">
+        <h2>Corporate & Promotional</h2>
+        <div id="corporateGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="corporateEmpty" class="empty" style="display:none">No products found in this category.</div>
+      </section>
+
+      <section id="personalized" class="section" aria-label="Personalized Gifts Section">
+        <h2>Personalized Gifts</h2>
+        <div id="personalizedGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="personalizedEmpty" class="empty" style="display:none">No products found in this category.</div>
+      </section>
+
+      <section id="business" class="section" aria-label="Business Essentials Section">
+        <h2>Business Essentials</h2>
+        <div id="businessGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="businessEmpty" class="empty" style="display:none">No products found in this category.</div>
+      </section>
+
+      <section id="apparel" class="section" aria-label="Apparel Section">
+        <h2>Apparel & Wearables</h2>
+        <div id="apparelGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="apparelEmpty" class="empty" style="display:none">No products found in this category.</div>
+      </section>
+
+      <section id="other" class="section" aria-label="Other Products Section">
+        <h2>Other Products</h2>
+        <div id="otherGrid" class="products-grid" aria-live="polite" aria-busy="false"></div>
+        <div id="otherEmpty" class="empty" style="display:none">No products found in this category.</div>
+      </section>
+    </div>
+
+    <!-- Product detail modal (accessible) -->
+    <div id="detailModal" class="modal-bg" role="dialog" aria-hidden="true" aria-labelledby="dTitle" aria-modal="true">
+      <div class="modal" role="document">
+        <div class="top">
+          <div>
+            <h2 id="dTitle" style="margin:0"></h2>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <div class="rating" id="dRating"><i class="fa fa-star" aria-hidden="true"></i> <span id="dRatingVal">4.7</span></div>
+              <span class="badge" id="dAvailability">In stock</span>
+              <span class="badge" id="dDeliveryBadge">Delivery in 3-6 days</span>
+              <span class="badge" id="dSkuBadge">SKU: —</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn ghost" id="detailCloseBtn" aria-label="Close product details">Close</button>
           </div>
         </div>
 
-        <div class="right">
-          <div id="dShortDesc" style="color:#111"></div>
-
-          <div class="price-row" aria-live="polite">
-            <div class="big" id="dPrice">₹0</div>
-            <div class="old" id="dOldPrice"></div>
-            <div class="saving" id="dSaving" style="display:none"></div>
-          </div>
-          <div class="stock" id="dStockInfo">Stock: -</div>
-
-          <div class="meta-row">
-            <div class="meta" id="dDimensions">Dimensions: -</div>
-            <div class="meta" id="dMaterial">Material: -</div>
-            <div class="meta" id="dWeight">Weight: -</div>
+        <div style="display:flex;gap:18px;margin-top:12px;flex-wrap:wrap">
+          <div class="left">
+            <img id="dMainImage" class="main-image" src="" alt="product image" loading="lazy" decoding="async"/>
+            <div class="thumbs" id="dThumbs" aria-hidden="false"></div>
+            <div class="tags" id="dTagList" aria-hidden="false"></div>
+            <div class="trust">
+              <div class="meta"><i class="fa fa-shield-alt" aria-hidden="true"></i> Secure payments</div>
+              <div class="meta"><i class="fa fa-undo" aria-hidden="true"></i> Easy returns</div>
+              <div class="meta"><i class="fa fa-truck" aria-hidden="true"></i> Fast delivery</div>
+            </div>
           </div>
 
-          <div style="margin-top:12px" id="dVariant"></div>
+          <div class="right">
+            <div id="dShortDesc" style="color:#111"></div>
 
-          <div class="specs" style="margin-top:12px">
-            <table id="dSpecsTable"></table>
+            <div class="price-row" aria-live="polite">
+              <div class="big" id="dPrice">₹0</div>
+              <div class="old" id="dOldPrice"></div>
+              <div class="saving" id="dSaving" style="display:none"></div>
+            </div>
+            <div class="stock" id="dStockInfo">Stock: -</div>
+
+            <div class="meta-row">
+              <div class="meta" id="dDimensions">Dimensions: -</div>
+              <div class="meta" id="dMaterial">Material: -</div>
+              <div class="meta" id="dWeight">Weight: -</div>
+            </div>
+
+            <div style="margin-top:12px" id="dVariant"></div>
+
+            <div class="specs" style="margin-top:12px">
+              <table id="dSpecsTable" aria-hidden="false"></table>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="dWhats"><i class="fa fa-whatsapp" style="margin-right:8px" aria-hidden="true"></i> WhatsApp</button>
+              <button class="btn secondary" id="dOrder">Order Now</button>
+              <button class="btn ghost" id="dShareBtn">Share</button>
+            </div>
+
+            <div style="margin-top:10px;color:var(--muted);font-size:13px" id="dVendor">Seller: —</div>
           </div>
-
-          <div class="actions">
-            <button class="btn" id="dWhats"><i class="fa fa-whatsapp" style="margin-right:8px"></i> WhatsApp</button>
-            <button class="btn secondary" id="dOrder">Order Now</button>
-            <button class="btn ghost" id="dShareBtn">Share</button>
-          </div>
-
-          <div style="margin-top:10px;color:var(--muted);font-size:13px" id="dVendor">Seller: —</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Order modal -->
-  <div id="orderModal" class="modal-bg" aria-hidden="true" aria-modal="true">
-    <div class="modal" role="document" aria-labelledby="orderTitle">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 id="orderTitle">Place Order</h3>
-        <button class="btn ghost" id="orderCloseBtn">Close</button>
-      </div>
-
-      <form id="orderForm" style="margin-top:12px" novalidate>
-        <div class="form-row">
-          <input id="oName" placeholder="Full name" required aria-required="true"/>
-          <input id="oPhone" placeholder="Phone (required)" required aria-required="true"/>
-        </div>
-        <div class="form-row">
-          <input id="oEmail" placeholder="Email (optional)" type="email"/>
-        </div>
-        <div class="form-row">
-          <input id="oLine1" placeholder="Address line 1 (house/building/street)"/>
-        </div>
-        <div class="form-row">
-          <input id="oLine2" placeholder="Address line 2 (area/landmark)"/>
-        </div>
-        <div class="form-row">
-          <input id="oCity" placeholder="City"/>
-          <input id="oState" placeholder="State"/>
-        </div>
-        <div class="form-row">
-          <input id="oPincode" placeholder="Pincode"/>
-          <input id="oCountry" placeholder="Country" value="India"/>
+    <!-- Order modal -->
+    <div id="orderModal" class="modal-bg" aria-hidden="true" aria-modal="true">
+      <div class="modal" role="document">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 id="orderTitle">Place Order</h3>
+          <button class="btn ghost" id="orderCloseBtn" aria-label="Close order form">Close</button>
         </div>
 
-        <div id="orderVariantBlock" style="margin-top:10px"></div>
+        <form id="orderForm" style="margin-top:12px" novalidate>
+          <div class="form-row">
+            <label style="display:none" for="oName">Full name</label>
+            <input id="oName" placeholder="Full name" required aria-required="true"/>
+            <label style="display:none" for="oPhone">Phone</label>
+            <input id="oPhone" placeholder="Phone (required)" required aria-required="true"/>
+          </div>
+          <div class="form-row">
+            <label style="display:none" for="oEmail">Email</label>
+            <input id="oEmail" placeholder="Email (optional)" type="email"/>
+          </div>
 
-        <div class="form-row">
-          <input id="oQty" type="number" min="1" value="1"/>
-          <select id="oPayment" aria-label="Payment method"><option>COD</option><option>Online</option></select>
-        </div>
+          <div class="form-row">
+            <label style="display:none" for="oLine1">Address line 1</label>
+            <input id="oLine1" placeholder="Address line 1 (house/building/street)"/>
+          </div>
+          <div class="form-row">
+            <label style="display:none" for="oLine2">Address line 2</label>
+            <input id="oLine2" placeholder="Address line 2 (area/landmark)"/>
+          </div>
+          <div class="form-row">
+            <label style="display:none" for="oCity">City</label>
+            <input id="oCity" placeholder="City"/>
+            <label style="display:none" for="oState">State</label>
+            <input id="oState" placeholder="State"/>
+          </div>
+          <div class="form-row">
+            <label style="display:none" for="oPincode">Pincode</label>
+            <input id="oPincode" placeholder="Pincode"/>
+            <label style="display:none" for="oCountry">Country</label>
+            <input id="oCountry" placeholder="Country" value="India"/>
+          </div>
 
-        <textarea id="oNote" placeholder="Additional note (optional)" rows="3" style="margin-top:8px"></textarea>
+          <div id="orderVariantBlock" style="margin-top:10px"></div>
 
-        <label style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <input type="checkbox" id="oWhatsapp" /> <span style="color:var(--muted)">Also send this order via WhatsApp</span>
-        </label>
+          <div class="form-row">
+            <label style="display:none" for="oQty">Quantity</label>
+            <input id="oQty" type="number" min="1" value="1"/>
+            <label style="display:none" for="oPayment">Payment method</label>
+            <select id="oPayment" aria-label="Payment method"><option>COD</option><option>Online</option></select>
+          </div>
 
-        <div id="oMsg" class="o-msg"></div>
+          <textarea id="oNote" placeholder="Additional note (optional)" rows="3" style="margin-top:8px"></textarea>
 
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" type="submit">Submit Order</button>
-          <button type="button" class="btn ghost" id="orderCancelBtn">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px">
+            <input type="checkbox" id="oWhatsapp" /> <span style="color:var(--muted)">Also send this order via WhatsApp</span>
+          </label>
 
-  <!-- Footer -->
-  <footer class="footer" id="contact">
-    <div class="container footer-grid">
-      <div class="footer-col">
-        <div class="footer-brand">
-          <img src="logo.png" alt="Prabha Graphics" class="footer-logo"/>
-          <strong style="color:#fff">Prabha Graphics</strong>
-        </div>
-        <p style="color:#9aa3b2;margin:0">Your trusted partner in Lucknow for all corporate and personalized printing and gifting needs.</p>
-      </div>
+          <div id="oMsg" class="o-msg" aria-live="polite"></div>
 
-      <div class="footer-col">
-        <h4 class="footer-title">Quick Links</h4>
-        <ul class="footer-list"><li>T-Shirts</li><li>Mugs</li><li>Keychains</li></ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-title">Company</h4>
-        <ul class="footer-list"><li>About Us</li><li>Contact Us</li><li><a href="get-a-quote.html" style="color:#9aa3b2">View Full Catalog</a></li></ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-title">Contact Us</h4>
-        <p class="footer-contact"><i class="fas fa-phone"></i> 074579 94888</p>
-        <p class="footer-contact"><i class="fas fa-map-marker-alt"></i> Shop No. 4/74, Gomti Nagar, Lucknow, 226010</p>
-        <p class="footer-contact"><i class="fas fa-globe"></i> www.prabhagraphics.in</p>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" type="submit">Submit Order</button>
+            <button type="button" class="btn ghost" id="orderCancelBtn">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <div style="height:1px;background:linear-gradient(to right, transparent, rgba(209,0,7,0.15), transparent);margin:18px 0"></div>
-    <div style="text-align:center;color:#9aa3b2">&copy; 2025 Prabha Graphics. All rights reserved.</div>
-  </footer>
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="logo.png" alt="Prabha Graphics" class="footer-logo"/>
+            <strong style="color:#fff">Prabha Graphics</strong>
+          </div>
+          <p style="color:#9aa3b2;margin:0">Your trusted partner in Lucknow for all corporate and personalized printing and gifting needs.</p>
+        </div>
 
-  <!-- Firebase + App Logic -->
+        <div class="footer-col">
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-list"><li>T-Shirts</li><li>Mugs</li><li>Keychains</li></ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-title">Company</h4>
+          <ul class="footer-list"><li>About Us</li><li>Contact Us</li><li><a href="get-a-quote.html" style="color:#9aa3b2">View Full Catalog</a></li></ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-title">Contact Us</h4>
+          <p class="footer-contact"><i class="fas fa-phone" aria-hidden="true"></i> 074579 94888</p>
+          <p class="footer-contact"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Shop No. 4/74, Gomti Nagar, Lucknow, 226010</p>
+          <p class="footer-contact"><i class="fas fa-globe" aria-hidden="true"></i> www.prabhagraphics.in</p>
+        </div>
+      </div>
+
+      <div style="height:1px;background:linear-gradient(to right, transparent, rgba(209,0,7,0.15), transparent);margin:18px 0"></div>
+      <div style="text-align:center;color:#9aa3b2">&copy; 2025 Prabha Graphics. All rights reserved.</div>
+    </footer>
+  </main>
+
+  <!-- Firebase + App Logic (keeps original functionality, improved accessibility & focus handling) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
@@ -401,6 +449,15 @@
     const businessGrid = document.getElementById('businessGrid');
     const apparelGrid = document.getElementById('apparelGrid');
     const otherGrid = document.getElementById('otherGrid');
+
+    // Empty placeholders
+    const empties = {
+      corporate: document.getElementById('corporateEmpty'),
+      personalized: document.getElementById('personalizedEmpty'),
+      business: document.getElementById('businessEmpty'),
+      apparel: document.getElementById('apparelEmpty'),
+      other: document.getElementById('otherEmpty')
+    };
 
     // Detail modal refs
     const detailModal = document.getElementById('detailModal');
@@ -440,17 +497,25 @@
     // Real-time products
     const qProducts = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
     onSnapshot(qProducts, snapshot => {
+      // Clear grids
       corporateGrid.innerHTML = personalizedGrid.innerHTML = businessGrid.innerHTML = apparelGrid.innerHTML = otherGrid.innerHTML = '';
+      const counts = {corporate:0,personalized:0,business:0,apparel:0,other:0};
+
       snapshot.forEach(docSnap => {
         const p = docSnap.data(); p.id = docSnap.id;
         const card = createProductCard(p);
         const cat = (p.category || '').toLowerCase();
-        if (cat.includes('corporate') || cat.includes('promot')) corporateGrid.appendChild(card);
-        else if (cat.includes('personal')) personalizedGrid.appendChild(card);
-        else if (cat.includes('business') || cat.includes('essent')) businessGrid.appendChild(card);
-        else if (cat.includes('apparel') || cat.includes('shirt') || cat.includes('t-shirt')) apparelGrid.appendChild(card);
-        else otherGrid.appendChild(card);
+        if (cat.includes('corporate') || cat.includes('promot')) { corporateGrid.appendChild(card); counts.corporate++; }
+        else if (cat.includes('personal')) { personalizedGrid.appendChild(card); counts.personalized++; }
+        else if (cat.includes('business') || cat.includes('essent')) { businessGrid.appendChild(card); counts.business++; }
+        else if (cat.includes('apparel') || cat.includes('shirt') || cat.includes('t-shirt')) { apparelGrid.appendChild(card); counts.apparel++; }
+        else { otherGrid.appendChild(card); counts.other++; }
       });
+
+      // toggle empties
+      Object.keys(empties).forEach(k => empties[k].style.display = (counts[k] === 0 ? 'block' : 'none'));
+
+      // preserve hash scroll
       setTimeout(()=> {
         const h = location.hash.replace('#','');
         if (h) scrollToSection(h);
@@ -461,19 +526,20 @@
       const card = document.createElement('div');
       card.className = 'product-card';
       const discount = p.oldPrice && p.price && p.oldPrice > p.price ? Math.round(((p.oldPrice - p.price)/p.oldPrice)*100) : 0;
+      const img = (p.images && p.images[0]) || p.image || '';
       card.innerHTML = `
-        <img src="${escapeHtml((p.images && p.images[0]) || p.image || '')}" alt="${escapeHtml(p.name)}"/>
+        <img loading="lazy" decoding="async" src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"/>
         <div class="product-body">
           <div>
             <div class="product-title">${escapeHtml(p.name)}</div>
             <div class="product-vendor">${escapeHtml(p.vendor||'')}</div>
           </div>
-          <div class="product-desc">${escapeHtml((p.description||'').slice(0,100))}...</div>
+          <div class="product-desc">${escapeHtml((p.description||'').slice(0,90))}...</div>
           <div class="product-footer">
             ${discount ? `<span class="badge">-${discount}%</span>` : `<span class="badge">${escapeHtml(p.type||'ready')}</span>`}
             ${p.oldPrice ? `<span class="old">₹${escapeHtml(String(p.oldPrice))}</span>` : ''}
             <div class="price">₹${escapeHtml(String(p.price||0))}</div>
-            <button class="btn" onclick='openDetail("${p.id}")' aria-label="View product details">View</button>
+            <button class="btn" type="button" onclick='openDetail("${p.id}")' aria-label="View product details">View</button>
           </div>
         </div>
       `;
@@ -591,10 +657,11 @@
         }
       };
 
-      // Show modal
+      // Show modal with focus management
       detailModal.style.display = 'flex';
       detailModal.setAttribute('aria-hidden','false');
       document.body.style.overflow = 'hidden';
+      trapFocus(detailModal);
     };
 
     function closeDetail(){
@@ -629,6 +696,7 @@
       }
       orderModal.style.display='flex'; orderModal.setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
+      trapFocus(orderModal);
     }
     function closeOrder(){
       orderModal.style.display='none'; orderModal.setAttribute('aria-hidden','true');
@@ -715,7 +783,7 @@
     function showOrderSuccess(msg){ oMsg.innerHTML = `<div style="background:#dcfce7;padding:10px;border-radius:8px;color:#065f46">${escapeHtml(msg)}</div>`; }
 
     // Helpers
-    function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+    function escapeHtml(s=''){ return String(s).replace(/[&<>\"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;', '"':'&quot;',"'":'&#39;'})[m]); }
 
     // Header behavior
     const navbar = document.getElementById('navbar');
@@ -729,12 +797,14 @@
 
     hambBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      navLinks.classList.toggle('show');
+      const open = navLinks.classList.toggle('show');
+      hambBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       hambBtn.classList.toggle('open');
+      if (open) trapFocus(navLinks); else releaseTrap();
     });
     document.addEventListener('click', (e) => {
       if (!navLinks.contains(e.target) && !hambBtn.contains(e.target) && navLinks.classList.contains('show')) {
-        navLinks.classList.remove('show');
+        navLinks.classList.remove('show'); hambBtn.setAttribute('aria-expanded','false');
       }
     });
 
@@ -758,6 +828,26 @@
         setTimeout(()=>{ if(window._prabhaProducts && window._prabhaProducts[id]) openDetail(id); }, 400);
       }
     });
+
+    // Simple focus trap (works for modal and small menu)
+    let _trap = null;
+    function trapFocus(container){
+      releaseTrap();
+      const focusable = container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      const first = focusable[0];
+      const last = focusable[focusable.length-1];
+      _trap = function(e){
+        if (e.key === 'Tab'){
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      };
+      container.addEventListener('keydown', _trap);
+      // focus first element
+      setTimeout(()=> first && first.focus(), 50);
+    }
+    function releaseTrap(){ if(!_trap) return; document.removeEventListener('keydown', _trap); _trap = null; }
+
   </script>
 </body>
 </html>
