@@ -1,97 +1,119 @@
-<!-- admin.html -->
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Prabha Graphics — Admin</title>
 
-  <!-- exact header styles/scripts fonts/icons from your homepage -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ======== keep admin styles separate but minimal so header/footer remain identical visually ======== */
-    :root{--primary-red:#D10007;--dark-red:#A00006;--muted:#6b7280;--bg:#fafafa}
+    :root{
+      --primary:#D10007; --dark:#0f172a; --muted:#6b7280; --bg:#fbfbfd; --card:0 10px 30px rgba(2,6,23,0.06);
+      --green:#065f46; --red:#b91c1c; --blue:#334155;
+      --max:1280px;
+    }
     *{box-sizing:border-box}
-    body{font-family:'Poppins',sans-serif;margin:0;background:var(--bg);color:#111}
-    /* --- reuse exact header/footer look by reusing small classes from your homepage --- */
-    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1000;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
-    .nav-container{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-    .logo{display:flex;gap:12px;align-items:center;cursor:pointer}
-    .logo-circle{width:44px;height:44;border-radius:50%;background:var(--primary-red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-    .container{max-width:1200px;margin:110px auto 40px;padding:0 20px}
-    .grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
-    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,0.06)}
-    h2{margin:0 0 8px;font-size:20px}
-    label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
-    input[type=text],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin-top:6px}
-    textarea{min-height:88px}
-    .row{display:flex;gap:12px}
-    .row .col{flex:1}
-    .btn{background:var(--primary-red);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
-    .btn.secondary{background:#374151}
+    html,body{height:100%}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--dark);margin:0;line-height:1.45}
+
+    /* Header (aligned with site) */
+    .navbar{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1100;transition:all .28s}
+    .navbar.scrolled{box-shadow:var(--card);backdrop-filter:blur(4px)}
+    .nav-container{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer}
+    .logo-circle{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .logo-text{font-weight:700}
+    .nav-links{display:flex;gap:18px;list-style:none;align-items:center}
+    .nav-link{color:var(--dark);text-decoration:none;font-weight:500}
+    .cta-btn{background:var(--primary);color:#fff;padding:8px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+
+    /* Layout */
+    .container{max-width:var(--max);margin:100px auto 30px;padding:0 20px}
+    .grid{display:grid;grid-template-columns:1.35fr 0.65fr;gap:18px}
+    .card{background:#fff;border-radius:12px;box-shadow:var(--card);padding:14px}
+    h2{margin:0 0 10px 0;font-size:18px}
     .small{font-size:13px;color:var(--muted)}
+
+    /* Form */
+    label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+    input[type=text],input[type=password],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e7eb;font-size:14px;margin-top:6px}
+    textarea{min-height:88px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row .col{flex:1}
+    .btn{background:var(--primary);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.secondary{background:var(--blue)}
+    .btn.ghost{background:#fff;border:1px solid #e5e7eb;color:var(--dark)}
+    .btn.danger{background:#ffecec;color:#991b1b;border:1px solid #f8d7da}
+
+    /* Lists */
     .product-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:12px}
-    .product-item{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #efefef}
-    .product-item img{width:100%;height:160px;object-fit:cover}
-    .product-body{padding:10px}
+    .product-item{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #eef2f7}
+    .product-item img{width:100%;height:140px;object-fit:cover}
+    .product-body{padding:10px;display:flex;flex-direction:column;gap:6px}
     .muted{color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:8px;margin-top:10px}
-    .actions button{flex:1}
-    .orders, .quotes{margin-top:12px}
-    .order-card{background:#fff;padding:10px;border-radius:8px;border:1px solid #eee;margin-bottom:10px}
+    .actions{display:flex;gap:8px;margin-top:8px}
+    .actions .btn{flex:1}
+
+    .order-card{background:#fff;padding:10px;border-radius:10px;border:1px solid #eef2f7;margin-bottom:10px}
+    .status-badge{background:#f1f5f9;color:#111;padding:4px 8px;border-radius:999px;font-size:12px}
+
     .search{display:flex;gap:8px;margin-bottom:12px}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}.nav-container{padding:12px}}
+
+    /* Sticky save bar */
+    .sticky-controls{position:sticky;bottom:0;background:#fff;border-top:1px solid #eef2f7;padding:10px;border-radius:0 0 12px 12px;display:flex;gap:8px}
+
+    /* Responsive */
+    @media (max-width:980px){ .grid{grid-template-columns:1fr} .nav-links{display:none} }
   </style>
 </head>
 <body>
-  <!-- BEGIN HEADER (exact markup from your homepage) -->
+  <!-- Header -->
   <nav class="navbar" id="navbar">
-      <div class="nav-container">
-          <div class="nav-logo logo" onclick="location.href='index.html'">
-              <div class="logo-circle">PG</div>
-              <span class="logo-text">Prabha Graphics</span>
-          </div>
-
-          <ul class="nav-links" id="navLinks" style="display:flex;gap:20px;align-items:center;list-style:none">
-              <li><a href="index.html" class="nav-link">Home</a></li>
-              <li><a href="index.html#about" class="nav-link">About Us</a></li>
-              <li><a href="products.html" class="nav-link">Products</a></li>
-              <li><a href="get-a-quote.html" class="nav-link">Get a Quote</a></li>
-          </ul>
-
-          <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
+    <div class="nav-container">
+      <div class="nav-logo" onclick="location.href='index.html'">
+        <div class="logo-circle">PG</div>
+        <span class="logo-text">Prabha Graphics</span>
       </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a class="nav-link" href="index.html">Home</a></li>
+        <li><a class="nav-link" href="index.html#about">About</a></li>
+        <li><a class="nav-link" href="products.html">Products</a></li>
+        <li><a class="nav-link" href="get-a-quote.html">Get a Quote</a></li>
+      </ul>
+      <button class="cta-btn" onclick="location.href='get-a-quote.html'">Get a Quote</button>
+    </div>
   </nav>
-  <!-- END HEADER -->
 
   <main class="container">
     <div class="grid">
-      <!-- left: auth + product editor + product list -->
+      <!-- Left column: auth + product editor + product list -->
       <div>
         <div class="card" id="authCard">
-          <h2>Admin Login</h2>
-          <p class="small">Sign in with Email & Password (no signup)</p>
+          <h2>Admin login</h2>
+          <p class="small">Sign in with email and password. Make sure Email/Password auth is enabled in Firebase.</p>
           <label>Email</label>
-          <input id="adminEmail" type="text" placeholder="admin@example.com" />
+          <input id="adminEmail" type="text" placeholder="admin@example.com"/>
           <label>Password</label>
-          <input id="adminPassword" type="password" placeholder="Password" />
+          <input id="adminPassword" type="password" placeholder="Password"/>
           <div style="display:flex;gap:8px;margin-top:12px">
             <button id="signInBtn" class="btn">Sign in</button>
             <button id="signOutBtn" class="btn secondary" style="display:none">Sign out</button>
           </div>
-          <div id="authMsg" class="small" style="margin-top:8px;color:#b91c1c"></div>
+          <div id="authMsg" class="small" style="margin-top:8px;color:var(--red)"></div>
         </div>
 
         <div id="panelArea" style="display:none">
+          <!-- Product editor -->
           <div class="card" style="margin-top:16px">
-            <h2>Add / Edit Product</h2>
+            <h2>Add or edit product</h2>
             <div class="small">Categories: Apparel, Personalized Products, Corporate Gifts, Business Essentials</div>
 
-            <input id="prodId" type="hidden" />
+            <input id="prodId" type="hidden"/>
 
-            <label>Main Category</label>
+            <label>Main category</label>
             <select id="mainCategory">
               <option>Apparel</option>
               <option>Personalized Products</option>
@@ -104,23 +126,42 @@
 
             <div class="row">
               <div class="col">
-                <label>Product Name</label>
-                <input id="pName" type="text" placeholder="e.g. Classic Cotton T-Shirt" />
+                <label>Product name</label>
+                <input id="pName" type="text" placeholder="e.g., Classic Cotton T-Shirt"/>
               </div>
-              <div class="col" style="max-width:140px">
+              <div class="col" style="max-width:160px">
                 <label>Price (₹)</label>
-                <input id="pPrice" type="number" placeholder="499" />
+                <input id="pPrice" type="number" placeholder="499"/>
+              </div>
+              <div class="col" style="max-width:160px">
+                <label>Old price (₹)</label>
+                <input id="pOldPrice" type="number" placeholder="699"/>
               </div>
             </div>
 
-            <label>Unique Code (SKU) — auto-generated</label>
-            <input id="pSKU" type="text" readonly />
+            <div class="row">
+              <div class="col">
+                <label>Unique code (SKU) — auto-generated</label>
+                <input id="pSKU" type="text" readonly/>
+              </div>
+              <div class="col">
+                <label>Type</label>
+                <select id="pTypeSelect">
+                  <option value="ready-made">Ready-made</option>
+                  <option value="customized">Customized</option>
+                </select>
+              </div>
+              <div class="col">
+                <label>Delivery estimate</label>
+                <input id="pDelivery" type="text" placeholder="3–6 days"/>
+              </div>
+            </div>
 
             <label>Image URL (preferred)</label>
-            <input id="pImageUrl" type="text" placeholder="https://..." />
+            <input id="pImageUrl" type="text" placeholder="https://..."/>
 
             <label>Or upload images (optional)</label>
-            <input id="pFiles" type="file" accept="image/*" multiple />
+            <input id="pFiles" type="file" accept="image/*" multiple/>
             <div id="uploadPreview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
 
             <label>Description</label>
@@ -129,122 +170,116 @@
             <div class="row">
               <div class="col">
                 <label>Sizes (comma separated)</label>
-                <input id="pSizes" placeholder="S,M,L,XL" />
+                <input id="pSizes" placeholder="S,M,L,XL"/>
               </div>
               <div class="col">
                 <label>Colors (comma separated)</label>
-                <input id="pColors" placeholder="Red,Black,White" />
+                <input id="pColors" placeholder="Red,Black,White"/>
+              </div>
+              <div class="col">
+                <label>Tags (comma separated)</label>
+                <input id="pTags" placeholder="party,bulk,gift"/>
               </div>
             </div>
 
-            <label>Tags (comma separated)</label>
-            <input id="pTags" placeholder="party,bulk,gift" />
-
-            <label>Minimum Order Quantity</label>
-            <input id="pMinQty" type="number" placeholder="1" />
-
-            <label>Type</label>
-            <select id="pTypeSelect">
-              <option value="ready-made">Ready-made</option>
-              <option value="customized">Customized</option>
-            </select>
-
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <button id="saveProduct" class="btn">Save Product</button>
-              <button id="clearProduct" class="btn secondary">Clear</button>
+            <div class="row">
+              <div class="col" style="max-width:160px">
+                <label>Minimum order qty</label>
+                <input id="pMinQty" type="number" placeholder="1"/>
+              </div>
+              <div class="col" style="max-width:160px">
+                <label>Stock</label>
+                <input id="pStock" type="number" placeholder="50"/>
+              </div>
+              <div class="col">
+                <label>Vendor</label>
+                <input id="pVendor" type="text" placeholder="Prabha Graphics"/>
+              </div>
             </div>
-            <div id="prodMsg" class="small" style="margin-top:8px"></div>
+
+            <div class="row">
+              <div class="col">
+                <label>Material</label>
+                <input id="pMaterial" type="text" placeholder="Cotton, Ceramic, etc."/>
+              </div>
+              <div class="col">
+                <label>Dimensions</label>
+                <input id="pDimensions" type="text" placeholder="10 x 12 cm"/>
+              </div>
+              <div class="col">
+                <label>Weight</label>
+                <input id="pWeight" type="text" placeholder="250 g"/>
+              </div>
+            </div>
+
+            <div class="sticky-controls">
+              <button id="saveProduct" class="btn">Save product</button>
+              <button id="clearProduct" class="btn ghost">Clear</button>
+              <button id="deleteProduct" class="btn danger" style="display:none">Delete</button>
+              <div id="prodMsg" class="small" style="margin-left:auto"></div>
+            </div>
           </div>
 
+          <!-- Product list -->
           <div class="card" style="margin-top:14px">
-            <h2>Products (click Edit)</h2>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <div class="small">Live synced with Firestore</div>
-              <div style="display:flex;gap:8px">
-                <input id="searchInput" placeholder="Search by name/SKU/tag" style="padding:8px;border-radius:8px;border:1px solid #e6e6e6" />
-                <select id="filterCategory" style="padding:8px;border-radius:8px;border:1px solid #e6e6e6">
-                  <option value="">All categories</option>
-                  <option>Apparel</option>
-                  <option>Personalized Products</option>
-                  <option>Corporate Gifts</option>
-                  <option>Business Essentials</option>
-                </select>
-              </div>
+            <h2>Products</h2>
+            <div class="search">
+              <input id="searchInput" placeholder="Search by name, SKU, tag"/>
+              <select id="filterCategory">
+                <option value="">All categories</option>
+                <option>Apparel</option>
+                <option>Personalized Products</option>
+                <option>Corporate Gifts</option>
+                <option>Business Essentials</option>
+              </select>
             </div>
             <div class="product-list" id="productsList">Loading…</div>
           </div>
         </div>
       </div>
 
-      <!-- right: orders & quotes -->
+      <!-- Right column: orders and quotes -->
       <aside>
         <div class="card">
           <h2>Orders</h2>
-          <div id="ordersArea" class="orders">Loading orders…</div>
+          <div id="ordersArea">Loading orders…</div>
         </div>
 
         <div class="card" style="margin-top:14px">
-          <h2>Get-a-Quote Requests</h2>
-          <div id="quotesArea" class="quotes">Loading quotes…</div>
+          <h2>Get-a-quote requests</h2>
+          <div id="quotesArea">Loading quotes…</div>
         </div>
       </aside>
     </div>
   </main>
 
-  <!-- BEGIN FOOTER (exact markup from your homepage) -->
-  <footer id="contact" class="footer" style="margin-top:30px">
-      <div class="container" style="max-width:1280px;padding:0 20px">
-          <div class="footer-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-bottom:40px">
-              <div class="footer-col">
-                  <div class="footer-logo" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-                      <div class="logo-circle">PG</div>
-                      <span>Prabha Graphics</span>
-                  </div>
-                  <p style="color:#d1d5db">Your trusted partner in Lucknow for all corporate and personalized printing and gifting needs.</p>
-              </div>
-
-              <div class="footer-col">
-                  <h3>Quick Links</h3>
-                  <ul style="list-style:none;padding-left:0">
-                      <li><a href="#" class="footer-link">T-Shirts</a></li>
-                      <li><a href="#" class="footer-link">Mugs</a></li>
-                      <li><a href="#" class="footer-link">Keychains</a></li>
-                      <li><a href="#" class="footer-link">Clocks</a></li>
-                      <li><a href="#" class="footer-link">Custom Gifts</a></li>
-                  </ul>
-              </div>
-
-              <div class="footer-col">
-                  <h3>Company</h3>
-                  <ul style="list-style:none;padding-left:0">
-                      <li><a href="#" class="footer-link">About Us</a></li>
-                      <li><a href="#" class="footer-link">Contact Us</a></li>
-                      <li><a href="#" class="footer-link">View Full Catalog</a></li>
-                  </ul>
-              </div>
-
-              <div class="footer-col">
-                  <h3>Contact Us</h3>
-                  <div class="contact-info" style="display:flex;flex-direction:column;gap:12px">
-                      <p style="color:#d1d5db"><i class="fas fa-phone"></i> 074579 94888</p>
-                      <p style="color:#d1d5db"><i class="fas fa-map-marker-alt"></i> Shop No. 4/74, Adarsh Market, Gomti Nagar Railway Sta Rd, Vinay Khand 4, Gomti Nagar, Lucknow, Uttar Pradesh 226010</p>
-                      <p style="color:#d1d5db"><i class="fas fa-globe"></i> www.prabhagraphics.in</p>
-                  </div>
-                  <div class="social-links" style="display:flex;gap:16px;margin-top:16px">
-                      <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                      <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                  </div>
-              </div>
-          </div>
-
-          <div class="footer-divider" style="height:1px;background:linear-gradient(to right, transparent, rgba(209,0,7,0.3), transparent);margin-bottom:24px"></div>
-          <div class="footer-bottom" style="text-align:center;color:#9ca3af"><p>&copy; 2025 Prabha Graphics. All rights reserved.</p></div>
+  <!-- Footer -->
+  <footer id="contact" class="footer" style="background:#0b1220;color:#fff;padding:40px 0;margin-top:24px">
+    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div class="logo-circle">PG</div><strong>Prabha Graphics</strong></div>
+        <p style="color:#9aa3b2">Your trusted partner in Lucknow for corporate and personalized printing and gifting.</p>
       </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Quick Links</h4>
+        <div style="color:#9aa3b2">T-Shirts • Mugs • Keychains • Clocks • Custom Gifts</div>
+      </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Company</h4>
+        <div style="color:#9aa3b2">About Us • Contact Us • View Full Catalog</div>
+      </div>
+      <div>
+        <h4 style="color:#fff;margin:0 0 8px 0">Contact</h4>
+        <div style="color:#9aa3b2">074579 94888</div>
+        <div style="color:#9aa3b2">Shop No. 4/74, Gomti Nagar, Lucknow, Uttar Pradesh 226010</div>
+        <div style="color:#9aa3b2">www.prabhagraphics.in</div>
+      </div>
+    </div>
+    <div style="height:1px;background:linear-gradient(to right,transparent,rgba(209,0,7,0.12),transparent);margin:18px 0"></div>
+    <div style="text-align:center;color:#8f9aa6">&copy; 2025 Prabha Graphics</div>
   </footer>
-  <!-- END FOOTER -->
 
   <script type="module">
-    /* ---------------- Firebase setup ---------------- */
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, getDoc } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
@@ -265,7 +300,14 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    /* ---------------- UI refs ---------------- */
+    // Header scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 8) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+    }, {passive:true});
+
+    // UI refs
     const signInBtn = document.getElementById('signInBtn');
     const signOutBtn = document.getElementById('signOutBtn');
     const adminEmail = document.getElementById('adminEmail');
@@ -278,6 +320,7 @@
     const subCategory = document.getElementById('subCategory');
     const pName = document.getElementById('pName');
     const pPrice = document.getElementById('pPrice');
+    const pOldPrice = document.getElementById('pOldPrice');
     const pSKU = document.getElementById('pSKU');
     const pImageUrl = document.getElementById('pImageUrl');
     const pFiles = document.getElementById('pFiles');
@@ -288,8 +331,15 @@
     const pTags = document.getElementById('pTags');
     const pMinQty = document.getElementById('pMinQty');
     const pTypeSelect = document.getElementById('pTypeSelect');
+    const pDelivery = document.getElementById('pDelivery');
+    const pStock = document.getElementById('pStock');
+    const pVendor = document.getElementById('pVendor');
+    const pMaterial = document.getElementById('pMaterial');
+    const pDimensions = document.getElementById('pDimensions');
+    const pWeight = document.getElementById('pWeight');
     const saveProduct = document.getElementById('saveProduct');
     const clearProduct = document.getElementById('clearProduct');
+    const deleteProduct = document.getElementById('deleteProduct');
     const prodMsg = document.getElementById('prodMsg');
     const productsList = document.getElementById('productsList');
 
@@ -299,7 +349,7 @@
     const searchInput = document.getElementById('searchInput');
     const filterCategory = document.getElementById('filterCategory');
 
-    /* ---------------- Sub-cats ---------------- */
+    // Sub-categories
     const subMap = {
       'Apparel': ['T-shirts','Hoodies','Polo','Jackets','Caps'],
       'Personalized Products': ['Mugs','Photo Frames','Cushions','Phone Covers','Bottles','Keychains'],
@@ -310,12 +360,12 @@
       const list = subMap[mainCategory.value] || [];
       subCategory.innerHTML = '';
       list.forEach(s=> subCategory.innerHTML += `<option>${s}</option>`);
-      if (list.length === 0) subCategory.innerHTML = '<option>Other</option>';
+      if (!list.length) subCategory.innerHTML = '<option>Other</option>';
     }
     mainCategory.addEventListener('change', populateSub);
     populateSub();
 
-    /* ---------------- Auth ---------------- */
+    // Auth
     signInBtn.addEventListener('click', async ()=>{
       authMsg.textContent = '';
       const e = adminEmail.value.trim(); const p = adminPassword.value;
@@ -323,21 +373,23 @@
       try{ await signInWithEmailAndPassword(auth, e, p); }
       catch(err){ authMsg.textContent = 'Sign-in failed: ' + err.message; }
     });
-
     signOutBtn.addEventListener('click', async ()=>{ await signOut(auth); });
 
     let unsubProducts=null, unsubOrders=null, unsubQuotes=null;
     onAuthStateChanged(auth, user =>{
       if (user){
-        authMsg.textContent = ''; signInBtn.style.display='none'; signOutBtn.style.display='inline-block'; panelArea.style.display='block'; document.getElementById('authCard').style.display='none';
+        authMsg.textContent = '';
+        signInBtn.style.display='none'; signOutBtn.style.display='inline-block';
+        panelArea.style.display='block'; document.getElementById('authCard').style.display='none';
         startListeners();
       } else {
-        signInBtn.style.display='inline-block'; signOutBtn.style.display='none'; panelArea.style.display='none'; document.getElementById('authCard').style.display='block';
+        signInBtn.style.display='inline-block'; signOutBtn.style.display='none';
+        panelArea.style.display='none'; document.getElementById('authCard').style.display='block';
         stopListeners();
       }
     });
 
-    /* ---------------- SKU generator ---------------- */
+    // SKU generator
     function generateSKU(category){
       const prefix = (category || 'PR').split(' ').map(w=>w[0]).join('').toUpperCase();
       const ts = Date.now().toString(36).toUpperCase();
@@ -345,30 +397,51 @@
       return `${prefix}-${ts}-${rnd}`;
     }
 
-    /* preview uploads */
+    // Preview uploads
     pFiles.addEventListener('change', ()=>{
       uploadPreview.innerHTML = '';
       Array.from(pFiles.files || []).forEach(f=>{
         const url = URL.createObjectURL(f);
-        const img = document.createElement('img'); img.src = url; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px'; uploadPreview.appendChild(img);
+        const img = document.createElement('img'); img.src = url;
+        img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
+        uploadPreview.appendChild(img);
       });
     });
 
-    /* ---------------- Save product ---------------- */
+    // Save product
     saveProduct.addEventListener('click', async ()=>{
-      prodMsg.textContent = '';
-      const name = pName.value.trim(); if(!name) return prodMsg.textContent='Product name required';
+      prodMsg.style.color = ''; prodMsg.textContent = '';
+      const name = pName.value.trim(); if(!name) { prodMsg.style.color = '#b91c1c'; prodMsg.textContent='Product name required'; return; }
       const mainCat = mainCategory.value; const subCat = subCategory.value || 'Other';
-      const price = parseFloat(pPrice.value) || 0; const sku = pSKU.value || generateSKU(mainCat);
+      const price = parseFloat(pPrice.value) || 0;
+      const oldPrice = parseFloat(pOldPrice.value) || 0;
+      const stock = parseInt(pStock.value) || 0;
+      const sku = pSKU.value || generateSKU(mainCat);
 
       const product = {
-        name, mainCategory: mainCat, subCategory: subCat, price, sku,
-        imageUrl: pImageUrl.value.trim() || '', description: pDescription.value.trim(), sizes: (pSizes.value||'').split(',').map(s=>s.trim()).filter(Boolean),
-        colors: (pColors.value||'').split(',').map(s=>s.trim()).filter(Boolean), tags: (pTags.value||'').split(',').map(s=>s.trim()).filter(Boolean),
-        minQty: parseInt(pMinQty.value) || 1, type: pTypeSelect.value || 'ready-made', createdAt: serverTimestamp()
+        name,
+        mainCategory: mainCat,
+        subCategory: subCat,
+        category: `${mainCat} • ${subCat}`, // helps front-end grouping too
+        price,
+        oldPrice: oldPrice || null,
+        sku,
+        description: pDescription.value.trim(),
+        sizes: (pSizes.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        colors: (pColors.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        tags: (pTags.value||'').split(',').map(s=>s.trim()).filter(Boolean),
+        minQty: parseInt(pMinQty.value) || 1,
+        type: pTypeSelect.value || 'ready-made',
+        deliveryEstimate: pDelivery.value.trim() || '',
+        stock,
+        vendor: pVendor.value.trim() || 'Prabha Graphics',
+        material: pMaterial.value.trim() || '',
+        dimensions: pDimensions.value.trim() || '',
+        weight: pWeight.value.trim() || '',
+        createdAt: serverTimestamp()
       };
 
-      // upload files if any
+      // Upload files if any
       const files = Array.from(pFiles.files || []);
       product.images = [];
       try{
@@ -376,110 +449,225 @@
           const path = `products/${sku}_${Date.now()}_${f.name}`;
           const r = storageRef(storage, path);
           const task = uploadBytesResumable(r, f);
-          await new Promise((res,rej)=> task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{ product.images.push(await getDownloadURL(task.snapshot.ref)); res(); }));
+          await new Promise((res,rej)=> task.on('state_changed', ()=>{}, err=> rej(err), async ()=>{
+            product.images.push(await getDownloadURL(task.snapshot.ref)); res();
+          }));
         }
-      }catch(err){ console.error('upload failed',err); prodMsg.textContent = 'Upload failed: '+err.message; }
+      }catch(err){
+        console.error('upload failed', err);
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Upload failed: ' + err.message;
+      }
 
       if (pImageUrl.value && !product.images.length) product.images.push(pImageUrl.value.trim());
 
       try{
-        if(prodId.value){ // update
-          const dRef = doc(db, 'products', prodId.value);
-          await updateDoc(dRef, product);
-          prodMsg.textContent = 'Product updated';
-          prodId.value = '';
-        } else { // add
-          const col = collection(db, 'products');
-          await addDoc(col, product);
-          prodMsg.textContent = 'Product added';
+        if(prodId.value){
+          await updateDoc(doc(db, 'products', prodId.value), product);
+          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product updated';
+        } else {
+          await addDoc(collection(db, 'products'), product);
+          prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product added';
         }
-        setTimeout(()=>{ clearForm(); }, 800);
-      }catch(err){ console.error(err); prodMsg.textContent = 'Save failed: '+err.message; }
+        deleteProduct.style.display = prodId.value ? 'inline-block' : 'none';
+        setTimeout(()=> clearForm(), 900);
+      }catch(err){
+        console.error(err);
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Save failed: ' + err.message;
+      }
+    });
+
+    // Delete product
+    deleteProduct.addEventListener('click', async ()=>{
+      if(!prodId.value) return;
+      if(!confirm('Delete this product? This cannot be undone.')) return;
+      try{
+        await deleteDoc(doc(db, 'products', prodId.value));
+        prodMsg.style.color = '#065f46'; prodMsg.textContent = 'Product deleted';
+        setTimeout(()=> clearForm(), 700);
+      }catch(err){
+        prodMsg.style.color = '#b91c1c'; prodMsg.textContent = 'Delete failed: ' + err.message;
+      }
     });
 
     clearProduct.addEventListener('click', clearForm);
-    function clearForm(){ prodId.value=''; pName.value=''; pPrice.value=''; pSKU.value=''; pImageUrl.value=''; pFiles.value=''; uploadPreview.innerHTML=''; pDescription.value=''; pSizes.value=''; pColors.value=''; pTags.value=''; pMinQty.value=''; pTypeSelect.value='ready-made'; prodMsg.textContent=''; }
+    function clearForm(){
+      prodId.value=''; pName.value=''; pPrice.value=''; pOldPrice.value='';
+      pSKU.value=''; pImageUrl.value=''; pFiles.value=''; uploadPreview.innerHTML='';
+      pDescription.value=''; pSizes.value=''; pColors.value=''; pTags.value='';
+      pMinQty.value=''; pTypeSelect.value='ready-made'; pDelivery.value='';
+      pStock.value=''; pVendor.value=''; pMaterial.value=''; pDimensions.value='';
+      pWeight.value=''; prodMsg.textContent='';
+      deleteProduct.style.display='none';
+    }
 
-    /* ---------------- Listeners ---------------- */
+    // Listeners
     function startListeners(){
       if (unsubProducts) return;
+
       unsubProducts = onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap=>{
-        productsList.innerHTML='';
+        productsList.innerHTML = '';
         snap.forEach(docSnap=>{
           const d = docSnap.data(); d.id = docSnap.id;
           const el = document.createElement('div'); el.className='product-item';
+          const discount = d.oldPrice && d.price && d.oldPrice > d.price ? Math.round(((d.oldPrice - d.price)/d.oldPrice)*100) : 0;
           el.innerHTML = `
             <img src="${escapeHtml((d.images && d.images[0]) || d.imageUrl || 'https://via.placeholder.com/400x300?text=No+Image')}" alt="">
             <div class="product-body">
               <strong>${escapeHtml(d.name)}</strong>
-              <div class="muted">${escapeHtml(d.mainCategory)} • ${escapeHtml(d.subCategory||'')}</div>
-              <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
-                <div style="color:var(--primary-red);font-weight:700">₹${escapeHtml(String(d.price || 0))}</div>
-                <div class="muted">SKU: ${escapeHtml(d.sku || '')}</div>
+              <div class="muted">${escapeHtml(d.mainCategory || '')} • ${escapeHtml(d.subCategory || '')}</div>
+              <div style="display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:6px">
+                <div style="display:flex;gap:8px;align-items:center">
+                  ${discount ? `<span class="status-badge">-${discount}%</span>` : `<span class="status-badge">${escapeHtml(d.type||'ready-made')}</span>`}
+                  ${d.oldPrice ? `<span class="muted" style="text-decoration:line-through">₹${escapeHtml(String(d.oldPrice))}</span>` : ''}
+                </div>
+                <div style="color:var(--primary);font-weight:700">₹${escapeHtml(String(d.price || 0))}</div>
               </div>
+              <div class="muted">SKU: ${escapeHtml(d.sku || '')}</div>
               <div class="actions">
                 <button class="btn small edit-btn" data-id="${d.id}">Edit</button>
-                <button class="btn secondary small delete-btn" data-id="${d.id}">Delete</button>
+                <button class="btn secondary small quick-order-btn" data-id="${d.id}">WhatsApp</button>
+                <button class="btn danger small delete-btn" data-id="${d.id}">Delete</button>
               </div>
             </div>
           `;
           productsList.appendChild(el);
         });
 
-        // attach handlers
-        document.querySelectorAll('.edit-btn').forEach(b=> b.onclick = async ()=>{ const id=b.dataset.id; const dref = doc(db,'products',id); const snap = await getDoc(dref); if(!snap.exists()) return alert('Not found'); const d = snap.data(); prodId.value = snap.id; mainCategory.value = d.mainCategory || 'Apparel'; populateSub(); subCategory.value = d.subCategory || subCategory.value; pName.value = d.name||''; pPrice.value = d.price||0; pSKU.value = d.sku||generateSKU(mainCategory.value); pImageUrl.value = (d.images && d.images[0]) || d.imageUrl || ''; pDescription.value = d.description||''; pSizes.value = (d.sizes||[]).join(','); pColors.value = (d.colors||[]).join(','); pTags.value = (d.tags||[]).join(','); pMinQty.value = d.minQty||1; pTypeSelect.value = d.type||'ready-made'; uploadPreview.innerHTML = ''; (d.images||[]).forEach(u=>{ const img=document.createElement('img'); img.src=u; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px'; uploadPreview.appendChild(img); }); window.scrollTo({top:0,behavior:'smooth'}); });
+        // handlers
+        document.querySelectorAll('.edit-btn').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id;
+          const dref = doc(db,'products',id);
+          const snap = await getDoc(dref);
+          if(!snap.exists()) return alert('Not found');
+          const d = snap.data();
+          prodId.value = snap.id;
+          mainCategory.value = d.mainCategory || 'Apparel';
+          populateSub();
+          subCategory.value = d.subCategory || subCategory.value;
+          pName.value = d.name || '';
+          pPrice.value = d.price || 0;
+          pOldPrice.value = d.oldPrice || '';
+          pSKU.value = d.sku || generateSKU(mainCategory.value);
+          pImageUrl.value = (d.images && d.images[0]) || d.imageUrl || '';
+          pDescription.value = d.description || '';
+          pSizes.value = (d.sizes||[]).join(',');
+          pColors.value = (d.colors||[]).join(',');
+          pTags.value = (d.tags||[]).join(',');
+          pMinQty.value = d.minQty || 1;
+          pTypeSelect.value = d.type || 'ready-made';
+          pDelivery.value = d.deliveryEstimate || '';
+          pStock.value = d.stock || '';
+          pVendor.value = d.vendor || 'Prabha Graphics';
+          pMaterial.value = d.material || '';
+          pDimensions.value = d.dimensions || '';
+          pWeight.value = d.weight || '';
+          uploadPreview.innerHTML = '';
+          (d.images||[]).forEach(u=>{
+            const img=document.createElement('img'); img.src=u;
+            img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
+            uploadPreview.appendChild(img);
+          });
+          deleteProduct.style.display='inline-block';
+          window.scrollTo({top:0,behavior:'smooth'});
+        });
 
-        document.querySelectorAll('.delete-btn').forEach(b=> b.onclick = async ()=>{ const id=b.dataset.id; if(!confirm('Delete product?')) return; try{ await deleteDoc(doc(db,'products',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); } });
+        document.querySelectorAll('.quick-order-btn').forEach(b=> b.onclick = ()=>{
+          const id=b.dataset.id;
+          const d = snapFind(id);
+          if(!d) return;
+          const msg = `Hi, query about: ${d.name} (SKU: ${d.sku || '-'})`;
+          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(msg)}`, '_blank');
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id;
+          if(!confirm('Delete product?')) return;
+          try{ await deleteDoc(doc(db,'products',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+
+        filterProductsUI();
       });
 
       unsubOrders = onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap=>{
         ordersArea.innerHTML='';
-        snap.forEach(s=>{ const o = s.data(); const id = s.id; const el = document.createElement('div'); el.className='order-card'; el.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <strong>${escapeHtml(o.productName||'')}</strong>
-              <div class="muted">SKU: ${escapeHtml(o.productSnapshot && o.productSnapshot.sku || '')}</div>
-              <div class="muted">${escapeHtml(o.customerName||'')} • ${escapeHtml(o.customerPhone||'')}</div>
-            </div>
-            <div style="text-align:right">
-              <div class="small">${escapeHtml(o.status||'pending')}</div>
-              <div style="margin-top:6px">
-                <button class="btn small update-status" data-id="${id}" data-status="processing">Processing</button>
-                <button class="btn secondary small delete-order" data-id="${id}">Delete</button>
+        snap.forEach(s=>{
+          const o = s.data(); const id = s.id;
+          const el = document.createElement('div'); el.className='order-card';
+          el.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>${escapeHtml(o.productName||'')}</strong>
+                <div class="muted">SKU: ${escapeHtml(o.productSnapshot && o.productSnapshot.sku || '')}</div>
+                <div class="muted">${escapeHtml(o.customerName||'')} • ${escapeHtml(o.customerPhone||'')}</div>
+              </div>
+              <div style="text-align:right">
+                <div class="status-badge">${escapeHtml(o.status||'pending')}</div>
+                <div style="margin-top:6px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+                  <button class="btn small set-status" data-id="${id}" data-status="processing">Processing</button>
+                  <button class="btn small set-status" data-id="${id}" data-status="shipped">Shipped</button>
+                  <button class="btn small set-status" data-id="${id}" data-status="completed">Completed</button>
+                  <button class="btn danger small delete-order" data-id="${id}">Delete</button>
+                </div>
               </div>
             </div>
-          </div>
-        `; ordersArea.appendChild(el); });
+          `;
+          ordersArea.appendChild(el);
+        });
 
-        document.querySelectorAll('.delete-order').forEach(b=> b.onclick = async ()=>{ if(!confirm('Delete order?')) return; const id=b.dataset.id; try{ await deleteDoc(doc(db,'orders',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); } });
-
-        document.querySelectorAll('.update-status').forEach(b=> b.onclick = async ()=>{ const id=b.dataset.id; const status=b.dataset.status; try{ await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); } catch(err){ console.error(err); } });
+        document.querySelectorAll('.delete-order').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; if(!confirm('Delete order?')) return;
+          try{ await deleteDoc(doc(db,'orders',id)); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+        document.querySelectorAll('.set-status').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; const status=b.dataset.status;
+          try{ await updateDoc(doc(db,'orders',id), { status, updatedAt: serverTimestamp() }); } catch(err){ console.error(err); }
+        });
       });
 
       unsubQuotes = onSnapshot(query(collection(db,'quotes'), orderBy('createdAt','desc')), snap=>{
         quotesArea.innerHTML='';
-        snap.forEach(qsnap=>{ const q = qsnap.data(); const id = qsnap.id; const el = document.createElement('div'); el.className='order-card'; el.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <strong>${escapeHtml(q.productName||'')}</strong>
-              <div class="muted">${escapeHtml(q.name||'')} • ${escapeHtml(q.phone||'')}</div>
+        snap.forEach(qsnap=>{
+          const q = qsnap.data(); const id = qsnap.id;
+          const el = document.createElement('div'); el.className='order-card';
+          el.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>${escapeHtml(q.productName||'')}</strong>
+                <div class="muted">${escapeHtml(q.name||'')} • ${escapeHtml(q.phone||'')}</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn small whatsapp-quote" data-id="${id}">WhatsApp</button>
+                <button class="btn danger small delete-quote" data-id="${id}">Delete</button>
+              </div>
             </div>
-            <div>
-              <button class="btn secondary small delete-quote" data-id="${id}">Delete</button>
-            </div>
-          </div>
-        `; quotesArea.appendChild(el); });
+          `;
+          quotesArea.appendChild(el);
+        });
 
-        document.querySelectorAll('.delete-quote').forEach(b=> b.onclick = async ()=>{ if(!confirm('Delete quote?')) return; const id=b.dataset.id; try{ await deleteDoc(doc(db,'quotes',id)); alert('Deleted'); } catch(err){ alert('Delete failed: '+err.message); } });
+        document.querySelectorAll('.delete-quote').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; if(!confirm('Delete quote?')) return;
+          try{ await deleteDoc(doc(db,'quotes',id)); } catch(err){ alert('Delete failed: '+err.message); }
+        });
+        document.querySelectorAll('.whatsapp-quote').forEach(b=> b.onclick = async ()=>{
+          const id=b.dataset.id; const qsnap = await getDoc(doc(db,'quotes',id));
+          if(!qsnap.exists()) return;
+          const q = qsnap.data();
+          const text = `Quote request: ${q.productName || '-'}\nName: ${q.name || '-'}\nPhone: ${q.phone || '-'}\nQty: ${q.quantity || '-'}\nNote: ${q.note || '-'}`;
+          window.open(`https://wa.me/917457994888?text=${encodeURIComponent(text)}`, '_blank');
+        });
       });
     }
 
-    function stopListeners(){ if(unsubProducts){ unsubProducts(); unsubProducts=null; } if(unsubOrders){ unsubOrders(); unsubOrders=null; } if(unsubQuotes){ unsubQuotes(); unsubQuotes=null; } productsList.innerHTML=''; ordersArea.innerHTML=''; quotesArea.innerHTML=''; }
+    function stopListeners(){
+      if(unsubProducts){ unsubProducts(); unsubProducts=null; }
+      if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+      if(unsubQuotes){ unsubQuotes(); unsubQuotes=null; }
+      productsList.innerHTML=''; ordersArea.innerHTML=''; quotesArea.innerHTML='';
+    }
 
-    /* search + filter */
+    // Search + filter
     searchInput?.addEventListener('input', filterProductsUI);
     filterCategory?.addEventListener('change', filterProductsUI);
-
     function filterProductsUI(){
       const q = (searchInput.value||'').toLowerCase();
       const cat = (filterCategory.value||'').toLowerCase();
@@ -491,10 +679,23 @@
       });
     }
 
-    function escapeHtml(s=''){ return String(s).replace(/[&<>\"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function snapFind(id){
+      const el = [...document.querySelectorAll('#productsList .product-item .edit-btn')].find(b=> b.dataset.id===id);
+      if(!el) return null;
+      // quick lookup via stored window map if you want to extend
+      return null;
+    }
 
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"'\\]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\\':'&#92;'})[m]); }
+
+    // Escape to close any menus (future) or reset sticky messages
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ prodMsg.textContent=''; }
+    });
   </script>
 
-  <p style="text-align:center;color:#666;font-size:13px;margin:20px 0">Note: Firestore collections used: <code>products</code>, <code>orders</code>, <code>quotes</code>. Make sure Email/Password auth is enabled and Firestore rules allow writes for authenticated admin and creates for orders/quotes.</p>
+  <p style="text-align:center;color:#666;font-size:13px;margin:16px 0">
+    Tip: Protect Firestore with rules so only authenticated admins can write products and update orders. Allow unauthenticated creates for orders/quotes.
+  </p>
 </body>
 </html>
